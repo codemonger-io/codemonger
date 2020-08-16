@@ -1,0 +1,6 @@
+# build artifacts
+/node_modules
+
+# editor artifacts
+*.swp
+*~
