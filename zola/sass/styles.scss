@@ -1,0 +1,139 @@
+@import "_fonts";
+@import "_theme";
+@import "_bulma";
+@import "_bulma-extensions";
+
+body {
+  margin: 0 0;
+  background-color: $codemonger;
+  color: $codemonger-invert;
+}
+
+@mixin monospace-font {
+  font-family: 'Courier Prime', 'Source Han Code JP', monospace;
+}
+
+a,
+p {
+  &.navbar-item {
+    @include monospace-font;
+  }
+}
+
+.title,
+.subtitle {
+  @include monospace-font;
+}
+
+// markdown content
+.content {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  code {
+    @include monospace-font;
+  }
+  p {
+    line-height: 1.7;
+  }
+  pre,
+  code {
+    background-color: $codemonger-shade;
+    color: $codemonger-invert;
+  }
+  pre {
+    & > code {
+      line-height: $body-line-height;
+    }
+  }
+  blockquote {
+    color: bulmaLighten($codemonger-invert, 30%);
+    background-color: $codemonger-shade;
+    border-left: 5px solid bulmaDarken($codemonger-shade, 10%);
+  }
+  a {
+    color: $codemonger-link;
+    &:hover {
+      color: bulmaLighten($codemonger-invert, 15%);
+    }
+    & > code {
+      color: inherit;
+    }
+  }
+}
+
+.blog-content {
+  header {
+    padding-bottom: 3rem;
+  }
+}
+
+$blog-card-height: 11rem;
+$blog-card-fade-margin: 3rem;
+
+.blog-card {
+  position: relative;
+  min-height: $blog-card-height;
+  max-height: $blog-card-height;
+  background: $codemonger;
+  transition: background-color 0.3s;
+  overflow-y: hidden;
+  .blog-title {
+    text-decoration: underline;
+  }
+  .subtitle {
+    margin-bottom: 0.5rem;
+  }
+  /* https://stackoverflow.com/questions/22808040/fading-out-text-on-overflow-with-css-if-the-text-is-bigger-than-allowed */
+  &::before {
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    background: linear-gradient(rgba($codemonger, 0) calc(#{$blog-card-height} - #{$blog-card-fade-margin}), $codemonger);
+    /* unfortunately, transition is not applied to linear-gradient.
+     * https://stackoverflow.com/questions/6542212/use-css3-transitions-with-gradient-backgrounds
+     */
+    transition: background-color 0.3s;
+  }
+  &:hover {
+    background: $codemonger-tint;
+    &::before {
+      background: linear-gradient(rgba($codemonger-tint, 0) calc(#{$blog-card-height} - #{$blog-card-fade-margin}), $codemonger-tint);
+    }
+  }
+}
+
+.blog-page-number {
+  @include monospace-font;
+}
+.current-blog-page-number {
+  margin: 0px 0.5rem;
+}
+
+.footer {
+  &.is-codemonger-tint {
+    background: $codemonger-tint;
+  }
+  a {
+    &:link {
+      color: $codemonger-invert;
+    }
+    &:visited {
+      color: $codemonger-invert;
+    }
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.codemonger-content {
+  min-height: calc(100vh - #{$navbar-height});
+}

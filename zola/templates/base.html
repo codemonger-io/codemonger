@@ -1,0 +1,137 @@
+{% import "macros.html" as macros %}
+{% set lang_ext = macros::lang_ext() %}
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="codemonger home">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/styles.css" rel="stylesheet">
+  {% if page %}
+  {% set html_title = page.title %}
+  {% elif section %}
+  {% if section.path == "/" or section.path is starting_with(lang) %}
+  {% set html_title = "codemonger" %}
+  {% else %}
+  {% set html_title = section.title %}
+  {% endif %}
+  {% else %}
+  {% set html_title = "codemonger" %}
+  {% endif %}
+  <title>{{ html_title }}</title>
+</head>
+<body>
+  <nav class="navbar is-codemonger-tint" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="{{ config.base_url }}{{ macros::lang_seg() }}">
+        <img src="/codemonger.svg" width="112" height="28" alt="codemonger logo">
+      </a>
+      <a id="codemonger-menu-burger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="codemonger-menu" onclick="toggleCodemongerMenu()">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="codemonger-menu-transition" class="navbar-menu-transition">
+      <div id="codemonger-menu" class="navbar-menu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="{{ config.base_url }}{{ macros::lang_seg() }}">{{ trans(key="home", lang=lang) }}</a>
+          {% set root = get_section(path="_index" ~ lang_ext ~ ".md") %}
+          {% for section_path in root.subsections %}
+          {% set subsection = get_section(path=section_path) %}
+          <a class="navbar-item" href="{{ subsection.permalink | safe }}">{{ subsection.title }}</a>
+          {% endfor %}
+        </div>
+        <div class="navbar-end">
+          {% if page %}
+          {%   if lang == config.default_language %}
+          {%     set relative_path = page.components | join(sep="/") %}
+          {%   else %}
+          {%     set relative_path = page.components | slice(start=1) | join(sep="/") %}
+          {%   endif %}
+          {%   set internal_path = "@/" ~ relative_path ~ ".md" %}
+          {% else %}
+          {%   if section.components | length  > 0 %}
+          {%     if lang == config.default_language %}
+          {%       set relative_path = section.components | join(sep="/") %}
+          {%     else %}
+          {%       set relative_path = section.components | slice(start=1) | join(sep="/") %}
+          {%     endif %}
+          {%     set internal_path = "@/" ~ relative_path ~ "/_index.md" %}
+          {%   else %}
+          {%     set internal_path = "/" %}
+          {%   endif %}
+          {% endif %}
+          {% if lang != "ja" %}
+          <a class="navbar-item" href="{{ get_url(path=internal_path, lang="ja") }}">&#x21cb; 日本語</a>
+          {% else %}
+          <a class="navbar-item" href="{{ get_url(path=internal_path, lang="en") }}">&#x21cb; English</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="codemonger-content">
+    {% block content %} {% endblock %}
+  </div>
+  <footer class="footer is-codemonger-tint">
+    <div class="columns">
+      <div class="column is-half">
+        {% set about_page = get_page(path="about" ~ lang_ext ~ ".md") %}
+        <a href="{{ about_page.permalink | safe }}">{{ about_page.title }}</a>
+      </div>
+      <div class="column is-half">
+        Powered by <a href="https://www.getzola.org">Zola</a>, and <a href="https://bulma.io">Bulma</a>.
+        {% if lang != "ja" %}
+        Source code of this site is available at <a href="https://github.com/codemonger-io/codemonger">GitHub</a>.
+        {% else %}
+        このサイトのソースコードは<a href="https://github.com/codemonger-io/codemonger">GitHub</a>で入手できます。
+        {% endif %}
+      </div>
+    </div>
+  </footer>
+  <script>
+    // shows/hides the menu
+    let isMenuBarActive = false;
+    function toggleCodemongerMenu() {
+      isMenuBarActive = !isMenuBarActive;
+      const menu = document.getElementById("codemonger-menu");
+      const burger = document.getElementById("codemonger-menu-burger");
+      const transition = document.getElementById("codemonger-menu-transition");
+      console.log("menu height", transition?.scrollHeight);
+      if (isMenuBarActive) {
+        // shows the menu
+        if (menu != null) {
+          menu.classList.add("is-active");
+        }
+        if (burger != null) {
+          burger.classList.add("is-active");
+        }
+        if (transition != null) {
+          transition.classList.add("is-active");
+          transition.style.height = transition.scrollHeight + "px";
+        }
+      } else {
+        // hides the menu
+        if (menu != null) {
+          menu.classList.remove("is-active");
+        }
+        if (burger != null) {
+          burger.classList.remove("is-active");
+        }
+        if (transition != null) {
+          transition.classList.remove("is-active");
+          transition.style.height = null;
+        }
+      }
+    }
+    // hides the menu if the window is resized.
+    // this will prevent the navbar menu from being left expanded.
+    window.addEventListener('resize', function () {
+      if (isMenuBarActive) {
+        toggleCodemongerMenu();
+      }
+    });
+  </script>
+</body>
+</html>

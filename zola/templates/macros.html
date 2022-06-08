@@ -1,0 +1,5 @@
+{# Macro to substitute a markdown extension for the current language. Becomes an empty string for the default language. #}
+{% macro lang_ext() %}{% if lang != config.default_language %}.{{ lang }}{% else %}{% endif %}{% endmacro lang_ext %}
+
+{# Macro to substitute a path segment for the current language. Becomes an empty string for the default language.#}
+{% macro lang_seg() %}{% if lang != config.default_language %}/{{ lang }}{% else %}{% endif %}{% endmacro lang_seg %}

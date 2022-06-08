@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 class="title">
+      {{ section.title }}
+    </h1>
+    <div class="columns is-multiline">
+      {% for page in paginator.pages %}
+      <div class="column is-one-third-desktop is-half-tablet">
+        <div class="blog-card card">
+          <div class="card-content">
+            <h2 class="blog-title"><a href="{{ page.permalink | safe }}" class="title is-5">{{ page.title }}</a></h2>
+            <h3 class="subtitle is-6">{{ page.date }}</h3>
+            <div class="blog-summary content">{{ page.summary | safe }}</div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+      <a
+        class="pagination-previous{% if not paginator.previous %} is-disabled{% endif %}"
+        href="{{ paginator.previous }}"
+        {% if not paginator.previous %}disabled{% endif %}>
+        {{ trans(key="newer_posts", lang=lang) }}
+      </a>
+      <a
+        class="pagination-next{% if not paginator.next %} is-disabled{% endif %}"
+        href="{{ paginator.next }}"
+        {% if not paginator.next %}disabled{% endif %}>
+        {{ trans(key="older_posts", lang=lang) }}
+      </a>
+      <ul class="pagination-list">
+        <li class="current-blog-page-number">
+          <span class="blog-page-number">{{ trans(key="page", lang=lang) }}: {{ paginator.current_index }}</span> / <span class="blog-page-number">{{ paginator.number_pagers }}</span>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</section>
+{% endblock content %}

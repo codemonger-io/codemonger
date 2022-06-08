@@ -1,0 +1,44 @@
+# The URL the site will be built for
+base_url = "https://codemonger.io"
+
+# The site title and description; used in feeds by default.
+title = "codemonger"
+description = "codemonger"
+
+# The default language; used in feeds.
+default_language = "en"
+
+# Whether to automatically compile all Sass files in the sass directory
+compile_sass = true
+
+# Whether to build a search index to be used later on by a JavaScript library
+build_search_index = false
+
+[markdown]
+# Whether to do syntax highlighting
+# Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
+highlight_code = false
+
+[slugify]
+anchors = "safe"
+
+[languages.en]
+
+[languages.en.translations]
+home = "Home"
+newer_posts = "Newer"
+older_posts = "Older"
+page = "Page"
+philosophy = "I code for you and myself. Until the day AI will replace me."
+
+[languages.ja]
+
+[languages.ja.translations]
+home = "ホーム"
+newer_posts = "より新しい"
+older_posts = "より古い"
+page = "ページ"
+philosophy = "私はあなたと私自身のためにコードを書きます。AIが私を置き換えるその日まで。"
+
+[extra]
+# Put all your custom variables here
