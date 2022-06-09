@@ -25,7 +25,7 @@ export const CODEMONGER_CERTIFICATE_ARN = 'arn:aws:acm:us-east-1:{ACCOUNT_ID}:ce
 
 Note that `lib/certificate-config.ts` is never pushed to this repository.
 
-## Development
+## Working with the CDK stack
 
 ### Resolving dependencies
 
@@ -60,13 +60,14 @@ TOOLKIT_STACK_NAME=codemonger-toolkit-stack
 CDK v2 assigns a [qualifier](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html#bootstrapping-custom-synth) to a toolkit stack, and it is `"hnb659fds"` by default.
 Since CDK provisions some toolkit resources with physical names that can only be distinguished by the qualifier, you have to assign a unique qualifier for your project to separate the toolkit stack from the other projects.
 
-This documentation supposes that the qualifier is `"codemonger2022"` and it is stored in a variable `TOOLKIT_STACK_QUALIFIER`.
+This documentation supposes that the qualifier is `"cdmngr2022"` and it is stored in a variable `TOOLKIT_STACK_QUALIFIER`.
 
 ```sh
-TOOLKIT_STACK_QUALIFIER=codemonger2022
+TOOLKIT_STACK_QUALIFIER=cdmngr2022
 ```
 
 Note that a qualifier is included in an S3 bucket name, so you have to use only characters allowed for S3 bucket names; e.g., capital letters are not allowed.
+And it must be at most 10-character-long.
 
 ### Provisioning the toolkit stack
 
@@ -112,3 +113,15 @@ npx cdk deploy --toolkit-stack-name $TOOLKIT_STACK_NAME -c "@aws-cdk/core:bootst
 After deploying the CDK stack, you will find the following CloudFormation stack created or updated,
 - `codemonger-development` for the development stage
 - `codemonger-production` for the production stage
+
+### Obtaining the S3 bucket name for contents
+
+This CDK stack provisions an S3 bucket to store contents of the codemonger website.
+The following command outputs the name of the S3 bucket for contents.
+
+```sh
+aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --query "Stacks[0].Outputs[?OutputKey=='ContentsBucketName']|[0].OutputValue" | sed -E 's/(^")|("$)//g'
+```
+
+Please replace `$DEPLOYMENT_STAGE` with the deployment stage where the S3 bucket you want resides.
+The last `sed` command removes surrounding double quotation marks from the output.
