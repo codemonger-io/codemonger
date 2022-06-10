@@ -125,3 +125,16 @@ aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --q
 
 Please replace `$DEPLOYMENT_STAGE` with the deployment stage where the S3 bucket you want resides.
 The last `sed` command removes surrounding double quotation marks from the output.
+
+### Obtaining the domain name of a CloudFront distribution
+
+This CDK stack provisions a CloudFront distribution for contents of the codemonger website.
+The production site is served through `codemonger.io` but there is a CloudFront distribution behind.
+The following command outputs the domain name of the CloudFront distribution for contents.
+
+```sh
+aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --query "Stacks[0].Outputs[?OutputKey=='ContentsDistributionDomainName']|[0].OutputValue" | sed -E 's/(^")|("$)//g'
+```
+
+Please replace `$DEPLOYMENT_STAGE` with the deployment stage where the CloudFront you want resides.
+The last `sed` command removes surrounding double quotation marks from the output.
