@@ -138,3 +138,14 @@ aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --q
 
 Please replace `$DEPLOYMENT_STAGE` with the deployment stage where the CloudFront you want resides.
 The last `sed` command removes surrounding double quotation marks from the output.
+
+### Running unit tests
+
+Run unit tests with the following command,
+
+```sh
+npm test
+```
+
+It tests the following,
+- a CloudFront function that expands a URI with `index.html`
