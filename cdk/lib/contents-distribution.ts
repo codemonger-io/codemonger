@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 import {
   Duration,
   aws_cloudfront as cloudfront,
@@ -45,6 +47,13 @@ export class ContentsDistribution extends Construct {
       enableAcceptEncodingGzip: true,
     });
 
+    const expandIndexFn = new cloudfront.Function(this, 'ExpandIndexFunction', {
+      comment: 'Expands a given URI so that it ends with index.html',
+      code: cloudfront.FunctionCode.fromFile({
+        filePath: path.resolve('cloudfront-fn', 'expand-index.js'),
+      }),
+    });
+
     this.distribution = new cloudfront.Distribution(
       this,
       'ContentsDistribution',
@@ -53,6 +62,10 @@ export class ContentsDistribution extends Construct {
         defaultBehavior: {
           origin: new origins.S3Origin(contentsBucket.bucket),
           cachePolicy,
+          functionAssociations: [{
+            eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+            function: expandIndexFn,
+          }],
           // only static contents are served so far
           cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD,
           viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
