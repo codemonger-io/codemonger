@@ -31,6 +31,7 @@
       "aws",
       "aws-cn"
     ],
-    "codemonger:stage": "development"
+    "codemonger:stage": "development",
+    "codemonger:no-domain-name": false
   }
 }
