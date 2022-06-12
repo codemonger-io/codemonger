@@ -20,6 +20,7 @@ To use the domain `codemonger.io`, you need a public SSL/TLS certificate that pr
 This project supposes that you have requested and obtained a public certificate via [AWS Certificate Manager (ACM)](https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html), and the ARN of the certificate is saved in the `lib/certificate-config.ts` file that should look like the following,
 
 ```ts
+export const CODEMONGER_DOMAIN_NAME = 'codemonger.io';
 export const CODEMONGER_CERTIFICATE_ARN = 'arn:aws:acm:us-east-1:{ACCOUNT_ID}:certificate/{CERTIFICATE_ID}';
 ```
 
@@ -103,8 +104,8 @@ npx cdk synth -c "@aws-cdk/core:bootstrapQualifier=$TOOLKIT_STACK_QUALIFIER" -c 
 npx cdk deploy --toolkit-stack-name $TOOLKIT_STACK_NAME -c "@aws-cdk/core:bootstrapQualifier=$TOOLKIT_STACK_QUALIFIER"
 ```
 
-The above command deploys the CDK stack to the development stage.
-If you want to deploy the CDK stack to the production stage, please specify `"production"` to the `codemonger:stage` CDK context.
+The above command deploys the CDK stack for development.
+If you want to deploy the CDK stack for production, please specify `"production"` to the `codemonger:stage` CDK context.
 
 ```sh
 npx cdk deploy --toolkit-stack-name $TOOLKIT_STACK_NAME -c "@aws-cdk/core:bootstrapQualifier=$TOOLKIT_STACK_QUALIFIER" -c codemonger:stage=production
@@ -113,6 +114,17 @@ npx cdk deploy --toolkit-stack-name $TOOLKIT_STACK_NAME -c "@aws-cdk/core:bootst
 After deploying the CDK stack, you will find the following CloudFormation stack created or updated,
 - `codemonger-development` for the development stage
 - `codemonger-production` for the production stage
+
+#### Deploying the production stack without alternate domain name
+
+Because the domain name `codemonger.io` had already been associated with a CloudFront distribution before this CDK stack was created, I had to take [special steps described here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html#alternate-domain-names-move).
+To follow these steps, a new CloudFront distribution had to be configured with a valid SSL/TLS certificate covering `codemonger.io` but no atlernate domain name assigned.
+Unfortunately, since CDK requires a domain name specified if an SSL/TLS certificate is specified, you first have to provision a CloudFront distribution without domain name and SSL/TLS certificate, and then manually associate an SSL/TLS certificate to the CloudFront distribution.
+Thus, there is a CDK context `codemonger:no-domain-name` that provisions a CloudFront distribution without the domain name and SSL/TLS certificate.
+
+```sh
+npx cdk deploy --toolkit-stack-name $TOOLKIT_STACK_NAME -c "@aws-cdk/core:bootstrapQualifier=$TOOLKIT_STACK_QUALIFIER" -c codemonger:stage=production -c codemonger:no-domain-name=true
+```
 
 ### Obtaining the S3 bucket name for contents
 
