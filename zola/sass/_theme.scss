@@ -1,0 +1,13 @@
+@import "bulma/utilities/_functions";
+
+$codemonger: #fff9f5 !default;
+$codemonger-invert: findColorInvert($codemonger) !default;
+$codemonger-tint: #e8d7d1 !default;
+$codemonger-shade: #e6e0dc !default;
+$codemonger-link: #554d99 !default;
+
+/* custom color sets for Bulma. */
+$custom-colors: (
+  'codemonger': ($codemonger, $codemonger-invert),
+  'codemonger-tint': ($codemonger-tint, $codemonger-invert)
+);

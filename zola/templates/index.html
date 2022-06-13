@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero is-codemonger is-fullheight-with-navbar">
+  <div class="hero-body">
+    <div>
+      <p class="title">
+        <img src="/codemonger.svg" alt="codemonger logo">
+      </p>
+      <p class="subtitle">
+        {{ trans(key="philosophy", lang=lang) }}
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock content %}

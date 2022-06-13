@@ -1,0 +1,67 @@
+@import "bulma/components/_navbar";
+
+/* Extension for Bulma's navbar.
+ *
+ * navbar-menu-transition adds a layer to enable a transition effect on a navbar-menu.
+ * Wrap a navbar-menu with a navbar-menu-transition.
+ *
+ * The transition becomes effective only on a tablet or mobile display.
+ */
+@include until($navbar-breakpoint) {
+  .navbar-menu-transition {
+    height: 0;
+    padding: 0;
+    margin: 0;
+    overflow-y: hidden;
+    transition: all $speed * 4 ease-in-out;
+    &.is-active {
+      // height has to be controlled by JavaScript.
+      max-height: 100%;
+      // setting overflow-y:visible spoils a transition effect.
+      // so navbar-menu-transition has to provide a shadow on behalf of navbar-menu.
+      box-shadow: 0 8px 16px bulmaRgba($scheme-invert, 0.1);
+    }
+  }
+  .navbar-menu {
+    // setting display:none prevents a transition effect.
+    display: block;
+  }
+  // applies the navbar color scheme to navbar-menu
+  .navbar {
+    @each $name, $pair in $navbar-colors {
+      $color: nth($pair, 1);
+      $color-invert: nth($pair, 2);
+      &.is-#{$name} {
+        .navbar-menu {
+          background-color: $color;
+          color: $color-invert;
+        }
+        .navbar-start,
+        .navbar-end {
+          & > .navbar-item,
+          .navbar-link {
+            color: $color-invert;
+          }
+          & > a.navbar-item,
+          .navbar-link {
+            &:focus,
+            &:hover,
+            &.is-active {
+              background-color: bulmaDarken($color, 5%);
+              color: $color-invert;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@include from($navbar-breakpoint) {
+  // mocks navbar-menu
+  .navbar-menu-transition {
+    align-items: stretch;
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+}

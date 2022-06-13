@@ -1,11 +1,17 @@
+English / [日本語](./README.ja.md)
+
 # codemonger
 
 ![codemonger](docs/imgs/codemonger.svg)
 
-This is a repository to maintain the landing page of codemonger.io.
+This is a repository to maintain the website of `codemonger.io`.
 
-The landing page is hosted on [AWS](https://aws.amazon.com).
+The website is hosted on [AWS](https://aws.amazon.com).
 
-## Deploying the landing page
+## Managing AWS resources
 
-Please refer to the subdirectory [`aws`](aws).
+Please refer to the subfolder [`cdk`](cdk).
+
+## Managing contents
+
+Please refer to the subfolder [`zola`](zola).
