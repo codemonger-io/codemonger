@@ -1,6 +1,6 @@
 +++
 title = "Zolaを導入する"
-date = 2022-06-09
+date = 2022-06-13
 draft = false
 +++
 
@@ -150,3 +150,8 @@ ZolaはデフォルトでMarkdownのすべてのセクションタイトルを[�
 当面の回避策はアンカーの`slugify`オプションを`"safe"`にし、新しいルールを受け入れるというものです。
 
 たぶんいつかプルリクエストを投げるべきなのでしょう・・・
+
+## CloudFrontを介してS3からコンテンツを提供する
+
+このウェブサイトは[Amazon CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) Distributionを介して[Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) Bucketから提供していますが、そのためにはいくつか課題がありました。
+しかしこれは実際のところZolaの課題ではありませんので、別の投稿に取っておくことにします。

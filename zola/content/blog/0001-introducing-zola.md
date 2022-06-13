@@ -1,6 +1,6 @@
 +++
 title = "Introducing Zola"
-date = 2022-06-09
+date = 2022-06-13
 draft = false
 +++
 
@@ -150,3 +150,8 @@ But this configuration introduces unfamiliar\* behavior over non-letter characte
 My workaround so far is to make the `slugify` option for anchors to `"safe"` and accept the new rules.
 
 I should suggest a pull request someday, maybe.
+
+## Serving contents from S3 via CloudFront
+
+I am serving this website from an [Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) bucket through an [Amazon CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) distribution though, there were some challenges to do so.
+But this is not actually a Zola's issue, I am going to leave it for another post.
