@@ -1,7 +1,7 @@
 +++
 title = "codemongerについて"
-date = 2022-06-08 
-updated = 2022-06-08
+date = 2022-06-13
+updated = 2022-06-13
 template = "about.html"
 +++
 
@@ -13,7 +13,7 @@ template = "about.html"
 
 ## 代表
 
-**Kikuo Emoto**
+**江本　喜久男 (Emoto, Kikuo)**
 
 日本で活動中。
 

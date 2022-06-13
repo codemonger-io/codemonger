@@ -1,7 +1,7 @@
 +++
 title = "About codemonger"
-date = 2022-06-08
-updated = 2022-06-08
+date = 2022-06-13
+updated = 2022-06-13
 template = "about.html"
 +++
 
@@ -13,7 +13,7 @@ Expresses enthusiasm for coding, and humbleness.
 
 ## Representative
 
-**Kikuo Emoto**
+**Kikuo Emoto (喜久男　江本)**
 
 Based in Japan.
 
