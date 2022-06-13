@@ -138,6 +138,10 @@ aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --q
 Please replace `$DEPLOYMENT_STAGE` with the deployment stage where the S3 bucket you want resides.
 The last `sed` command removes surrounding double quotation marks from the output.
 
+#### Deploying contents of the website
+
+Please refer to the [`../zola`](../zola) for how to deploy contents of the website.
+
 ### Obtaining the domain name of a CloudFront distribution
 
 This CDK stack provisions a CloudFront distribution for contents of the codemonger website.
