@@ -23,7 +23,7 @@ CloudFront Distributionを確保する方法については[`../cdk`](../cdk/REA
 
 ## コンテンツをデプロイする
 
-[コンテンツを生成](#generating-contents)したら、`public`フォルダの中身をコンテンツ用S3バケットにコピーしてください。
+[コンテンツを生成](#コンテンツを生成する)したら、`public`フォルダの中身をコンテンツ用S3バケットにコピーしてください。
 
 ```sh
 aws s3 cp --recursive ./public s3://$CONTENTS_BUCKET_NAME/
