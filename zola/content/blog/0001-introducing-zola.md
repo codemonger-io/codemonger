@@ -18,12 +18,12 @@ I am neither the author nor a contributor of Zola by the way.
 
 ## Why did I choose Zola for my website?
 
-I was attracted to Zola because its implementation language Rust was the language I was and am learning (as of June 9, 2022).
+I was attracted to Zola because its implementation language Rust was the language I was and am learning (as of June 13, 2022).
 As long as I just use Zola the implementation language does not matter though.
 
 ## Using Bulma with Zola
 
-[Bulma](https://bulma.io) is my favorite CSS framework and I wanted apply it to this website.
+[Bulma](https://bulma.io) is my favorite CSS framework and I wanted to apply it to this website.
 I needed some tweaks before Bulma worked.
 
 ### Importing Bulma
@@ -57,7 +57,7 @@ As `get_section` does not take any language option, it is a little tricky to req
 Simply concatenating `lang` like `"_index." ~ lang ~ ".md"` did not work, because it produced a wrong path for the default language like `_index.en.md` despite `_index.md` was expected.
 
 So I made a macro `lang_ext` that is substituted with an appropriate extension for the current language.
-It turns into `".{code}"` but an empty string for the default langauge.
+It turns into `".{code}"` but an empty string for the default language.
 
 ```
 {% macro lang_ext() %}{% if lang != config.default_language %}.{{ lang }}{% else %}{% endif %}{% endmacro lang_ext %}
@@ -94,14 +94,14 @@ I am using this macro like the following,
 
 ### Switching the language of the current page
 
-I wanted every page on my website to have a link to switch languages between English and Japanese, and I did not like to manually embed a link in every page.
-So I decided to embed the link in `base.html` that is extended by every HTML templates in this website.
+I wanted every page on my website to have a link to switch languages between English and Japanese, and I did not like to manually embed a link on every page.
+So I decided to embed the link in `base.html` which is extended by every HTML template on this website.
 
 The [`get_url`](https://www.getzola.org/documentation/templates/overview/#get-url) function looked suitable for this feature because it takes a `lang` option in addition to a `path` argument.
 If I can obtain the path of the current page in the form of `@/{section}/{page}.md`, I can easily exchange it with the URL of the translation in a desired language through `get_url`.
 
 After some trial and error, I realized that I can use `page.components` and `section.components` to form a `path` argument for `get_url`.
-I carefully observed the bahavior of `page.components` and `section.components`, and found,
+I carefully observed the behavior of `page.components` and `section.components`, and found,
 - `page.components` and `section.components` are an array of path segments in the current path separated by a slash (`/`).
 - `page.components` and `section.components` start with a language code unless the current language is the default one.
   The default language code is omitted.
@@ -135,7 +135,7 @@ Then I came up with the following complicated template,
 
 After the above template is evaluted, `get_url(path=internal_path, lang={code})` will give you the URL of the page in a language given by `{code}`.
 
-A major drawback is that I have to prepare both of English and Japanese translations for every single page, or Zola ends up with an error.
+A major drawback is that I have to prepare both English and Japanese translations for every single page, or Zola ends up with an error.
 
 ### Difficulties in anchor IDs
 
@@ -144,14 +144,14 @@ There is no problem as long as a section title contains only ASCII characters, b
 For instance, a section title "言語を意識してセクションを取得する" turns into an anchor ID "yan-yu-woyi-shi-sitesekusiyonwoqu-de-suru".
 
 This conversion can be avoided by changing the `slugify` option for anchors to `"safe"` in the `config.toml` file.
-But this configuration introduces unfamiliar\* behavior over non-letter characters; e.g., whitespace is replaced with an underscore (`_`) not a dash (`-`), captal letters stay, symbols also stay.
+But this configuration introduces unfamiliar\* behavior over non-letter characters; e.g., whitespace is replaced with an underscore (`_`) not a dash (`-`), capital letters stay, and symbols also stay.
 (\*I am familiar with GitHub rules.)
 
-My workaround so far is to make the `slugify` option for anchors to `"safe"` and accept the new rules.
+My workaround so far is to make the `slugify` option for anchors `"safe"` and accept the new rules.
 
 I should suggest a pull request someday, maybe.
 
 ## Serving contents from S3 via CloudFront
 
-I am serving this website from an [Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) bucket through an [Amazon CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) distribution though, there were some challenges to do so.
-But this is not actually a Zola's issue, I am going to leave it for another post.
+I am serving this website from an [Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) bucket through an [Amazon CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) distribution though, there were some challenges to doing so.
+But this is not actually Zola's issue, I am going to leave it for another post.
