@@ -41,7 +41,7 @@ npm install
 ### Setting AWS_PROFILE
 
 This documentation supposes that an AWS profile with appropriate credentials is stored in the [`AWS_PROFILE`](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html) environment variable.
-The following is example in my case,
+The following is an example in my case,
 
 ```sh
 export AWS_PROFILE=codemonger-jp
@@ -117,9 +117,9 @@ After deploying the CDK stack, you will find the following CloudFormation stack 
 - `codemonger-development` for the development stage
 - `codemonger-production` for the production stage
 
-#### Deploying the production stack without alternate domain name
+#### Deploying the production stack without the alternate domain name
 
-The production stack tries to associates the CloudFront distribution with the domain name `codemonger.io`.
+The production stack tries to associates the [CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) distribution with the domain name `codemonger.io`.
 But my first attempt failed because the domain name `codemonger.io` had already been taken by another CloudFront distribution before this CDK stack was created.
 So I had to take [special steps described here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html#alternate-domain-names-move).
 According to these steps, a new CloudFront distribution had to be configured with a valid SSL/TLS certificate covering `codemonger.io` but no atlernate domain name assigned.
@@ -134,7 +134,7 @@ After successfully transferring the domain name to the new CloudFront distributi
 
 ### Obtaining the S3 bucket name for contents
 
-This CDK stack provisions an S3 bucket to store contents of the codemonger website.
+This CDK stack provisions an [S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) bucket to store contents of the codemonger website.
 The following command outputs the name of the S3 bucket for contents.
 
 ```sh

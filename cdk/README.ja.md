@@ -119,7 +119,7 @@ CDKスタックをデプロイしたら、以下のCloudFormationスタックが
 
 #### ドメイン名なしで製品用スタックをデプロイする
 
-製品用スタックはCloudFront Distributionをドメイン名`codemonger.io`に関連づけようとします。
+製品用スタックは[CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) Distributionをドメイン名`codemonger.io`に関連づけようとします。
 しかし私の最初の試みは失敗しました。なぜならドメイン名`codemonger.io`はこのCDKスタックが作られる前に別のCloudFront Distributionに取られてしまっていたからです。
 ということで[こちらに記載の特別な手順](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html#alternate-domain-names-move)を取らなければなりませんでした。
 この手順によると、新しいCloudFront Distributionは`codemonger.io`をカバーする有効なSSL/TLS証明書を割り当てつつドメイン名は割り当てられていない設定にしなければなりませんでした。
@@ -134,7 +134,7 @@ npx cdk deploy --toolkit-stack-name $TOOLKIT_STACK_NAME -c "@aws-cdk/core:bootst
 
 ### コンテンツ用のS3バケット名を取得する
 
-このCDKスタックはcodemongerウェブサイトのコンテンツを格納するためのS3バケットを確保します。
+このCDKスタックはcodemongerウェブサイトのコンテンツを格納するための[S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html)バケットを確保します。
 以下のコマンドはコンテンツ用のS3バケット名を出力します。
 
 ```sh
