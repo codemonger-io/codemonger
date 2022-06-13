@@ -1,3 +1,5 @@
+English / [日本語](./README.ja.md)
+
 # Zola project for codemonger
 
 This Zola project generates contents of the codemonger website.
@@ -17,7 +19,7 @@ zola build --base-url https://$CONTENTS_DISTRIBUTION_DOMAIN_NAME
 ```
 
 Please replace `$CONTENTS_DISTRIBUTION_DOMAIN_NAME` with the domain name of the CloudFront distribution of the development stage.
-Please refer to the instructions in the [`../cdk`](../cdk) folder for how to provision it.
+Please refer to the instructions in the [`../cdk`](../cdk) folder for how to provision the CloudFront distribution.
 
 ## Deploying contents
 
@@ -28,4 +30,4 @@ aws s3 cp --recursive ./public s3://$CONTENTS_BUCKET_NAME/
 ```
 
 Please replace `CONTENTS_BUCKET_NAME` with the name of the S3 bucket for contents.
-Please refer to the instructions in the [`../cdk`](../cdk) folder for how to provision it.
+Please refer to the instructions in the [`../cdk`](../cdk) folder for how to provision the S3 bucket.

@@ -1,3 +1,5 @@
+English / [日本語](./README.ja.md)
+
 # codemonger
 
 ![codemonger](docs/imgs/codemonger.svg)

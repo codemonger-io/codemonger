@@ -1,4 +1,6 @@
-# CDK stack for codemonger.io
+English / [日本語](./README.ja.md)
+
+# CDK stack for codemonger
 
 This is a [Cloud Development Kit (CDK)](https://docs.aws.amazon.com/cdk/v2/guide/home.html) stack that provisions AWS resources for the website of codemonger (https://codemonger.io).
 
@@ -16,7 +18,7 @@ The version v16.x should work.
 
 ### Obtaining a public SSL/TLS certificate for codemonger.io
 
-To use the domain `codemonger.io`, you need a public SSL/TLS certificate that proves the ownership of the domain.
+To use the domain name `codemonger.io`, you need a public SSL/TLS certificate that proves the ownership of the domain.
 This project supposes that you have requested and obtained a public certificate via [AWS Certificate Manager (ACM)](https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html), and the ARN of the certificate is saved in the `lib/certificate-config.ts` file that should look like the following,
 
 ```ts
@@ -68,7 +70,7 @@ TOOLKIT_STACK_QUALIFIER=cdmngr2022
 ```
 
 Note that a qualifier is included in an S3 bucket name, so you have to use only characters allowed for S3 bucket names; e.g., capital letters are not allowed.
-And it must be at most 10-character-long.
+And it must be at most 10 characters long.
 
 ### Provisioning the toolkit stack
 
@@ -117,14 +119,18 @@ After deploying the CDK stack, you will find the following CloudFormation stack 
 
 #### Deploying the production stack without alternate domain name
 
-Because the domain name `codemonger.io` had already been associated with a CloudFront distribution before this CDK stack was created, I had to take [special steps described here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html#alternate-domain-names-move).
-To follow these steps, a new CloudFront distribution had to be configured with a valid SSL/TLS certificate covering `codemonger.io` but no atlernate domain name assigned.
-Unfortunately, since CDK requires a domain name specified if an SSL/TLS certificate is specified, you first have to provision a CloudFront distribution without domain name and SSL/TLS certificate, and then manually associate an SSL/TLS certificate to the CloudFront distribution.
-Thus, there is a CDK context `codemonger:no-domain-name` that provisions a CloudFront distribution without the domain name and SSL/TLS certificate.
+The production stack tries to associates the CloudFront distribution with the domain name `codemonger.io`.
+But my first attempt failed because the domain name `codemonger.io` had already been taken by another CloudFront distribution before this CDK stack was created.
+So I had to take [special steps described here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html#alternate-domain-names-move).
+According to these steps, a new CloudFront distribution had to be configured with a valid SSL/TLS certificate covering `codemonger.io` but no atlernate domain name assigned.
+Unfortunately, since CDK requires a domain name specified if an SSL/TLS certificate is specified, I first had to provision a CloudFront distribution without domain name and SSL/TLS certificate, and then manually associated an SSL/TLS certificate to the CloudFront distribution.
+Thus, I provided a CDK context `codemonger:no-domain-name` that provisions the CloudFront distribution for production without the domain name and SSL/TLS certificate.
 
 ```sh
 npx cdk deploy --toolkit-stack-name $TOOLKIT_STACK_NAME -c "@aws-cdk/core:bootstrapQualifier=$TOOLKIT_STACK_QUALIFIER" -c codemonger:stage=production -c codemonger:no-domain-name=true
 ```
+
+After successfully transferring the domain name to the new CloudFront distribution, you have to omit the `-c codemonger:no-domain-name=true` option.
 
 ### Obtaining the S3 bucket name for contents
 
@@ -136,11 +142,11 @@ aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --q
 ```
 
 Please replace `$DEPLOYMENT_STAGE` with the deployment stage where the S3 bucket you want resides.
-The last `sed` command removes surrounding double quotation marks from the output.
+The last `sed` command removes surrounding double quotation marks from the output, by the way.
 
 #### Deploying contents of the website
 
-Please refer to the [`../zola`](../zola) for how to deploy contents of the website.
+Please refer to the [`../zola`](../zola) folder for how to deploy contents of the website.
 
 ### Obtaining the domain name of a CloudFront distribution
 
@@ -152,8 +158,8 @@ The following command outputs the domain name of the CloudFront distribution for
 aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --query "Stacks[0].Outputs[?OutputKey=='ContentsDistributionDomainName']|[0].OutputValue" | sed -E 's/(^")|("$)//g'
 ```
 
-Please replace `$DEPLOYMENT_STAGE` with the deployment stage where the CloudFront you want resides.
-The last `sed` command removes surrounding double quotation marks from the output.
+Please replace `$DEPLOYMENT_STAGE` with the deployment stage where the CloudFront distribution you want resides.
+The last `sed` command removes surrounding double quotation marks from the output, by the way.
 
 ### Running unit tests
 
@@ -164,4 +170,4 @@ npm test
 ```
 
 It tests the following,
-- a CloudFront function that expands a URI with `index.html`
+- a [CloudFront function](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-functions.html) that expands a URI with `index.html`
