@@ -38,7 +38,7 @@ home = "ホーム"
 newer_posts = "より新しい"
 older_posts = "より古い"
 page = "ページ"
-philosophy = "私はあなたと私自身のためにコードを書きます。AIが私を置き換えるその日まで。"
+philosophy = "あなたと私自身のためにコードを書きます。AIが私を置き換えるその日まで。"
 
 [extra]
 # Put all your custom variables here
