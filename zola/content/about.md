@@ -1,7 +1,7 @@
 +++
 title = "About codemonger"
 date = 2022-06-13
-updated = 2022-06-13
+updated = 2022-06-16
 template = "about.html"
 +++
 
@@ -37,10 +37,10 @@ I have experience in the following fields,
 
 Why are the above experiences vital for MVP development?
 - MVP development goes back and forth between frontend and backend matters.
-  So having a person with **expertize in both fields is crucial** for timely delivery, and success.
+  So having a person with **expertise in both fields is crucial** for timely delivery and success.
 - MVP development is not usually well-funded.
-  As serverless technologies allow you start from **zero to very low cost**, they should fit your budget.
+  As serverless technologies allow you to start from **zero to very low cost**, they should fit your budget.
 - MVP is not a prototype but a product, and **quality still matters**.
-  IaC is a key to achieve both quality and quick delivery.
+  IaC is a key to achieving both quality and quick delivery.
 
 I am also a learner, currently learning [Rust](https://www.rust-lang.org).
