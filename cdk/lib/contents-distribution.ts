@@ -13,7 +13,7 @@ import {
   CODEMONGER_CERTIFICATE_ARN,
 } from './certificate-config';
 import { ContentsBucket } from './contents-bucket';
-import { DeploymentStage } from './deployment-stage';
+import { DeploymentStage } from 'cdk-common';
 
 type Props = Readonly<{
   // S3 bucket for contents of the codemonger website.

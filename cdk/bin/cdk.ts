@@ -2,7 +2,7 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { CdkStack } from '../lib/cdk-stack';
-import { getDeploymentStage } from '../lib/deployment-stage';
+import { getDeploymentStage } from 'cdk-common';
 
 const app = new cdk.App();
 const deploymentStage = getDeploymentStage(app.node);

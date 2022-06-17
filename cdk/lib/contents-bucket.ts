@@ -1,7 +1,7 @@
 import { RemovalPolicy, aws_s3 as s3 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
-import { DeploymentStage } from './deployment-stage';
+import { DeploymentStage } from 'cdk-common';
 
 type Props = Readonly<{
   // Deployment stage.

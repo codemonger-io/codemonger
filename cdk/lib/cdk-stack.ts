@@ -3,7 +3,7 @@ import { Construct } from 'constructs';
 
 import { ContentsBucket } from './contents-bucket';
 import { ContentsDistribution } from './contents-distribution';
-import { DeploymentStage } from './deployment-stage';
+import { DeploymentStage } from 'cdk-common';
 
 type Props = StackProps & Readonly<{
   // Deployment stage.
