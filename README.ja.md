@@ -15,3 +15,8 @@
 ## コンテンツを管理する
 
 サブフォルダ[`zola`](zola/README.ja.md)をご覧ください。
+
+## Continuous Delivery
+
+このレポジトリの`main`ブランチが更新されると、codemongerウェブサイトを更新するためのワークフローが開始します。
+詳しくはサブフォルダ[`cdk-ops`](cdk-ops/README.ja.md)をご覧ください。
