@@ -1,7 +1,7 @@
 +++
 title = "About codemonger"
 date = 2022-06-13
-updated = 2022-06-16
+updated = 2022-06-19
 template = "about.html"
 +++
 
