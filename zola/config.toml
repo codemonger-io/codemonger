@@ -25,6 +25,7 @@ anchors = "safe"
 [languages.en]
 
 [languages.en.translations]
+blog = "Blog"
 home = "Home"
 newer_posts = "Newer"
 older_posts = "Older"
@@ -34,6 +35,7 @@ philosophy = "I code for you and myself. Until the day AI will replace me."
 [languages.ja]
 
 [languages.ja.translations]
+blog = "ブログ"
 home = "ホーム"
 newer_posts = "より新しい"
 older_posts = "より古い"
