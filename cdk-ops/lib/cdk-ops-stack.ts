@@ -1,16 +1,28 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+
+import {
+  CodemongerResources,
+  CodemongerResourceNames,
+} from './codemonger-resources';
+import { ContentsPipeline } from './contents-pipeline';
+
+type Props = StackProps & Readonly<{
+  // names of the main codemonger resources.
+  codemongerResourceNames: CodemongerResourceNames;
+}>;
 
 export class CdkOpsStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props: Props) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
-
-    // example resource
-    // const queue = new sqs.Queue(this, 'CdkOpsQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    const codemongerResources = new CodemongerResources(
+      this,
+      'CodemongerResources',
+      props.codemongerResourceNames,
+    );
+    const pipeline = new ContentsPipeline(this, 'ContentsPipeline', {
+      codemongerResources,
+    });
   }
 }
