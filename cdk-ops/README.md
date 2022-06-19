@@ -98,7 +98,7 @@ npx cdk synth -c "@aws-cdk/core:bootstrapQualifier=$TOOLKIT_STACK_QUALIFIER"
 
 ### Deploying the CDK stack
 
-`cdk deploy` command will deploy the CDK stack to the AWS account associated with the [`AWS_PROFILE` environment variable](#setting-awsprofile).
+`cdk deploy` command will deploy the CDK stack to the AWS account associated with the [`AWS_PROFILE` environment variable](#setting-aws_profile).
 
 ```sh
 npx cdk deploy --toolkit-stack-name $TOOLKIT_STACK_NAME -c "@aws-cdk/core:bootstrapQualifier=$TOOLKIT_STACK_QUALIFIER"

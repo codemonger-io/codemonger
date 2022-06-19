@@ -3,7 +3,7 @@
 # codemonger運用のためのCDKスタック
 
 これはcodemongerウェブサイトを運用するためのAWSリソースを確保するCDKスタックです。
-codemongerウェブサイトのコンテンツを保管し配信するAWSリソースを確保するCDKスタックは[`../cdk`](../cdk)に定義されています。
+codemongerウェブサイトのコンテンツを保管し配信するAWSリソースを確保するCDKスタックは[`../cdk`](../cdk/README.ja.md)に定義されています。
 
 このスタックはCDKバージョン2で記述されています。
 
@@ -27,7 +27,7 @@ codemongerウェブサイトのコンテンツを保管し配信するAWSリソ�
 
 このCDKスタックをデプロイする前にcodemongerウェブサイトのコンテンツのためのCDKスタックをデプロイしなければなりません。
 開発用と製品用の両方のスタックが必要です。
-デプロイの仕方については[`../cdk`](../cdk)を参照ください。
+デプロイの仕方については[`../cdk`](../cdk/README.ja.md)を参照ください。
 
 ### このレポジトリに接続するCodeStarプロジェクトを作成する
 
@@ -98,7 +98,7 @@ npx cdk synth -c "@aws-cdk/core:bootstrapQualifier=$TOOLKIT_STACK_QUALIFIER"
 
 ### CDKスタックをデプロイする
 
-`cdk deploy`コマンドはCDKスタックを[`AWS_PROFILE`環境変数](#awsprofileを設定する)に紐づくAWSアカウントにデプロイします。
+`cdk deploy`コマンドはCDKスタックを[`AWS_PROFILE`環境変数](#aws_profileを設定する)に紐づくAWSアカウントにデプロイします。
 
 ```sh
 npx cdk deploy --toolkit-stack-name $TOOLKIT_STACK_NAME -c "@aws-cdk/core:bootstrapQualifier=$TOOLKIT_STACK_QUALIFIER"
