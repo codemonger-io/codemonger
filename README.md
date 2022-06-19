@@ -15,3 +15,8 @@ Please refer to the subfolder [`cdk`](cdk).
 ## Managing contents
 
 Please refer to the subfolder [`zola`](zola).
+
+## Continuous delivery
+
+When the `main` branch of this repository is updated, the workflow to update the codemonger website starts.
+Please refer to the subfolder [`cdk-ops`](cdk-ops) for more details.

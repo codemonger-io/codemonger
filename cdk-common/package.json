@@ -1,0 +1,23 @@
+{
+  "name": "cdk-common",
+  "version": "0.1.0",
+  "description": "Common types and functions for CDK projects",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "files": ["dist/**/*"],
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "prepare": "node scripts/prepare.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kikuo Emoto (kemoto@codemonger.io)",
+  "license": "MIT",
+  "devDependencies": {
+    "constructs": "^10.1.42",
+    "typescript": "^3.9.10"
+  },
+  "peerDependencies": {
+    "constructs": ">=10.0.0"
+  }
+}
