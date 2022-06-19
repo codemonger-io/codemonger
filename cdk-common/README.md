@@ -11,4 +11,14 @@ The following stacks link this library so far,
 - [`../cdk`](../cdk)
 - [`../cdk-ops`](../cdk-ops)
 
-Changes on this folder will be reflected to the above CDK stacks.
+The above CDK stacks import the contents of the `dist` folder.
+
+### Updating this library
+
+If you change the code of this library, you have to run the following in this folder,
+
+```sh
+npm run build
+```
+
+You will find the `dist` folder updated.
