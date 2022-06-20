@@ -37,7 +37,7 @@ Please refer to the instructions in the [`../cdk`](../cdk) folder for how to pro
 ### Adding hashtags for the Tweet button
 
 The [front matter](https://www.getzola.org/documentation/content/page/#front-matter) of every blog page can include a `hashtags` option in the `extra` data.
-This option accepts an array of hashtag strings you want to add to the Tweet button attatched to the blog post.
+This option accepts an array of hashtag strings you want to add to the Tweet button attached to the blog post.
 The following example adds `"hashtags=aws,cloudfront"` to the Tweet button.
 
 ```
