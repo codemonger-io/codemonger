@@ -1,6 +1,7 @@
 +++
 title = "Introducing Zola"
 date = 2022-06-13
+updated = 2022-06-20
 draft = false
 +++
 
@@ -75,7 +76,7 @@ You cannot do like `{% set root = get_section(path="_index" ~ macros::lang_ext()
 ### Obtaining the root URL of the current language
 
 The root URL for a specific language is given as `{base_url}/{code}` except the one for the default language is given as `{base_url}`.
-Like [obtaining a section in a specific language](#Obtaining_a_section_in_a_language-aware_manner), the root URL for a specific language is also a little tricky.
+Like [_Obtaining a section in a specific language_](#Obtaining_a_section_in_a_language-aware_manner), the root URL for a specific language is also a little tricky.
 
 Again I made a macro `lang_seg` that is substituted with an appropriate path segment for the current language.
 It turns into `"/{code}"` but an empty string for the default language.
@@ -154,4 +155,4 @@ I should suggest a pull request someday, maybe.
 ## Serving contents from S3 via CloudFront
 
 I am serving this website from an [Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) bucket through an [Amazon CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) distribution though, there were some challenges to doing so.
-But this is not actually Zola's issue, I am going to leave it for another post.
+But this is not actually Zola's issue, I am going to leave it for [another post](/blog/0002-serving-contents-from-s3-via-cloudfront).

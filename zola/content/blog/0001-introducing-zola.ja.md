@@ -1,6 +1,7 @@
 +++
 title = "Zolaを導入する"
 date = 2022-06-13
+updated = 2022-06-20
 draft = false
 +++
 
@@ -154,4 +155,4 @@ ZolaはデフォルトでMarkdownのすべてのセクションタイトルを[�
 ## CloudFrontを介してS3からコンテンツを提供する
 
 このウェブサイトは[Amazon CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html) Distributionを介して[Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) Bucketから提供していますが、そのためにはいくつか課題がありました。
-しかしこれは実際のところZolaの課題ではありませんので、別の投稿に取っておくことにします。
+しかしこれは実際のところZolaの課題ではありませんので、[別の投稿](/ja/blog/0002-serving-contents-from-s3-via-cloudfront)に取っておくことにします。
