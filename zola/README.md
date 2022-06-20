@@ -31,3 +31,21 @@ aws s3 cp --recursive ./public s3://$CONTENTS_BUCKET_NAME/
 
 Please replace `CONTENTS_BUCKET_NAME` with the name of the S3 bucket for contents.
 Please refer to the instructions in the [`../cdk`](../cdk) folder for how to provision the S3 bucket.
+
+## Writing blogs
+
+### Adding hashtags for the Tweet button
+
+The [front matter](https://www.getzola.org/documentation/content/page/#front-matter) of every blog page can include a `hashtags` option in the `extra` data.
+This option accepts an array of hashtag strings you want to add to the Tweet button attatched to the blog post.
+The following example adds `"hashtags=aws,cloudfront"` to the Tweet button.
+
+```
++++
+title = "Serving contents from S3 via CloudFront"
+date = 2022-06-20
+draft = false
+[extra]
+hashtags = ["aws", "cloudfront"]
++++
+```
