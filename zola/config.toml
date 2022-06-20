@@ -31,6 +31,7 @@ newer_posts = "Newer"
 older_posts = "Older"
 page = "Page"
 philosophy = "I code for you and myself. Until the day AI will replace me."
+tweet_v = "Tweet"
 
 [languages.ja]
 
@@ -41,6 +42,7 @@ newer_posts = "より新しい"
 older_posts = "より古い"
 page = "ページ"
 philosophy = "あなたと私自身のためにコードを書きます。AIが私を置き換えるその日まで。"
+tweet_v = "ツイートする"
 
 [extra]
 # Put all your custom variables here

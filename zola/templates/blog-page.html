@@ -25,14 +25,20 @@
 </section>
 <section class="section blog-footer">
   <div class="is-flex is-justify-content-center">
+    {% set hashtags = page.extra.hashtags | default(value=[]) | join(sep=",") | urlencode %}
+    {% if hashtags | length > 0 %}
+    {%   set hashtags_param = "&hashtags=" ~ hashtags %}
+    {% else %}
+    {%   set hashtags_param = "" %}
+    {% endif %}
     <a
       class="button is-twitter is-small"
-      href="https://twitter.com/intent/tweet?text=codemonger%20{{ trans(key="blog", lang=lang) | urlencode }}%20-%20{{ page.title | urlencode }}&url={{ current_url | urlencode }}" target="_blank"
+      href="https://twitter.com/intent/tweet?text=codemonger%20{{ trans(key="blog", lang=lang) | urlencode }}%20-%20{{ page.title | urlencode }}&url={{ current_url | urlencode }}{{ hashtags_param }}" target="_blank"
     >
       <span class="icon">
         <i class="fab fa-twitter"></i>
       </span>
-      <span>Tweet</span>
+      <span>{{ trans(key="tweet_v", lang=lang) }}</span>
     </a>
   </div>
 </section>
