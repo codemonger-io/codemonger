@@ -37,8 +37,8 @@ S3バケットを確保する方法については[`../cdk`](../cdk/README.ja.md
 ### ツイートボタンにハッシュタグを追加する
 
 各ブログ投稿の[Front Matter](https://www.getzola.org/documentation/content/page/#front-matter)は`extra`データに`hashtags`オプションを含むことができます。
-このオプションはブログ投稿のTweetボタンに追加したいハッシュタグ文字列の配列を受け付けます。
-以下の例はTweetボタンに`"hashtags=aws,cloudfront"`を追加します。
+このオプションはブログ投稿のツイートボタンに追加したいハッシュタグ文字列の配列を受け付けます。
+以下の例はツイートボタンに`"hashtags=aws,cloudfront"`を追加します。
 
 ```
 +++
