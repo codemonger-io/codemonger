@@ -75,7 +75,7 @@ function splitStringByLast(str, delimiter) {
   return splitStringAt(str, str.lastIndexOf(delimiter));
 }
 
-// Splits a given string at the index located by a given function.
+// Splits a given string at a specified index.
 //
 // Returns an array of two elements.
 // 1. the first item is a substring of `str` until `index` (exclusive)
