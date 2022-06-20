@@ -2,6 +2,8 @@
 title = "CloudFrontを介してS3からコンテンツを提供する"
 date = 2022-06-20
 draft = false
+[extra]
+hashtags = ["aws", "cloudfront"]
 +++
 
 このウェブサイトは[Zola](https://www.getzola.org)で生成し[Amazon CloudFront](https://aws.amazon.com/cloudfront/)を介して[Amazon S3](https://aws.amazon.com/s3/)から配信しています。
