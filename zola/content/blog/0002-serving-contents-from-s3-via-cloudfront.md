@@ -1,9 +1,10 @@
 +++
 title = "Serving contents from S3 via CloudFront"
 date = 2022-06-20
+updated = 2022-06-27
 draft = false
 [extra]
-hashtags = ["aws", "cloudfront"]
+hashtags = ["AWS", "CloudFront"]
 +++
 
 This website is generated with [Zola](https://www.getzola.org) and delivered from [Amazon S3](https://aws.amazon.com/s3/) via [Amazon CloudFront](https://aws.amazon.com/cloudfront/).
