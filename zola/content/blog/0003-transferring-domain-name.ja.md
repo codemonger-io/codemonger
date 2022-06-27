@@ -3,7 +3,7 @@ title = "Distribution間でドメイン名を移行する"
 date = 2022-06-27
 draft = false
 [extra]
-hashtags = ["AWS", "Route53", "CloudFront", "CertificateManager"]
+hashtags = ["AWS", "Route53", "CloudFront", "CertificateManager", "CDK"]
 +++
 
 ドメイン名をあるCloudFront Distributionから別のDistributionに移動しました。

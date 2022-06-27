@@ -3,7 +3,7 @@ title = "Moving the domain name between distributions"
 date = 2022-06-27
 draft = false
 [extra]
-hashtags = ["AWS", "Route53", "CloudFront", "CertificateManager"]
+hashtags = ["AWS", "Route53", "CloudFront", "CertificateManager", "CDK"]
 +++
 
 I moved the domain name from one CloudFront distribution to another.
