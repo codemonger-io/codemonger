@@ -83,7 +83,7 @@ Amazonのドキュメントは[ドメイン名を2つのCloudFront Distribution�
 
 ### CDKで新しいCloudFront Distributionを確保する
 
-`associate-alias`コマンドを実行するため、新しいCloudFront Distributionには`codemonger.io`の有効なSSL/TLS証明書を設定しつつドメイン名は空欄にしておく必要がありました。
+`associate-alias`コマンドを実行するため、新しいCloudFront Distributionには`codemonger.io`の有効なSSL/TLS証明書\*を設定しつつドメイン名は空欄にしておく必要がありました。
 残念ながら、[CDKのDistribution](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_cloudfront.Distribution.html)はSSL/TLS証明書を設定しつつドメイン名を空欄にしておくということを許してくれませんでした。
 ということで回避策として以下のステップを踏みました。
 
