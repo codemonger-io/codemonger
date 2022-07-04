@@ -49,7 +49,11 @@
           {%   else %}
           {%     set relative_path = page.components | slice(start=1) | join(sep="/") %}
           {%   endif %}
-          {%   set internal_path = "@/" ~ relative_path ~ ".md" %}
+          {%   if page.relative_path is matching("/index(?:\.\w+)?\.md$") %}
+          {%     set internal_path = "@/" ~ relative_path ~ "/index.md" %}
+          {%   else %}
+          {%     set internal_path = "@/" ~ relative_path ~ ".md" %}
+          {%   endif %}
           {% else %}
           {%   if section.components | length  > 0 %}
           {%     if lang == config.default_language %}
