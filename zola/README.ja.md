@@ -26,7 +26,7 @@ CloudFront Distributionを確保する方法については[`../cdk`](../cdk/REA
 [コンテンツを生成](#コンテンツを生成する)したら、`public`フォルダの中身をコンテンツ用S3バケットにコピーしてください。
 
 ```sh
-aws s3 cp --recursive ./public s3://$CONTENTS_BUCKET_NAME/
+aws s3 sync --delete --exclude "*.DS_Store" ./public s3://$CONTENTS_BUCKET_NAME/
 ```
 
 `CONTENTS_BUCKET_NAME`をコンテンツ用S3バケットの名前に置き換えてください。
