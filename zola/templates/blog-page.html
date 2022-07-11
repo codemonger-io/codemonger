@@ -18,6 +18,11 @@
         {% endif %}
       </p>
     </header>
+    {% if page.extra.thumbnail_name %}
+    <figure class="image">
+      <img src="{{ page.extra.thumbnail_name }}" alt="thumbnail">
+    </figure>
+    {% endif %}
     <div class="content">
       {{ page.content | safe }}
     </div>

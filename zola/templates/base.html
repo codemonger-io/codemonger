@@ -6,6 +6,21 @@
   <meta charset="utf-8">
   <meta name="description" content="codemonger home">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% if page %}
+  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ current_url }}">
+  {%   if page.extra.thumbnail_name %}
+  {%     if lang == config.default_language %}
+  {%       set relative_path = page.components | join(sep="/") %}
+  {%     else %}
+  {%       set relative_path = page.components | slice(start=1) | join(sep="/") %}
+  {%     endif %}
+  {%     set image_path = "/" ~ relative_path ~ "/" ~ page.extra.thumbnail_name %}
+  <meta property="og:image" content="{{ get_url(path=image_path) }}">
+  <meta name="twitter:card" content="summary_large_image">
+  {%   endif %}
+  {% endif %}
   <link href="/styles.css" rel="stylesheet">
   {% if page %}
   {% set html_title = page.title %}
