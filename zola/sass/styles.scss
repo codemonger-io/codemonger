@@ -73,6 +73,18 @@ p {
       color: inherit;
     }
   }
+  table {
+    text-align: left;
+    thead, tbody {
+      tr {
+        th, td {
+          &:not(:first-child) {
+            border-left-width: 1px;
+          }
+        }
+      }
+    }
+  }
 }
 
 .blog-content {
