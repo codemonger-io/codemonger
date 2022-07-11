@@ -1,9 +1,10 @@
 +++
 title = "Omit<Type, Keys>が(期待にどおりに)機能しないとき"
-date = 2022-07-11
+date = 2022-07-12
 draft = false
 [extra]
 hashtags = ["TypeScript"]
+thumbnail_name = "thumbnail.png"
 +++
 
 [TypeScript](https://www.typescriptlang.org)の[`Omit<Type, Keys>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#omittype-keys)が意図したとおりに機能せず頭を抱えてしまいました。
