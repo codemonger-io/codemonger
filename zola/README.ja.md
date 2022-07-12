@@ -44,8 +44,25 @@ S3バケットを確保する方法については[`../cdk`](../cdk/README.ja.md
 +++
 title = "CloudFrontを介してS3からコンテンツを提供する"
 date = 2022-06-20
-draft = false
 [extra]
 hashtags = ["aws", "cloudfront"]
 +++
 ```
+
+### サムネイル画像を追加する
+
+各ブログ投稿の[Front Matter](https://www.getzola.org/documentation/content/page/#front-matter)は`extra`データに`thumbnail_name`オプションを含むことができます。
+このオプションはブログ投稿の冒頭に表示されSNSのサムネイル(例: Twitterカード)として現れる画像ファイルの名前を受け付けます。
+以下の例はブログページの`index.md`ファイルと同じフォルダにある`"thumbnail.png"`という画像ファイルをサムネイルとして表示します。
+
+```
++++
+title = "Omit<Type, Keys>が(期待にどおりに)機能しないとき"
+date = 2022-07-12
+[extra]
+thumbnail_name = "thumbnail.png"
++++
+```
+
+ブログ投稿にサムネイル画像を追加するには、ブログページのフォルダを作成し、そこにサムネイル画像ファイルを置きます。
+画像ファイルはブログページの`index.md`ファイルと同じフォルダにあるべきで、そうしないとSNSのサムネイルが機能しないかもしれません。

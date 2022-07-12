@@ -44,8 +44,25 @@ The following example adds `"hashtags=aws,cloudfront"` to the Tweet button.
 +++
 title = "Serving contents from S3 via CloudFront"
 date = 2022-06-20
-draft = false
 [extra]
 hashtags = ["aws", "cloudfront"]
 +++
 ```
+
+### Adding the thumbnail image
+
+The [front matter](https://www.getzola.org/documentation/content/page/#front-matter) of every blog page can include a `thumbnail_name` option in the `extra` data.
+This option accepts the name of the image file to be shown at the beginning of the blog post and appear as social thumbnails; e.g., twitter card.
+The following example shows the image file `"thumbnail.png"` in the same folder as the `index.md` file of the blog page as the thumbnail.
+
+```
++++
+title = "When Omit<Type, Keys> breaks (my expectation)"
+date = 2022-07-12
+[extra]
+thumbnail_name = "thumbnail.png"
++++
+```
+
+To add the thumbnail image to a blog post, create a folder of the blog page and put the thumbnail image file in it.
+The image file should be in the same folder as the `index.md` file of the blog page, or social thumbnails may not work.
