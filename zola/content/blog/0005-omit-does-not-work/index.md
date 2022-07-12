@@ -1,5 +1,6 @@
 +++
 title = "When Omit<Type, Keys> breaks (my expectation)"
+description = "This blog post will share with you what I have learned from reasoning why Omit has not worked."
 date = 2022-07-12
 draft = false
 [extra]

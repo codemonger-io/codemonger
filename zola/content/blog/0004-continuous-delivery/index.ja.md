@@ -1,5 +1,6 @@
 +++
 title = "ウェブサイトのContinuous Delivery"
+description = "このブログ投稿はコンテンツのContinuous Deliverパイプラインの設定を紹介します。"
 date = 2022-07-05
 draft = false
 [extra]

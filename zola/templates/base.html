@@ -3,11 +3,29 @@
 <!DOCTYPE html>
 <html lang="{{ lang }}">
 <head>
+  {% if page %}
+  {%   set html_title = page.title %}
+  {%   set description = page.description %}
+  {% elif section %}
+  {%   if section.path == "/" or section.path is starting_with(lang) %}
+  {%     set html_title = "codemonger" %}
+  {%     set description = trans(key="philosophy", lang=lang) %}
+  {%   else %}
+  {%     set html_title = section.title %}
+  {%     set description = section.description %}
+  {%   endif %}
+  {% else %}
+  {%   set html_title = "codemonger" %}
+  {%   set description = "codemonger" %}
+  {% endif %}
+  {% set html_title = html_title | default(value="codemonger") %}
+  {% set description = description | default(value="codemonger") %}
   <meta charset="utf-8">
-  <meta name="description" content="codemonger home">
+  <meta name="description" content="{{ description }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% if page %}
-  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:title" content="{{ html_title }}">
+  <meta property="og:description" content="{{ description }}">
   <meta property="og:type" content="article">
   <meta property="og:url" content="{{ current_url }}">
   {%   if page.extra.thumbnail_name %}
@@ -22,17 +40,6 @@
   {%   endif %}
   {% endif %}
   <link href="/styles.css" rel="stylesheet">
-  {% if page %}
-  {% set html_title = page.title %}
-  {% elif section %}
-  {% if section.path == "/" or section.path is starting_with(lang) %}
-  {% set html_title = "codemonger" %}
-  {% else %}
-  {% set html_title = section.title %}
-  {% endif %}
-  {% else %}
-  {% set html_title = "codemonger" %}
-  {% endif %}
   <title>{{ html_title }}</title>
 </head>
 <body>

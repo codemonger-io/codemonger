@@ -1,5 +1,6 @@
 +++
 title = "Moving the domain name between distributions"
+description = "This blog post will show you my findings on domain name move from one CloudFront distribution to another."
 date = 2022-06-27
 draft = false
 [extra]

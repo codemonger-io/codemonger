@@ -1,5 +1,6 @@
 +++
 title = "Zolaを導入する"
+description = "このブログ投稿ではZolaをこのウェブサイトの生成に使う上で私が気づいたことを紹介します。"
 date = 2022-06-13
 updated = 2022-06-20
 draft = false

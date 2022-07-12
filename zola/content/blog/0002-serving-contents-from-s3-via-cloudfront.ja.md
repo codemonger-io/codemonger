@@ -1,5 +1,6 @@
 +++
 title = "CloudFrontを介してS3からコンテンツを提供する"
+description = "このブログ投稿ではAmazon S3からAmazon CloudFrontを介してコンテンツをうまく配信するために何をしたかをお伝えします。"
 date = 2022-06-20
 updated = 2022-06-27
 draft = false

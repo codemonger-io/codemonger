@@ -1,5 +1,6 @@
 +++
 title = "ブログ"
+description = "すべてのcodemongerブログ投稿をリストします。"
 sort_by = "date"
 template = "blog.html"
 page_template = "blog-page.html"

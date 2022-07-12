@@ -1,5 +1,6 @@
 +++
 title = "codemongerについて"
+description = "codemongerと私自身について"
 date = 2022-06-13
 updated = 2022-06-19
 template = "about.html"
