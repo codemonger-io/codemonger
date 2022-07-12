@@ -26,7 +26,7 @@ Please refer to the instructions in the [`../cdk`](../cdk) folder for how to pro
 After [generating contents](#generating-contents), copy the contents in the `public` folder to the S3 bucket for contents.
 
 ```sh
-aws s3 cp --recursive ./public s3://$CONTENTS_BUCKET_NAME/
+aws s3 sync --delete --exclude "*.DS_Store" ./public s3://$CONTENTS_BUCKET_NAME/
 ```
 
 Please replace `CONTENTS_BUCKET_NAME` with the name of the S3 bucket for contents.
@@ -44,8 +44,25 @@ The following example adds `"hashtags=aws,cloudfront"` to the Tweet button.
 +++
 title = "Serving contents from S3 via CloudFront"
 date = 2022-06-20
-draft = false
 [extra]
 hashtags = ["aws", "cloudfront"]
 +++
 ```
+
+### Adding the thumbnail image
+
+The [front matter](https://www.getzola.org/documentation/content/page/#front-matter) of every blog page can include a `thumbnail_name` option in the `extra` data.
+This option accepts the name of the image file to be shown at the beginning of the blog post and appear as social thumbnails; e.g., twitter card.
+The following example shows the image file `"thumbnail.png"` in the same folder as the `index.md` file of the blog page as the thumbnail.
+
+```
++++
+title = "When Omit<Type, Keys> breaks (my expectation)"
+date = 2022-07-12
+[extra]
+thumbnail_name = "thumbnail.png"
++++
+```
+
+To add the thumbnail image to a blog post, create a folder of the blog page and put the thumbnail image file in it.
+The image file should be in the same folder as the `index.md` file of the blog page, or social thumbnails may not work.
