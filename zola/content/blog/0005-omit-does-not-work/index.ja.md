@@ -1,5 +1,5 @@
 +++
-title = "Omit<Type, Keys>が(期待にどおりに)機能しないとき"
+title = "Omit<Type, Keys>が(期待どおりに)機能しないとき"
 description = "このブログ投稿はOmitが機能しない理由を考えることで学んだことを共有します。"
 date = 2022-07-12
 draft = false
