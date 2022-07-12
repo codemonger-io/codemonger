@@ -1,5 +1,6 @@
 +++
 title = "Distribution間でドメイン名を移行する"
+description = "このブログ投稿はあるCloudFront Distributionから別のDistributionにドメイン名を移動する上で気づいたことを紹介します。"
 date = 2022-06-27
 draft = false
 [extra]

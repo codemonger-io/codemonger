@@ -1,5 +1,6 @@
 +++
 title = "Introducing Zola"
+description = "This blog post will introduce my findings in using Zola to generate this website."
 date = 2022-06-13
 updated = 2022-06-20
 draft = false

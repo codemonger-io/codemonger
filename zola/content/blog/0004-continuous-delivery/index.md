@@ -1,5 +1,6 @@
 +++
 title = "Continuous delivery of the website"
+description = "This blog post will show you my configuration of the Continuous Delivery pipeline for the contents."
 date = 2022-07-05
 draft = false
 [extra]

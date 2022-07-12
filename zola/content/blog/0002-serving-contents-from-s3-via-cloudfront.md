@@ -1,5 +1,6 @@
 +++
 title = "Serving contents from S3 via CloudFront"
+description = "This blog post will show you what I have done to successfully deliver the contents from Amazon S3 via Amazon CloudFront."
 date = 2022-06-20
 updated = 2022-06-27
 draft = false
