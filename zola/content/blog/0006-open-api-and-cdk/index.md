@@ -2,6 +2,7 @@
 title = "AWS APIGateway × OpenAPI (1. Motivation)"
 description = "This is a series of blog posts that will walk you through the development of a library that integrates an OpenAPI definition with a REST API definition on the CDK"
 date = 2022-07-18
+update = 2022-07-26
 draft = false
 [extra]
 hashtags = ["AWS", "CDK", "APIGateway", "OpenAPI"]
@@ -206,7 +207,7 @@ We are going to tackle these challenges in subsequent blog posts.
 ## Wrap-up
 
 What I have been developing is available on my [GitHub repository](https://github.com/codemonger-io/cdk-rest-api-with-spec).
-In an upcoming blog post, we will tackle the challenge of how we can achieve compatibility with [`RestApi`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.RestApi.html).
+In an [upcoming blog post](../0007-open-api-and-cdk/), we will tackle the challenge of how we can achieve compatibility with [`RestApi`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.RestApi.html).
 
 ## Reference
 
