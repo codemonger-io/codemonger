@@ -2,7 +2,7 @@
 title = "AWS APIGateway × OpenAPI (1. 動機編)"
 description = "OpenAPI定義をCDKのREST API定義に統合するライブラリの開発過程を紹介するブログシリーズです。"
 date = 2022-07-18
-update = 2022-07-26
+updated = 2022-07-26
 draft = false
 [extra]
 hashtags = ["AWS", "CDK", "APIGateway", "OpenAPI"]

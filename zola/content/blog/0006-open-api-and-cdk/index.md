@@ -2,7 +2,7 @@
 title = "AWS APIGateway × OpenAPI (1. Motivation)"
 description = "This is a series of blog posts that will walk you through the development of a library that integrates an OpenAPI definition with a REST API definition on the CDK"
 date = 2022-07-18
-update = 2022-07-26
+updated = 2022-07-26
 draft = false
 [extra]
 hashtags = ["AWS", "CDK", "APIGateway", "OpenAPI"]
