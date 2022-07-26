@@ -194,7 +194,7 @@ Of course, it will also provide extensions to describe the OpenAPI definition; s
 
 There are some challenges.
 - How can we achieve compatibility with [`RestApi`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.RestApi.html)?
-    - If we write a subclass or a wrapper for [`RestApi`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.RestApi.html), we cannot directly manipulate what [`RestApi`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.RestApi.html) instantiates as subsidiaries; e.g, [Resource](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.Resource.html)s, [Method](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.Method.html)s.
+    - If we write a subclass or a wrapper for [`RestApi`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.RestApi.html), we cannot directly manipulate what [`RestApi`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.RestApi.html) instantiates as subsidiaries; e.g., [Resource](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.Resource.html)s, [Method](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.Method.html)s.
       How can we extend the subsidiary entities?
     - If we do not reuse [`RestApi`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.RestApi.html), it will be really tough to achieve compatibility.
 - When should the library actually output the OpenAPI definition file?
