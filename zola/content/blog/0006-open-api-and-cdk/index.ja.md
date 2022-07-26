@@ -2,6 +2,7 @@
 title = "AWS APIGateway × OpenAPI (1. 動機編)"
 description = "OpenAPI定義をCDKのREST API定義に統合するライブラリの開発過程を紹介するブログシリーズです。"
 date = 2022-07-18
+updated = 2022-07-26
 draft = false
 [extra]
 hashtags = ["AWS", "CDK", "APIGateway", "OpenAPI"]
@@ -206,7 +207,7 @@ const api = new RestApiWithSpec(this, 'example-api', {
 ## まとめ
 
 私が開発中のものは[GitHubレポジトリ](https://github.com/codemonger-io/cdk-rest-api-with-spec)で手に入ります。
-次のブログ投稿では[`RestApi`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.RestApi.html)との互換性をどう実現するかに挑むつもりです。
+[次のブログ投稿](../0007-open-api-and-cdk/)では[`RestApi`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway.RestApi.html)との互換性をどう実現するかに挑むつもりです。
 
 ## 参照
 
