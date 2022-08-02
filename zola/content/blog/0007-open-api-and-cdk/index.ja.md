@@ -199,7 +199,7 @@ class ResourceWithSpec {
 
 このブログ投稿では、CDK APIの拡張を簡単にするために`Proxy`を導入しました。
 `Proxy`に関するTypeScriptのエラーを回避するトリックも紹介しました。
-次のブログ投稿では、いつOpenAPI定義ファイルを出力するかという課題に挑む予定です。
+[次のブログ投稿](../0008-open-api-and-cdk/)では、いつOpenAPI定義ファイルを出力するかという課題に挑む予定です。
 
 ## Reference
 

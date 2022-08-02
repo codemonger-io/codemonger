@@ -199,7 +199,7 @@ The above code has been simplified; you can find the actual definition in [my Gi
 
 In this blog post, I have introduced `Proxy` to facilitate the extension of the CDK API.
 I also have shown a trick to circumvent a TypeScript error about `Proxy`.
-In an upcoming blog post, we will tackle the challenge of when we should output an OpenAPI definition file.
+In an [upcoming blog post](../0008-open-api-and-cdk/), we will tackle the challenge of when we should output an OpenAPI definition file.
 
 ## Reference
 
