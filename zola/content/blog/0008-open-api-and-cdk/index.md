@@ -1,8 +1,8 @@
 +++
 title = "AWS APIGateway × OpenAPI (3. Output)"
 description = "This is a series of blog posts that will walk you through the development of a library that integrates an OpenAPI definition with a REST API definition on the CDK"
-date = 2022-08-01
-draft = true
+date = 2022-08-02
+draft = false
 [extra]
 hashtags = ["AWS", "CDK", "APIGateway", "OpenAPI"]
 thumbnail_name = "thumbnail.png"
@@ -62,13 +62,13 @@ The `cdk` subcommands eventually call corresponding methods of `CdkToolkit` defi
 
 Definition: [aws-cdk/lib/cdk-toolkit.ts#L517-L545](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/cdk-toolkit.ts#L517-L545)
 
-It calls `CdkToolkit#selectStacksForDiff` at [aws-cdk/lib/cdk-toolkit.ts#L518](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/cdk-toolkit.ts#L518),
+It calls `CdkToolkit#selectStacksForDiff` at [aws-cdk/lib/cdk-toolkit.ts#L518](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/cdk-toolkit.ts#L518):
 ```ts
     const stacks = await this.selectStacksForDiff(stackNames, exclusively, autoValidate);
 ```
 
 Although it is not clear from the method name, `CdkToolkit#selectionStacksForDiff` does essential work for the CloudFormation template generation.
-It eventually calls [`CdkToolkit#assembly`](#CdkToolkit#assembly) at [aws-cdk/lib/cdk-toolkit.ts#L621](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/cdk-toolkit.ts#L621).
+It eventually calls [`CdkToolkit#assembly`](#CdkToolkit#assembly) at [aws-cdk/lib/cdk-toolkit.ts#L621](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/cdk-toolkit.ts#L621):
 ```ts
     const assembly = await this.assembly();
 ```
@@ -77,13 +77,13 @@ It eventually calls [`CdkToolkit#assembly`](#CdkToolkit#assembly) at [aws-cdk/li
 
 Definition: [aws-cdk/lib/cdk-toolkit.ts#L126-L282](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/cdk-toolkit.ts#L126-L282)
 
-It calls `CdkToolkit#selectStacksForDeploy` at [aws-cdk/lib/cdk-toolkit.ts#L140](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/cdk-toolkit.ts#L140)
+It calls `CdkToolkit#selectStacksForDeploy` at [aws-cdk/lib/cdk-toolkit.ts#L140](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/cdk-toolkit.ts#L140):
 ```ts
     const stacks = await this.selectStacksForDeploy(options.selector, options.exclusively, options.cacheCloudAssembly);
 ```
 
 Like [`CdkToolkit#synth`](#CdkToolkit#synth), `CdkToolkit#selectStacksForDeploy` does essential work for the CloudFormation template generation.
-It also ends up with a call to [`CdkToolkit#assembly`](#CdkToolkit#assembly) at [aws-cdk/lib/cdk-toolkit.ts#L608](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/cdk-toolkit.ts#L608)
+It also ends up with a call to [`CdkToolkit#assembly`](#CdkToolkit#assembly) at [aws-cdk/lib/cdk-toolkit.ts#L608](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/cdk-toolkit.ts#L608):
 ```ts
     const assembly = await this.assembly(cacheCloudAssembly);
 ```
@@ -104,7 +104,7 @@ It is equivalent to a call to [`CloudExecutable#synthesize`](#CloudExecutable#sy
 
 Definition: [aws-cdk/lib/api/cxapp/cloud-executable.ts#L63-L68](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/cloud-executable.ts#L63-L68)
 
-It calls `CloudExecutable#doSynthesize` at [aws-cdk/lib/api/cxapp/cloud-executable.ts#L65](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/cloud-executable.ts#L65).
+It calls [`CloudExecutable#doSynthesize`](#CloudExecutable#doSynthesize) at [aws-cdk/lib/api/cxapp/cloud-executable.ts#L65](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/cloud-executable.ts#L65):
 ```ts
       this._cloudAssembly = await this.doSynthesize();
 ```
@@ -113,12 +113,12 @@ It calls `CloudExecutable#doSynthesize` at [aws-cdk/lib/api/cxapp/cloud-executab
 
 Definition: [aws-cdk/lib/api/cxapp/cloud-executable.ts#L70-L124](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/cloud-executable.ts#L70-L124)
 
-The actual synthesis is done at [aws-cdk/lib/api/cxapp/cloud-executable.ts#L79](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/cloud-executable.ts#L79).
+The actual synthesis is done at [aws-cdk/lib/api/cxapp/cloud-executable.ts#L79](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/cloud-executable.ts#L79):
 ```ts
       const assembly = await this.props.synthesizer(this.props.sdkProvider, this.props.configuration);
 ```
 
-`this.props.synthesizer` is a `Synthesizer` defined at [aws-cdk/lib/api/cxapp/cloud-executable.ts#L14](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/cloud-executable.ts#L14).
+`this.props.synthesizer` is a `Synthesizer` defined at [aws-cdk/lib/api/cxapp/cloud-executable.ts#L14](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/cloud-executable.ts#L14):
 ```ts
 type Synthesizer = (aws: SdkProvider, config: Configuration) => Promise<cxapi.CloudAssembly>;
 ```
@@ -133,30 +133,30 @@ In the context of `aws-cdk/lib/cli.ts`, `this.props.synthesizer` is always `exec
 ```
 
 `execProgram` is defined in [aws-cdk/lib/api/cxapp/exec.ts#L12-L136](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L12-L136).
-According to the following lines, it runs the command specified to the `app` option of the `cdk` command,
-- [aws-cdk/lib/api/cxapp/exec.ts#L54](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L54),
-    ```ts
-      const app = config.settings.get(['app']);
-    ```
-- [aws-cdk/lib/api/cxapp/exec.ts#L65](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L65)
-    ```ts
-      const commandLine = await guessExecutable(appToArray(app));
-    ```
-- [aws-cdk/lib/api/cxapp/exec.ts#L86](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L86)
-    ```ts
-      await exec(commandLine.join(' '));
-    ```
+According to the following lines, it runs the command specified to the `app` option of the `cdk` command (([aws-cdk/lib/api/cxapp/exec.ts#L54](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L54), [aws-cdk/lib/api/cxapp/exec.ts#L65](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L65), and [aws-cdk/lib/api/cxapp/exec.ts#L86](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L86)) respectively):
+
+```ts
+  const app = config.settings.get(['app']);
+```
+
+```ts
+  const commandLine = await guessExecutable(appToArray(app));
+```
+
+```ts
+  await exec(commandLine.join(' '));
+```
 
 You may think you have never specified the `app` option to the `cdk` command.
 If you initialize your CDK project with the `cdk init` command, the command creates the `cdk.json` file and saves the default `app` option value in it.
-If you look into your `cdk.json` file, you will find a line similar to the following,
+If you look into your `cdk.json` file, you will find a line similar to the following:
 ```json
   "app": "npx ts-node --prefer-ts-exts bin/cdk.ts",
 ```
 
 This command (`npx ts-node --prefer-ts-exts bin/cdk.ts`) is what `execProgram` executes.
 
-After running the command given to the `app` option, `execProgram` loads the artifacts from the output directory specified to the `output` option of the `cdk` command ([aws-cdk/lib/api/cxapp/exec.ts#L67](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L67), [aws-cdk/lib/api/cxapp/exec.ts#L78](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L78), and [aws-cdk/lib/api/cxapp/exec.ts#L88](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L88)).
+After running the command given to the `app` option, `execProgram` loads the artifacts from the output folder specified to the `output` option of the `cdk` command ([aws-cdk/lib/api/cxapp/exec.ts#L67](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L67), [aws-cdk/lib/api/cxapp/exec.ts#L78](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L78), and [aws-cdk/lib/api/cxapp/exec.ts#L88](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L88) respectively):
 
 ```ts
   const outdir = config.settings.get(['output']);
@@ -170,7 +170,7 @@ After running the command given to the `app` option, `execProgram` loads the art
   return createAssembly(outdir);
 ```
 
-The `output` option is `"cdk.out"` by default ([aws-cdk/lib/settings.ts#L75-L79](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/settings.ts#L75-L79)).
+The `output` option is `"cdk.out"` by default ([aws-cdk/lib/settings.ts#L75-L79](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/settings.ts#L75-L79)):
 ```ts
   public readonly defaultConfig = new Settings({
     versionReporting: true,
@@ -190,14 +190,14 @@ Let's look into the source code of `App`.
 `App` is defined in [core/lib/app.ts#L94-L155](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/app.ts#L94-L155).
 In this blog post, I abbreviate the `packages/@aws-cdk/core` folder to `core`.
 
-In the constructor of `App`, there is an interesting line at [core/lib/app.ts#L131](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/app.ts#L131),
+In the constructor of `App`, there is an interesting line at [core/lib/app.ts#L131](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/app.ts#L131):
 ```ts
       process.once('beforeExit', () => this.synth());
 ```
 
 It makes the process running `App` call `App#synth` at exit.
 So we can anticipate the answer would be in `App#synth`.
-Since `App` extends [`Stage`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.Stage.html), `App#synth` is [`Stage#synth`](#Stage#synth).
+Since `App` extends [`Stage`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.Stage.html), `App#synth` is equivalent to [`Stage#synth`](#Stage#synth).
 
 #### Stage#synth
 
@@ -256,7 +256,8 @@ function validateTree(root: IConstruct) {
 `validateTree` traverses ([visits](#visit)) all the nodes in the constructs tree starting from `root` and applies [`Node#validate`](https://docs.aws.amazon.com/cdk/api/v2/docs/constructs.Node.html#validate) to each of them.
 `Node#validate` calls [`IValidation#validate`](https://docs.aws.amazon.com/cdk/api/v2/docs/constructs.IValidation.html#validate) of [`IValidation`](https://docs.aws.amazon.com/cdk/api/v2/docs/constructs.IValidation.html)s attached to the node with [`Node#addValidation`](https://docs.aws.amazon.com/cdk/api/v2/docs/constructs.Node.html#addwbrvalidationvalidation).
 
-So **`IValidation` can be a hook** to output an OpenAPI definition.
+So **`IValidation` can be a hook to output an OpenAPI definition**.
+Please refer to ["Validator hook"](#Validator_hook) for how to use it.
 
 #### synthesizeTree
 
@@ -285,7 +286,7 @@ function synthesizeTree(root: IConstruct, builder: cxapi.CloudAssemblyBuilder, v
 ```
 
 `synthesizeTree` traverses ([visits](#visit)) all the nodes in the constructs tree starting from `root` and processes each construct.
-The important line is at [core/lib/private/synthesis.ts#L183](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/private/synthesis.ts#L183).
+The important line is at [core/lib/private/synthesis.ts#L183](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/private/synthesis.ts#L183):
 ```ts
       construct.synthesizer.synthesize(session);
 ```
@@ -297,12 +298,12 @@ So the above line usually becomes a call to [DefaultStackSynthesizer#synthesize]
 
 Definition: [core/lib/stack-synthesizers/default-synthesizer.ts#L387-L424](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/stack-synthesizers/default-synthesizer.ts#L387-L424)
 
-`DefaultStackSynthesizer#synthesize` calls `DefaultStackSynthesizer#synthesizeStackTemplate` at [core/lib/stack-synthesizers/default-synthesizer.ts#L400](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/stack-synthesizers/default-synthesizer.ts#L400).
+`DefaultStackSynthesizer#synthesize` calls `DefaultStackSynthesizer#synthesizeStackTemplate` at [core/lib/stack-synthesizers/default-synthesizer.ts#L400](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/stack-synthesizers/default-synthesizer.ts#L400):
 ```ts
     this.synthesizeStackTemplate(this.stack, session);
 ```
 
-`DefaultStackSynthesizer#synthesizeStackTemplate` is equivalent to a call to [`Stack#_synthesizeTemplate`](#Stack#_synthesizeTemplate) ([core/lib/stack-synthesizers/default-synthesizer.ts#L380-L382](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/stack-synthesizers/default-synthesizer.ts#L380-L382)).
+`DefaultStackSynthesizer#synthesizeStackTemplate` is equivalent to a call to [`Stack#_synthesizeTemplate`](#Stack#_synthesizeTemplate) ([core/lib/stack-synthesizers/default-synthesizer.ts#L380-L382](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/stack-synthesizers/default-synthesizer.ts#L380-L382)):
 ```ts
   protected synthesizeStackTemplate(stack: Stack, session: ISynthesisSession) {
     stack._synthesizeTemplate(session, this.lookupRoleArn);
@@ -313,7 +314,7 @@ Definition: [core/lib/stack-synthesizers/default-synthesizer.ts#L387-L424](https
 
 Definition: [core/lib/stack.ts#L770-L804](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/stack.ts#L770-L804)
 
-This method calls [`Stack#_toCloudFormation`](#Stack#_toCloudFormation) at [core/lib/stack.ts#L779](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/stack.ts#L779).
+This method calls [`Stack#_toCloudFormation`](#Stack#_toCloudFormation) at [core/lib/stack.ts#L779](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/stack.ts#L779):
 ```ts
     const template = this._toCloudFormation();
 ```
@@ -322,30 +323,31 @@ This method calls [`Stack#_toCloudFormation`](#Stack#_toCloudFormation) at [core
 
 Definition: [core/lib/stack.ts#L1007-L1045](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/stack.ts#L1007-L1045)
 
-Please pay attention to the following two lines ([core/lib/stack.ts#L1031-L1032](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/stack.ts#L1031-L1032)).
+Please pay attention to the following two lines ([core/lib/stack.ts#L1031-L1032](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/stack.ts#L1031-L1032)):
 ```ts
     const elements = cfnElements(this);
     const fragments = elements.map(e => this.resolve(e._toCloudFormation()));
 ```
 
-This function collects all the child `CfnElement`s with [`cfnElements`](#cfnElements), and applies `CfnElement#_toCloudFormation` to each of them.
-[`CfnElement`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.CfnElement.html) is the base class of every [L1 construct](https://docs.aws.amazon.com/cdk/v2/guide/constructs.html#constructs_l1_using), and `CfnElement#_toCloudFormation` is an internal method defined at [core/lib/cfn-element.ts#L161](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/cfn-element.ts#L161).
+This method collects all the child [`CfnElement`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.CfnElement.html)s with [`cfnElements`](#cfnElements), and applies `CfnElement#_toCloudFormation` to each of them.
+`CfnElement` is the base class of every [L1 construct](https://docs.aws.amazon.com/cdk/v2/guide/constructs.html#constructs_l1_using), and `CfnElement#_toCloudFormation` is an internal method defined at [core/lib/cfn-element.ts#L161](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/%40aws-cdk/core/lib/cfn-element.ts#L161).
 
 So the **`CfnElement#_toCloudFormation` method can be another hook** to output an OpenAPI definition.
+Please refer to ["_toCloudFormation hook"](#_toCloudFormation_hook) for how to use it.
 
 ## Hooks
 
-According to my analysis, there may be two hooks we can utilize to output an OpenAPI definition.
+According to the above analysis, there may be two hooks we can utilize to output an OpenAPI definition.
 - [Validator hook](#Validator_hook)
 - [_toCloudFormation hook](#_toCloudFormation_hook)
 
 ### Validator hook
 
 A "validator hook" utilizes [`IValidation`](https://docs.aws.amazon.com/cdk/api/v2/docs/constructs.IValidation.html) that we can attach to [`Node`](https://docs.aws.amazon.com/cdk/api/v2/docs/constructs.Node.html)s with [`Node#addValidation`](https://docs.aws.amazon.com/cdk/api/v2/docs/constructs.Node.html#addwbrvalidationvalidation).
-Please refer to the [section "validateTree"](#validateTree) for more details.
+Please refer to the [section "validateTree"](#validateTree) for more detailed analysis.
 
 I **have chosen this hook** to implement [my library](https://github.com/codemonger-io/cdk-rest-api-with-spec) so far because of its simplicity.
-The following snippet is an excerpt from the constructor of `RestApiWithSpec`.
+The following code is an excerpt from the constructor of `RestApiWithSpec`.
 You can find the full definition on [my GitHub repository](https://github.com/codemonger-io/cdk-rest-api-with-spec).
 
 ```ts
@@ -362,9 +364,9 @@ A drawback is that it does not work if validation is disabled.
 ### _toCloudFormation hook
 
 A "_toCloudFormation hook" utilizes an internal method `CfnElement#_toCloudFormation` that we can override.
-Please refer to the [section "synthesizeTree"](#synthesizeTree) for more details.
+Please refer to the [section "synthesizeTree"](#synthesizeTree) for more detailed analysis.
 
-If I used this hook in [my library](https://github.com/codemonger-io/cdk-rest-api-with-spec), the constructor of `RestApiWithSpec` could become something similar to the following,
+If I used this hook in [my library](https://github.com/codemonger-io/cdk-rest-api-with-spec), the constructor of `RestApiWithSpec` could become something similar to the following:
 
 ```ts
   constructor(scope: Construct, id: string, readonly props: RestApiWithSpecProps) {
@@ -385,14 +387,14 @@ If I used this hook in [my library](https://github.com/codemonger-io/cdk-rest-ap
 
 There are some disadvantages to this hook.
 - `CfnElement#_toCloudFormation` is an internal method that may be subject to change.
-- In my experiment, `CfnElement#_toCloudFormation` was called twice (I have not figured out why).
+- In my experiment, `ToCloudFormationHook#_toCloudFormation` was called twice (I have not figured out why).
 
 ## Conclusion
 
 In this blog post, we have walked through the source code of the CDK.
 We have located the following two hooks we can use to output an OpenAPI definition,
-- ["Validator hook"](#Validator_hook)
-- ["_toCloudFormation hook"](#_toCloudFormation_hook)
+- [Validator hook](#Validator_hook)
+- [_toCloudFormation hook](#_toCloudFormation_hook)
 
 I have chosen "Validator hook" for [my library](https://github.com/codemonger-io/cdk-rest-api-with-spec) because of its simplicity.
 
@@ -421,7 +423,7 @@ function visit(root: IConstruct, order: 'pre' | 'post', cb: (x: IConstruct) => v
 }
 ```
 
-`visit` traverses all the nodes in the constructs tree starting from `root`, and applies a function specified to `cb` to each of them.
+This function traverses all the nodes in the constructs tree starting from `root`, and applies a function specified to `cb` to each of them.
 
 ### cfnElements
 
@@ -445,4 +447,4 @@ function cfnElements(node: IConstruct, into: CfnElement[] = []): CfnElement[] {
 }
 ```
 
-`cfnElements` recursively collects every [`CfnElement`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.CfnElement.html) in the constructs tree starting from `node`.
+This function recursively collects every [`CfnElement`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.CfnElement.html) in the constructs tree starting from `node`.
