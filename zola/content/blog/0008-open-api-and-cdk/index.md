@@ -133,7 +133,7 @@ In the context of `aws-cdk/lib/cli.ts`, `this.props.synthesizer` is always `exec
 ```
 
 `execProgram` is defined in [aws-cdk/lib/api/cxapp/exec.ts#L12-L136](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L12-L136).
-According to the following lines, it runs the command specified to the `app` option of the `cdk` command (([aws-cdk/lib/api/cxapp/exec.ts#L54](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L54), [aws-cdk/lib/api/cxapp/exec.ts#L65](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L65), and [aws-cdk/lib/api/cxapp/exec.ts#L86](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L86)) respectively):
+According to the following lines, it runs the command specified to the `app` option of the `cdk` command ([aws-cdk/lib/api/cxapp/exec.ts#L54](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L54), [aws-cdk/lib/api/cxapp/exec.ts#L65](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L65), and [aws-cdk/lib/api/cxapp/exec.ts#L86](https://github.com/aws/aws-cdk/blob/7abcbc6df6e4a37b3b1ef6c26328d4ecaff56fa6/packages/aws-cdk/lib/api/cxapp/exec.ts#L86) respectively):
 
 ```ts
   const app = config.settings.get(['app']);

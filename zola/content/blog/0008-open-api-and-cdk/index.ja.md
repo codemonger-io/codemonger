@@ -21,7 +21,7 @@ thumbnail_name = "thumbnail.png"
 > - 保存のための関数をユーザーが明示的に呼び出さなければならないのでしょうか?
 > - それともCDKが[CloudFormation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html)テンプレートに対してやるようにOpenAPIの定義ファイルもいつのまにやら保存されようにできるでしょうか?
 
-このブログ投稿では、we tackle the 後者のケース(ユーザの明示的な呼び出しなしにライブラリにOpenAPI定義を出力させる)に挑みます。
+このブログ投稿では、後者のケース(ユーザの明示的な呼び出しなしにライブラリにOpenAPI定義を出力させる)に挑みます。
 
 ## CDKはいつCloudFormationテンプレートを出力するのか?
 
