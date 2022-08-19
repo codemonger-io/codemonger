@@ -49,13 +49,20 @@ p {
   p {
     line-height: 1.7;
   }
-  pre,
   code {
-    background-color: $codemonger-shade;
+    background-color: $codemonger;
     color: $codemonger-invert;
+    font-size: 1.02em;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
   }
   pre {
+    background-color: $codemonger-shade;
+    color: $codemonger-invert;
+    border-radius: 5px;
+
     & > code {
+      background-color: $codemonger-shade;
       line-height: $body-line-height;
     }
   }
@@ -63,6 +70,7 @@ p {
     color: bulmaLighten($codemonger-invert, 30%);
     background-color: $codemonger-shade;
     border-left: 5px solid bulmaDarken($codemonger-shade, 10%);
+    border-radius: 5px;
   }
   a {
     color: $codemonger-link;
