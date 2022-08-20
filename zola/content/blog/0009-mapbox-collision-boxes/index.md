@@ -1,6 +1,6 @@
 +++
 title = "Dealing with Mapbox hidden symbols (1. Collision box)"
-description = "About development of a library that deals with Mapbox hidden symbols"
+description = "Series: About development of a library that deals with Mapbox hidden symbols"
 date = 2022-08-20
 draft = false
 [extra]
