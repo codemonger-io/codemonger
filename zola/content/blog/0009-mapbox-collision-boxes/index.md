@@ -154,7 +154,7 @@ The following subsections show you the details of my analysis.
 ```
 
 Then what is `collisionArrays`?
-`collisionArrays` is an argument of [`placeSymbol`](#Placement#placeLayerBucketPart.placeSymbol) that [`Placement#placeLayerBucketPart`](#Placement#placeLayerBucketPart) calls at [symbol/placement.js#L795](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/symbol/placement.js#L795) (and other line):
+`collisionArrays` is an argument of [`placeSymbol`](#Placement#placeLayerBucketPart.placeSymbol) that [`Placement#placeLayerBucketPart`](#Placement#placeLayerBucketPart) calls at [symbol/placement.js#L795](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/symbol/placement.js#L795) (and another line):
 ```js
                 placeSymbol(bucket.symbolInstances.get(i), i, bucket.collisionArrays[i]);
 ```
