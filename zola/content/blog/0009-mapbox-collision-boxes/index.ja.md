@@ -25,7 +25,7 @@ thumbnail_name = "thumbnail.png"
 シンボルが画面上で重なると、`mapbox-gl-js`は最初のものだけ表示し他の重なっているものは非表示にします。
 私の知っている限り、画面上で特定のシンボルに隠されたシンボルを取得するAPIは`mapbox-gl-js`にありません\*。
 私のアプリではクリックされた場所のシンボルを非表示のものも含めてすべてリストしたいので、これでは不都合です。
-`mapbox-gl-js`に衝突判定をスキップさせてシンボルをもれなく画面上に表示する[オプション](https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#layout-symbol-icon-allow-overlap)はありますが、重なるシンボルが多い場合はマップがごちゃごちゃし過ぎてしまうでしょう。
+`mapbox-gl-js`に衝突検出をスキップさせてシンボルをもれなく画面上に表示する[オプション](https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#layout-symbol-icon-allow-overlap)はありますが、重なるシンボルが多い場合はマップがごちゃごちゃし過ぎてしまうでしょう。
 
 ということで**Mapboxのマップ上で特定のシンボルと重なるシンボルを集約することのできるライブラリを開発**することにしました。
 
@@ -38,11 +38,11 @@ thumbnail_name = "thumbnail.png"
 
 上記機能に基づき、**特定のLayerでクリックされたシンボルに隠されているシンボルを問い合わせることができます**。
 
-問題を単純にするため、ラベル(Text)のないシンボルのみ(アイコンのみ)を考えることにします。
+問題を単純化するため、ラベル(Text)のないシンボルのみ(アイコンのみ)を考えることにします。
 
-## 衝突判定
+## 衝突検出
 
-`mapbox-gl-js`はどのシンボルを画面に描画するか決めるために衝突判定を行います。
+`mapbox-gl-js`はどのシンボルを画面に描画するか決めるために衝突検出を行います。
 [`Map#showCollisionBoxes`](https://docs.mapbox.com/mapbox-gl-js/api/map/#map#showcollisionboxes)プロパティを有効にすると、`mapbox-gl-js`は画面上に表示・非表示のシンボルすべての衝突ボックスを可視化します。
 以下は衝突ボックス(とサークル)をMapboxのマップ上に表示する例です。
 ![衝突ボックスの例](./collision-boxes-example.png)
@@ -74,7 +74,7 @@ thumbnail_name = "thumbnail.png"
 
 ### 衝突ボックスの別の入手元
 
-[`Placement#placeLayerBucketPart`](#Placement#placeLayerBucketPart)はシンボルの衝突判定を担っています。
+[`Placement#placeLayerBucketPart`](#Placement#placeLayerBucketPart)はシンボルの衝突検出を担っています。
 その内部関数[`placeSymbol`](#Placement#placeLayerBucketPart.placeSymbol)が各シンボルを処理しています。
 さらにその内部関数の[`placeIconFeature`](#Placement#placeLayerBucketPart.placeSymbol.placeIconFeature)を呼び出してアイコンが画面上で優先するシンボルと衝突しているかどうか判定しています。
 [`placeIconFeature`](#Placement#placeLayerBucketPart.placeSymbol.placeIconFeature)は[symbol/placement.js#L709-L710](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/symbol/placement.js#L709-L710)で[`CollisionIndex#placeCollisionBox`](#CollisionIndex#placeCollisionBox)を呼び出しており、それが実際の衝突判定を行っています:
@@ -431,7 +431,7 @@ export function getSymbolPlacementTileProjectionMatrix(coord: OverscaledTileID, 
 
 定義: [symbol/placement.js#L386-L808](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/symbol/placement.js#L386-L808)
 
-このメソッドはシンボルの衝突判定を担います。
+このメソッドはシンボルの衝突検出を担います。
 
 このメソッドは[symbol/placement.js#L786-L797](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/symbol/placement.js#L786-L797)で[`placeSymbol`](#Placement#placeLayerBucketPart.placeSymbol)を各シンボルについて呼び出します:
 ```js
