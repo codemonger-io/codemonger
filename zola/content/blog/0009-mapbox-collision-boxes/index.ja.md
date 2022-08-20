@@ -1,6 +1,6 @@
 +++
 title = "Mapboxの非表示シンボルを扱う (1. 衝突ボックス編)"
-description = "Mapboxで非表示になっているシンボルを扱うライブラリの開発について"
+description = "シリーズ:Mapboxで非表示になっているシンボルを扱うライブラリの開発について"
 date = 2022-08-20
 draft = false
 [extra]
