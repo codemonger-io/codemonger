@@ -1,7 +1,7 @@
 +++
 title = "Dealing with Mapbox hidden symbols (2. Resolving features)"
 description = "Series: About development of a library that deals with Mapbox hidden symbols"
-date = 2022-09-13
+date = 2022-09-16
 draft = true
 [extra]
 hashtags = ["Mapbox", "MapboxGLJS"]
@@ -134,7 +134,7 @@ for (const tile of layerTiles) {
 }
 ```
 
-You can find complete code in [my GitHub repository](https://github.com/codemonger-io/mapbox-collision-boxes/blob/3379090e3945ed2850e1fc882be60a9e6b25eea2/src/index.ts#L57-L144) that includes additional checks.
+You can find complete code on [my GitHub repository](https://github.com/codemonger-io/mapbox-collision-boxes/blob/3379090e3945ed2850e1fc882be60a9e6b25eea2/src/index.ts#L57-L144) that includes additional checks.
 
 ## Resolving symbol features
 
@@ -180,23 +180,23 @@ So **we can resolve features by supplying proper parameters to [`FeatureIndex#lo
 ### Preparing parameters for FeatureIndex#lookupSymbolFeatures
 
 We have to provide the following parameters to reproduce the results of a [`FeatureIndex#lookupSymbolFeatures`](#FeatureIndex#lookupSymbolFeatures) call in [source/query_features.js#L95-L103](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/source/query_features.js#L95-L103),
-- [`queryData`](#Parameter_-_queryData)
-- [`serializedLayers`](#Parameter_-_serializedLayers)
-- [`params.filter`](#Parameter_-_params.filter)
-- [`params.layers`](#Parameter_-_params.layers)
-- [`params.availableImages`](#Parameter_-_params.availableImages)
-- [`styleLayers`](#Parameter_-_styleLayers)
+- [`queryData`](#Parameter:_queryData)
+- [`serializedLayers`](#Parameter:_serializedLayers)
+- [`params.filter`](#Parameter:_params.filter)
+- [`params.layers`](#Parameter:_params.layers)
+- [`params.availableImages`](#Parameter:_params.availableImages)
+- [`styleLayers`](#Parameter:_styleLayers)
 
 Please note that we do not have to reproduce the first parameter `renderedSymbols[queryData.bucketInstanceId]` because we need all the features in a [`SymbolBucket`](#SymbolBucket) rather than features intersecting a specific bounding box.
 Please refer to the [section "Listing all the feature indices in a SymbolBucket"](#Listing_all_the_feature_indices_in_a_SymbolBucket) for how to substitute this parameter.
 
-#### Parameter - queryData
+#### Parameter: queryData
 
 `queryData` is bound to a [`RetainedQueryData`](#RetainedQueryData) in the loop in [source/query_features.js#L94-L132](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/source/query_features.js#L94-L132):
 ```ts
     for (const queryData of bucketQueryData) {
         const bucketSymbols = queryData.featureIndex.lookupSymbolFeatures(
-        // ...truncated for legibility
+        // ... truncated for legibility
     }
 ```
 
@@ -211,7 +211,7 @@ Please refer to the [section "Listing all the feature indices in a SymbolBucket"
 
 `retainedQueryData` is [`Placement#retainedQueryData`](#Placement#retainedQueryData).
 
-[`queryRenderedSymbols`](#query_features.queryRenderedSymbols) initializes `renderedSymbols` at [source/query_features.js#L87](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/source/query_features.js#L87).
+[`queryRenderedSymbols`](#query_features.queryRenderedSymbols) initializes `renderedSymbols` at [source/query_features.js#L87](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/source/query_features.js#L87):
 ```ts
     const renderedSymbols = collisionIndex.queryRenderedSymbols(queryGeometry);
 ```
@@ -225,11 +225,11 @@ Since [we have a list of `SymbolBucket`s](#Listing_Tiles_and_SymbolBuckets_on_a_
 const queryData = placement.retainedQueryData[bucket.bucketInstanceId];
 ```
 
-#### Parameter - serializedLayers
+#### Parameter: serializedLayers
 
 This parameter is [`Style#_serializedLayers`](#Style#_serializedLayers).
 
-#### Parameter - params.filter
+#### Parameter: params.filter
 
 [`Map#queryRenderedFeatures`](#Map#queryRenderedFeatures) specifies an empty object to the `params` parameter of [`Style#queryRenderedFeatures`](#Style#queryRenderedFeatures) by default (`options` &rightarrow; `params` in [ui/map.js#L1716-L1719](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/ui/map.js#L1716-L1719)):
 ```ts
@@ -241,18 +241,18 @@ This parameter is [`Style#_serializedLayers`](#Style#_serializedLayers).
 
 So this parameter may be `undefined`.
 
-#### Parameter - params.layers
+#### Parameter: params.layers
 
-Like [`params.filter`](#Parameter_-_params.filter), this parameter may be `undefined` too.
+Like [`params.filter`](#Parameter:_params.filter), this parameter may be `undefined` too.
 
-#### Parameter - params.availableImages
+#### Parameter: params.availableImages
 
 [`Style#queryRenderedFeatures`](#Style#queryRenderedFeatures) specifies [`Style#_availableImages`](#Style#_availableImages) to this parameter at [style/style.js#L1354](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/style/style.js#L1354):
 ```ts
         params.availableImages = this._availableImages;
 ```
 
-#### Parameter - styleLayers
+#### Parameter: styleLayers
 
 This parameter is [`Style#_layers`](#Style#_layers).
 
@@ -274,7 +274,7 @@ for (let i = 0; i < bucket.symbolInstances.length; ++i>) {
 ```
 
 Associating the feature with the collision box is straightforward because `featureIndex` in the above code corresponds to `bucket.collisionArrays[i]`: [a parameter for collision box recalculation](../0009-mapbox-collision-boxes/#Parameter:_collisionBox).
-You may skip the rest of this section to the next [section "Calculating the size of an icon"](#Calculating_the_size_of_an_icon).
+You may skip the rest of this section to the [next section "Calculating the size of an icon"](#Calculating_the_size_of_an_icon).
 
 ##### What does CollisionIndex#queryRenderedSymbols do?
 
@@ -598,7 +598,7 @@ Now we are sure that **`featureIndex` properties in [`SymbolBucket#symbolInstanc
 
 ## Calculating the size of an icon
 
-In the [last blog post](../0009-mapbox-collision-boxes/), I concluded that [we could reproduce the `scale` parameter](../0009-mapbox-collision-boxes/#Parameter:_scale).
+In the [last blog post](../0009-mapbox-collision-boxes/), I concluded that [we could reproduce the `scale` parameter for icons](../0009-mapbox-collision-boxes/#Parameter:_scale).
 However, I found that the function [`evaluateSizeForZoom`](#symbol_size.evaluateSizeForZoom) to calculate `partiallyEvaluatedIconSize` was not exported from `mapbox-gl-js` afterward.
 So I had to clone [`evaluateSizeForZoom`](#symbol_size.evaluateSizeForZoom) from `mapbox-gl-js` to implement my library.
 
@@ -611,7 +611,7 @@ To make [`evaluateSizeForZoom`](#symbol_size.evaluateSizeForZoom) work, I also h
 - [`interpolate`](#util.interpolate)
 - [`clamp`](#util.clamp)
 
-You can find these clones in my [GitHub repository](https://github.com/codemonger-io/mapbox-collision-boxes/blob/v0.1.0/src/private/symbol-size.ts).
+You can find these clones in [my GitHub repository](https://github.com/codemonger-io/mapbox-collision-boxes/blob/v0.1.0/src/private/symbol-size.ts).
 
 ## Wrap up
 
@@ -637,7 +637,7 @@ I also have covered how to calculate the size of an icon.
 While implementing the library, I faced a TypeScript-specific issue where internal types of `mapbox-gl-js` were not available for TypeScript.
 In an upcoming blog post, I will share how I have addressed the issue.
 
-Please check out the library on my [GitHub repository](https://github.com/codemonger-io/mapbox-collision-boxes)!
+Please also check out the library on [my GitHub repository](https://github.com/codemonger-io/mapbox-collision-boxes)!
 
 ## Appendix
 
@@ -722,13 +722,13 @@ Definition: [source/vector_tile_worker_source.js#L140-L309](https://github.com/m
 
 Definition: [source/vector_tile_worker_source.js#L177-L238](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/source/vector_tile_worker_source.js#L177-L238)
 
-This method runs in a worker thread.
+This method runs on a worker thread.
 
 ##### VectorTileWorkerSource#reloadTile
 
 Definition: [source/vector_tile_worker_source.js#L244-L275](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/source/vector_tile_worker_source.js#L244-L275)
 
-This method runs in a worker thread.
+This method runs on a worker thread.
 
 #### WorkerTile
 
@@ -863,7 +863,7 @@ Definition: [data/bucket/symbol_bucket.js#L380](https://github.com/mapbox/mapbox
     collisionArrays: Array<CollisionArrays>;
 ```
 
-Items in this property match [`SymbolBucket#symbolInstances`](#SymbolBucket#symbolInstances).
+Items in this property match those in [`SymbolBucket#symbolInstances`](#SymbolBucket#symbolInstances).
 
 [`SymbolBucket#deserializeCollisionBoxes`](#SymbolBucket#deserializeCollisionBoxes) initializes and fills this property.
 
@@ -874,7 +874,7 @@ Definition: [data/bucket/symbol_bucket.js#L379](https://github.com/mapbox/mapbox
     symbolInstances: SymbolInstanceArray;
 ```
 
-Items in this property match [`SymbolBucket#collisionArrays`](#SymbolBucket#collisionArrays).
+Items in this property match those in [`SymbolBucket#collisionArrays`](#SymbolBucket#collisionArrays).
 
 ##### SymbolBucket#collisionBoxArray
 
@@ -1172,7 +1172,7 @@ This method calls
 - [`Placement#getBucketParts`](#Placement#getBucketParts)
 - [`Placement#placeLayerBucketPart`](#Placement#placeLayerBucketPart)
 
-[`PauseablePlacement#continuePlacement`](#PauseablePlacement#continuePlacement) calls this function at [style/pauseable_placement.js#L109](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/style/pauseable_placement.js#L109):
+[`PauseablePlacement#continuePlacement`](#PauseablePlacement#continuePlacement) calls this method at [style/pauseable_placement.js#L109](https://github.com/mapbox/mapbox-gl-js/blob/e29e113ff5e1f4c073f84b8cbe546006d2fb604f/src/style/pauseable_placement.js#L109):
 ```ts
                 const pausePlacement = this._inProgressLayer.continuePlacement(layerTiles[layer.source], this.placement, this._showCollisionBoxes, layer, shouldPausePlacement);
 ```
