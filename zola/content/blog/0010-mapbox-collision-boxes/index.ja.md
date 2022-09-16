@@ -2,7 +2,7 @@
 title = "Mapboxの非表示シンボルを扱う (2. Featureの解決編)"
 description = "シリーズ:Mapboxで非表示になっているシンボルを扱うライブラリの開発について"
 date = 2022-09-16
-draft = true
+draft = false
 [extra]
 hashtags = ["Mapbox", "MapboxGLJS"]
 thumbnail_name = "thumbnail.png"

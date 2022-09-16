@@ -2,9 +2,10 @@
 title = "Dealing with Mapbox hidden symbols (1. Collision box)"
 description = "Series: About development of a library that deals with Mapbox hidden symbols"
 date = 2022-08-20
+updated = 2022-09-16
 draft = false
 [extra]
-hashtags = ["Mapbox", "mapbox-gl-js"]
+hashtags = ["Mapbox", "MapboxGLJS"]
 thumbnail_name = "thumbnail.png"
 +++
 
@@ -28,6 +29,8 @@ This is not convenient for my app because it wants to list all the symbols inclu
 Although there is an [option](https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#layout-symbol-icon-allow-overlap) that makes `mapbox-gl-js` skip collision detection and show every single symbol on the screen, this will make the map too busy if there are many overlapping symbols.
 
 So I decided to **develop a library that can aggregate symbols overlapping with a specific symbol on a Mapbox map**.
+
+Edit (2022-08-29): The lbirary is available at [https://github.com/codemonger-io/mapbox-collision-boxes](https://github.com/codemonger-io/mapbox-collision-boxes).
 
 \* [`Map#queryRenderedFeatures`](https://docs.mapbox.com/mapbox-gl-js/api/map/#map#queryrenderedfeatures) returns only visible symbols (features) but no hidden features.
 [`"click"`](https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:click) event neither tells about hidden features.
@@ -268,7 +271,10 @@ Please see also [`Tile#tileSize`](#Tile#tileSize) and [`EXTENT`](#EXTENT).
 
 Please refer to [`SymbolBcuket#getSymbolInstanceIconSize`](#SymbolBucket#getSymbolInstanceIconSize) for more details.
 
-We **can reproduce `partiallyEvaluatedIconSize` and calculate this parameter**.
+We **can reproduce `partiallyEvaluatedIconSize` and calculate this parameter**\*.
+
+\* I found that the function `symbolSize.evaluateSizeForZoom` was not exported from `mapbox-gl-js` afterward.
+I will cover this in an [upcoming post](../0010-mapbox-collision-boxes/#Calculating_the_size_of_an_icon).
 
 #### Parameter: shift
 
@@ -300,7 +306,7 @@ The following questions remain,
 - How can we obtain [`Tile`](#Tile)s and [`SymbolBucket`](#SymbolBucket)s?
 - How can we associate recalculated collision boxes with symbol [features](#Feature)?
 
-So, in an upcoming blog post, we will answer these questions.
+So, in an [upcoming blog post](../0010-mapbox-collision-boxes/), we will answer these questions.
 
 ## Appendix
 
