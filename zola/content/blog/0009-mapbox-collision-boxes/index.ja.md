@@ -2,9 +2,10 @@
 title = "Mapboxの非表示シンボルを扱う (1. 衝突ボックス編)"
 description = "シリーズ:Mapboxで非表示になっているシンボルを扱うライブラリの開発について"
 date = 2022-08-20
+updated = 2022-09-16
 draft = false
 [extra]
-hashtags = ["Mapbox", "mapbox-gl-js"]
+hashtags = ["Mapbox", "MapboxGLJS"]
 thumbnail_name = "thumbnail.png"
 +++
 
@@ -28,6 +29,8 @@ thumbnail_name = "thumbnail.png"
 `mapbox-gl-js`に衝突検出をスキップさせてシンボルをもれなく画面上に表示する[オプション](https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#layout-symbol-icon-allow-overlap)はありますが、重なるシンボルが多い場合はマップがごちゃごちゃし過ぎてしまうでしょう。
 
 ということで**Mapboxのマップ上で特定のシンボルと重なるシンボルを集約することのできるライブラリを開発**することにしました。
+
+2022-08-29追記: ライブラリは[https://github.com/codemonger-io/mapbox-collision-boxes](https://github.com/codemonger-io/mapbox-collision-boxes)で手に入ります。
 
 \* [`Map#queryRenderedFeatures`](https://docs.mapbox.com/mapbox-gl-js/api/map/#map#queryrenderedfeatures)は表示されているシンボル(Feature)だけを返し非表示のものは返しません。
 [`"click"`](https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:click)イベントも非表示のシンボルについては教えてくれません。
@@ -268,7 +271,10 @@ thumbnail_name = "thumbnail.png"
 
 詳しくは[`SymbolBcuket#getSymbolInstanceIconSize`](#SymbolBucket#getSymbolInstanceIconSize)を参照ください。.
 
-**`partiallyEvaluatedIconSize`は再現することができ、このパラメータを計算することができます**。
+**`partiallyEvaluatedIconSize`は再現することができ、このパラメータを計算することができます**\*。
+
+\* `symbolSize.evaluateSizeForZoom`関数が`mapbox-gl-js`からエクスポートされていないことに後から気づきました。
+この問題は[次回の投稿](../0010-mapbox-collision-boxes/#アイコンの大きさを計算する)でカバーします。
 
 #### パラメータ: shift
 
@@ -300,7 +306,7 @@ thumbnail_name = "thumbnail.png"
 - [`Tile`](#Tile)と[`SymbolBucket`](#SymbolBucket)はどうやって取得するのか?
 - 再計算した衝突ボックスとシンボルの[Feature](#Feature)をどうやって対応づけるのか?
 
-ということで、次のブログ投稿ではこれらの疑問に答えます。
+ということで、[次のブログ投稿](../0010-mapbox-collision-boxes/)ではこれらの疑問に答えます。
 
 ## 補足
 
