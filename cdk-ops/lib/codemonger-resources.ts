@@ -21,6 +21,8 @@ export type CodemongerResourceNames = {
   developmentDistributionDomainName: string;
   /** Name of the S3 bucket for production contents. */
   productionContentsBucketName: string;
+  /** Name of the S3 bucket of CloudFront access logs for development. */
+  developmentContentsAccessLogsBucketName: string;
 };
 
 /**
@@ -50,10 +52,16 @@ export async function resolveCodemongerResourceNames():
   if (productionContentsBucketName == null) {
     throw new Error('contents bucket for production is not available');
   }
+  const developmentContentsAccessLogsBucketName =
+    developmentOutputs.get('ContentsAccessLogsBucketName');
+  if (developmentContentsAccessLogsBucketName == null) {
+    throw new Error('access logs bucket for development is not available');
+  }
   return {
     developmentContentsBucketName,
     developmentDistributionDomainName,
     productionContentsBucketName,
+    developmentContentsAccessLogsBucketName,
   };
 }
 
@@ -104,6 +112,8 @@ export class CodemongerResources extends Construct {
   readonly productionContentsBucket: s3.IBucket;
   /** Domain name for production. */
   readonly productionDomainName = CODEMONGER_DOMAIN_NAME;
+  /** S3 bucket of CloudFront access logs for development. */
+  readonly developmentContentsAccessLogsBucket: s3.IBucket;
 
   constructor(
     scope: Construct,
@@ -113,6 +123,7 @@ export class CodemongerResources extends Construct {
     super(scope, id);
 
     const {
+      developmentContentsAccessLogsBucketName,
       developmentContentsBucketName,
       developmentDistributionDomainName,
       productionContentsBucketName,
@@ -128,6 +139,11 @@ export class CodemongerResources extends Construct {
       this,
       'ProductionContentsBucket',
       productionContentsBucketName,
+    );
+    this.developmentContentsAccessLogsBucket = s3.Bucket.fromBucketName(
+      this,
+      'DevelopmentContentsAccessLogsBucket',
+      developmentContentsAccessLogsBucketName,
     );
   }
 }
