@@ -71,7 +71,7 @@ export async function resolveCodemongerResourceNames():
 async function fetchStackOutput(stage: DeploymentStage):
   Promise<Map<string, string>>
 {
-  const stackName = `${CODEMONGER_STACK_PREFIX}-${stage}`;
+  const stackName = `${CODEMONGER_STACK_PREFIX}${stage}`;
   const client = new CloudFormationClient({});
   const command = new DescribeStacksCommand({
     StackName: stackName,
