@@ -12,6 +12,7 @@ import csv
 import gzip
 import io
 import ipaddress
+import json
 import logging
 import os
 import sys
@@ -123,17 +124,71 @@ def process_logs(logs_in: Iterator[str], logs_out: TextIO):
 
 def lambda_handler(event, _):
     """Masks information in a given CloudFront access logs file on S3.
+
+    ``event`` is supposed to be an SQS message event described at
+    https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html
     """
-    LOGGER.debug('masking access logs: %s', str(event))
-    src = source_bucket.Object(event['key'])
+    for record in event['Records']:
+        try:
+            message = json.loads(record['body'])
+        except json.JSONDecodeError:
+            LOGGER.error('invalid SQS record: %s', str(record))
+            continue
+        # may receive a test message "s3:TestEvent"
+        # and a test message does not have "Records"
+        entries = message.get('Records')
+        if entries is None:
+            LOGGER.debug('maybe a test message: %s', str(message))
+            continue
+        for entry in entries:
+            event_name = entry.get('eventName', '?')
+            if event_name.startswith('ObjectCreated:'):
+                s3_object = entry.get('s3')
+                if s3_object is not None:
+                    process_s3_object(s3_object)
+                else:
+                    LOGGER.error('invalid S3 event: %s', str(entry))
+            else:
+                LOGGER.error(
+                    'event "%s" other than S3 object creation was notified.'
+                    ' please check the event source configuration',
+                    event_name,
+                )
+    return {}
+
+
+def process_s3_object(s3_object):
+    """Processes a given S3 object event.
+
+    ``s3_object`` must conform to an S3 object creation event described at
+    https://docs.aws.amazon.com/lambda/latest/dg/with-s3.html
+    """
+    LOGGER.debug('processing S3 object event: %s', str(s3_object))
+    # makes sure that the source bucket matches
+    bucket_name = s3_object.get('bucket', {}).get('name')
+    if bucket_name is None:
+        LOGGER.error('no bucket name in S3 object event: %s', str(s3_object))
+        return
+    if bucket_name != SOURCE_BUCKET_NAME:
+        LOGGER.warning(
+            'bucket name must be %s but %s was given.'
+            ' please check the event source configuration',
+            SOURCE_BUCKET_NAME,
+            bucket_name,
+        )
+        return
+    key = s3_object.get('object', {}).get('key')
+    if key is None:
+        LOGGER.error('no object key in S3 object event: %s', str(s3_object))
+        return
+    src = source_bucket.Object(key)
     results = src.get()
     with open_body(results) as body:
         with gzip.open(body, mode='rt') as tsv_in:
-            dest = destination_bucket.Object(event['key'])
+            dest = destination_bucket.Object(key)
             with S3OutputStream(dest) as masked_out:
                 with gzip.open(masked_out, mode='wt') as tsv_out:
                     process_logs(tsv_in, tsv_out)
-    return {}
 
 
 class S3OutputStream(io.RawIOBase):

@@ -1,7 +1,15 @@
 import * as path from 'path';
 
 import { PythonFunction } from '@aws-cdk/aws-lambda-python-alpha';
-import { RemovalPolicy, aws_lambda as lambda, aws_s3 as s3 } from 'aws-cdk-lib';
+import {
+  Duration,
+  RemovalPolicy,
+  aws_lambda as lambda,
+  aws_lambda_event_sources as lambda_event,
+  aws_s3 as s3,
+  aws_s3_notifications as s3n,
+  aws_sqs as sqs,
+} from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 import type { DeploymentStage } from 'cdk-common';
@@ -23,7 +31,7 @@ export class AccessLogsMasking extends Construct {
 
     const { accessLogsBucket } = props;
 
-    // provisions an S3 bucket for masked access logs.
+    // S3 bucket for masked access logs.
     this.maskedAccessLogsBucket = new s3.Bucket(
       this,
       'MaskedAccessLogsBucket',
@@ -31,12 +39,20 @@ export class AccessLogsMasking extends Construct {
         blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
         encryption: s3.BucketEncryption.S3_MANAGED,
         enforceSSL: true,
+        lifecycleRules: [
+          {
+            // safeguard for incomplete multipart uploads.
+            // minimum resoluation is one day.
+            abortIncompleteMultipartUploadAfter: Duration.days(1),
+          },
+        ],
         removalPolicy: RemovalPolicy.RETAIN,
       },
     );
 
     // Lambda functions
     // - masks CloudFront access logs.
+    const maskAccessLogsLambdaTimeout = Duration.seconds(30);
     const maskAccessLogsLambda = new PythonFunction(
       this,
       'MaskAccessLogsLambda',
@@ -50,9 +66,44 @@ export class AccessLogsMasking extends Construct {
           SOURCE_BUCKET_NAME: accessLogsBucket.bucketName,
           DESTINATION_BUCKET_NAME: this.maskedAccessLogsBucket.bucketName,
         },
+        timeout: maskAccessLogsLambdaTimeout,
       },
     );
     accessLogsBucket.grantRead(maskAccessLogsLambda);
     this.maskedAccessLogsBucket.grantPut(maskAccessLogsLambda);
+
+    // SQS queue to capture creation of access logs files.
+    const maxBatchingWindow = Duration.minutes(5); // least frequency
+    const newLogsQueue = new sqs.Queue(this, 'NewLogsQueue', {
+      retentionPeriod: Duration.days(1),
+      // at least (6 * Lambda timeout) + (maximum batch window)
+      // https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-eventsource
+      visibilityTimeout: maxBatchingWindow.plus(
+        Duration.seconds(6 * maskAccessLogsLambdaTimeout.toSeconds()),
+      ),
+    });
+    accessLogsBucket.addEventNotification(
+      s3.EventType.OBJECT_CREATED,
+      new s3n.SqsDestination(newLogsQueue),
+    );
+    // triggers MaskAccessLogsLambda when the SQS queue receives a message
+    maskAccessLogsLambda.addEventSource(
+      new lambda_event.SqsEventSource(newLogsQueue, {
+        enabled: true,
+        batchSize: 10,
+        maxBatchingWindow,
+        // the following filter did not work as I intended, and I gave up.
+        /*
+        filters: [
+          // SQS queue may receive a test message "s3:TestEvent".
+          // non-test message must contain the "Records" field.
+          lambda.FilterCriteria.filter({
+            body: {
+              Records: lambda.FilterRule.exists(),
+            },
+          }),
+        ], */
+      }),
+    );
   }
 }
