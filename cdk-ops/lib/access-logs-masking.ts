@@ -50,8 +50,8 @@ export class AccessLogsMasking extends Construct {
       },
     );
 
-    // Lambda functions
-    // - masks CloudFront access logs.
+    // masks newly created CloudFront access logs
+    // - Lambda function
     const maskAccessLogsLambdaTimeout = Duration.seconds(30);
     const maskAccessLogsLambda = new PythonFunction(
       this,
@@ -71,8 +71,8 @@ export class AccessLogsMasking extends Construct {
     );
     accessLogsBucket.grantRead(maskAccessLogsLambda);
     this.maskedAccessLogsBucket.grantPut(maskAccessLogsLambda);
-
-    // SQS queue to capture creation of access logs files.
+    // - SQS queue to capture creation of access logs files, which triggers
+    //   the above Lambda function
     const maxBatchingWindow = Duration.minutes(5); // least frequency
     const newLogsQueue = new sqs.Queue(this, 'NewLogsQueue', {
       retentionPeriod: Duration.days(1),
@@ -86,7 +86,6 @@ export class AccessLogsMasking extends Construct {
       s3.EventType.OBJECT_CREATED,
       new s3n.SqsDestination(newLogsQueue),
     );
-    // triggers MaskAccessLogsLambda when the SQS queue receives a message
     maskAccessLogsLambda.addEventSource(
       new lambda_event.SqsEventSource(newLogsQueue, {
         enabled: true,
@@ -103,6 +102,47 @@ export class AccessLogsMasking extends Construct {
             },
           }),
         ], */
+      }),
+    );
+
+    // deletes original CloudFront access logs.
+    // - Lambda function
+    const deleteAccessLogsLambdaTimeout = Duration.seconds(10);
+    const deleteAccessLogsLambda = new PythonFunction(
+      this,
+      'DeleteAccessLogsLambda',
+      {
+        description: 'Deletes the original CloudFront access logs file',
+        runtime: lambda.Runtime.PYTHON_3_8,
+        entry: path.join('lambda', 'delete-access-logs'),
+        index: 'index.py',
+        handler: 'lambda_handler',
+        environment: {
+          SOURCE_BUCKET_NAME: accessLogsBucket.bucketName,
+          // bucket name for masked logs is necessary to verify input events.
+          DESTINATION_BUCKET_NAME: this.maskedAccessLogsBucket.bucketName,
+        },
+        timeout: deleteAccessLogsLambdaTimeout,
+      },
+    );
+    accessLogsBucket.grantDelete(deleteAccessLogsLambda);
+    // - SQS queue to capture creation of masked access logs files, which
+    //   triggers the above Lambda function
+    const maskedLogsQueue = new sqs.Queue(this, 'MaskedLogsQueue', {
+      retentionPeriod: Duration.days(1),
+      visibilityTimeout: maxBatchingWindow.plus(
+        Duration.seconds(6 * deleteAccessLogsLambdaTimeout.toSeconds()),
+      ),
+    });
+    this.maskedAccessLogsBucket.addEventNotification(
+      s3.EventType.OBJECT_CREATED,
+      new s3n.SqsDestination(maskedLogsQueue),
+    );
+    deleteAccessLogsLambda.addEventSource(
+      new lambda_event.SqsEventSource(maskedLogsQueue, {
+        enabled: true,
+        batchSize: 10,
+        maxBatchingWindow,
       }),
     );
   }
