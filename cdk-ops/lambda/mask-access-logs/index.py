@@ -171,7 +171,7 @@ def process_s3_object(s3_object):
         return
     if bucket_name != SOURCE_BUCKET_NAME:
         LOGGER.warning(
-            'bucket name must be %s but %s was given.'
+            'bucket name must be "%s" but "%s" was given.'
             ' please check the event source configuration',
             SOURCE_BUCKET_NAME,
             bucket_name,
@@ -182,7 +182,11 @@ def process_s3_object(s3_object):
         LOGGER.error('no object key in S3 object event: %s', str(s3_object))
         return
     src = source_bucket.Object(key)
-    results = src.get()
+    try:
+        results = src.get()
+    except s3.meta.client.exceptions.NoSuchKey:
+        LOGGER.debug('object "%s" no longer exists', key)
+        return
     with open_body(results) as body:
         with gzip.open(body, mode='rt') as tsv_in:
             dest = destination_bucket.Object(key)
