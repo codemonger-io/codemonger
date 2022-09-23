@@ -1,7 +1,7 @@
 +++
 title = "Dealing with Mapbox hidden symbols (3. Augmenting types)"
 description = "Series: About development of a library that deals with Mapbox hidden symbols"
-date = 2022-09-21
+date = 2022-09-23
 draft = true
 [extra]
 hashtags = ["Mapbox", "MapboxGLJS", "TypeScript"]
@@ -27,7 +27,7 @@ The library (`mapbox-collision-boxes`) is available on [my GitHub repository](ht
 
 TypeScript is a variant of [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript), which provides powerful typing features.
 Please refer to the [official website of TypeScript](https://www.typescriptlang.org) for more details.
-[This page](https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html)[\[1\]](#Reference) can also help understand the difference between TypeScript and JavaScript.
+[This page](https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html)[\[1\]](#Reference) can help understand the difference between TypeScript and JavaScript.
 I have chosen TypeScript for the implementation language of `mapbox-collision-boxes`.
 
 ## Is mapbox-gl-js typed?
@@ -67,6 +67,16 @@ declare module 'mapbox-gl' {
 
 After the above declaration, you can access `Map#style` in a type-safe manner.
 
+For `Bucket` and `SymbolBucket`, we can just add interfaces for them since they are simply missing in `@types/mapbox-gl`:
+```ts
+export interface Bucket {}
+
+export interface SymbolBucket extends Bucket {
+  bucketInstanceId: number;
+  // ... other properties
+}
+```
+
 I also have introduced a utility function that tests if a given `Bucket` is a `SymbolBucket` ([mapbox-collision-boxes/private/mapbox-types.ts#L232-L234](https://github.com/codemonger-io/mapbox-collision-boxes/blob/b48e39231ef328815ef9ad276fd230de2ccfcaab/src/private/mapbox-types.ts#L232-L234)), which uses another TypeScript feature ["type predicates"](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates).
 ```ts
 export function isSymbolBucket(bucket: Bucket): bucket is SymbolBucket {
@@ -74,7 +84,7 @@ export function isSymbolBucket(bucket: Bucket): bucket is SymbolBucket {
 }
 ```
 
-You can find complete definitions necessary to implement `mapbox-collision-boxes` on [my GitHub repository](https://github.com/codemonger-io/mapbox-collision-boxes/blob/db7812e7c874df1f59ea6264e027ac0eeeb95875/src/private/mapbox-types.ts).
+You can find minimum definitions necessary to implement `mapbox-collision-boxes` on [my GitHub repository](https://github.com/codemonger-io/mapbox-collision-boxes/blob/db7812e7c874df1f59ea6264e027ac0eeeb95875/src/private/mapbox-types.ts).
 
 ## Wrap-up
 
