@@ -2,6 +2,7 @@
 title = "Mapboxの非表示シンボルを扱う (2. Featureの解決編)"
 description = "シリーズ:Mapboxで非表示になっているシンボルを扱うライブラリの開発について"
 date = 2022-09-16
+updated = 2022-09-24
 draft = false
 [extra]
 hashtags = ["Mapbox", "MapboxGLJS"]
@@ -635,7 +636,7 @@ for (const tile of layerTiles) {
 またアイコンのサイズを計算する方法もカバーしました。
 
 ライブラリを実装している途中、`mapbox-gl-js`の内部タイプが利用できないというTypeScript特有の課題に直面しました。
-今後のブログ投稿で、その課題にどう対処したかを共有するつもりです。
+[今後のブログ投稿](../0011-mapbox-collision-boxes/)で、その課題にどう対処したかを共有するつもりです。
 
 [私のGitHubレポジトリ](https://github.com/codemonger-io/mapbox-collision-boxes)でライブラリもご確認ください!
 

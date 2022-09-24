@@ -2,6 +2,7 @@
 title = "Dealing with Mapbox hidden symbols (2. Resolving features)"
 description = "Series: About development of a library that deals with Mapbox hidden symbols"
 date = 2022-09-16
+updated = 2022-09-24
 draft = false
 [extra]
 hashtags = ["Mapbox", "MapboxGLJS"]
@@ -635,7 +636,7 @@ for (const tile of layerTiles) {
 I also have covered how to calculate the size of an icon.
 
 While implementing the library, I faced a TypeScript-specific issue where internal types of `mapbox-gl-js` were not available for TypeScript.
-In an upcoming blog post, I will share how I have addressed the issue.
+In an [upcoming blog post](../0011-mapbox-collision-boxes/), I will share how I have addressed the issue.
 
 Please also check out the library on [my GitHub repository](https://github.com/codemonger-io/mapbox-collision-boxes)!
 
