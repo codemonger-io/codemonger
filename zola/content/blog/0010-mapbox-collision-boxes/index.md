@@ -2,7 +2,7 @@
 title = "Dealing with Mapbox hidden symbols (2. Resolving features)"
 description = "Series: About development of a library that deals with Mapbox hidden symbols"
 date = 2022-09-16
-updated = 2022-09-23
+updated = 2022-09-24
 draft = false
 [extra]
 hashtags = ["Mapbox", "MapboxGLJS"]
