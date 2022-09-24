@@ -21,8 +21,14 @@ export interface Props {
   deploymentStage: DeploymentStage;
 }
 
-/** CDK construct that provisions resources to mask CloudFront access logs. */
-export class AccessLogsMasking extends Construct {
+/**
+ * CDK construct that provisions resources to process CloudFront access logs.
+ *
+ * @remarks
+ *
+ * Defines extract, transform, and load (ETL) operations.
+ */
+export class AccessLogsETL extends Construct {
   /** S3 bucket for masked access logs. */
   readonly maskedAccessLogsBucket: s3.IBucket;
 

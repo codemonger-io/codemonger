@@ -1,7 +1,7 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
-import { AccessLogsMasking } from './access-logs-masking';
+import { AccessLogsETL } from './access-logs-etl';
 import {
   CodemongerResources,
   CodemongerResourceNames,
@@ -25,9 +25,9 @@ export class CdkOpsStack extends Stack {
     const pipeline = new ContentsPipeline(this, 'ContentsPipeline', {
       codemongerResources,
     });
-    const developmentContentsAccessLogsMasking = new AccessLogsMasking(
+    const developmentContentsAccessLogsETL = new AccessLogsETL(
       this,
-      'DevelopmentContentsAccessLogsMasking',
+      'DevelopmentContentsAccessLogsETL',
       {
         accessLogsBucket:
           codemongerResources.developmentContentsAccessLogsBucket,
