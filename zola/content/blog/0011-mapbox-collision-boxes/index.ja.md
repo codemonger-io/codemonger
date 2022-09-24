@@ -2,7 +2,7 @@
 title = "Mapboxの非表示シンボルを扱う (3. 型の拡張編)"
 description = "Series: About development of a library that deals with Mapbox hidden symbols"
 date = 2022-09-24
-draft = true
+draft = false
 [extra]
 hashtags = ["Mapbox", "MapboxGLJS", "TypeScript"]
 thumbnail_name = "thumbnail.jpg"
