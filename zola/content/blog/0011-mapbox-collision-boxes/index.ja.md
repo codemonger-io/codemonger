@@ -1,11 +1,11 @@
 +++
 title = "Mapboxの非表示シンボルを扱う (3. 型の拡張編)"
 description = "Series: About development of a library that deals with Mapbox hidden symbols"
-date = 2022-09-23
+date = 2022-09-24
 draft = true
 [extra]
 hashtags = ["Mapbox", "MapboxGLJS", "TypeScript"]
-thumbnail_name = "thumbnail.png"
+thumbnail_name = "thumbnail.jpg"
 +++
 
 [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/guides/)の画面上で別のシンボルに隠されたシンボルを扱うユーティリティライブラリを開発中です。

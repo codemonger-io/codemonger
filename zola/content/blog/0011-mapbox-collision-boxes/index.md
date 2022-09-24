@@ -1,11 +1,11 @@
 +++
 title = "Dealing with Mapbox hidden symbols (3. Augmenting types)"
 description = "Series: About development of a library that deals with Mapbox hidden symbols"
-date = 2022-09-23
+date = 2022-09-24
 draft = true
 [extra]
 hashtags = ["Mapbox", "MapboxGLJS", "TypeScript"]
-thumbnail_name = "thumbnail.png"
+thumbnail_name = "thumbnail.jpg"
 +++
 
 I have been working on a utility library for [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/guides/), that deals with symbols hidden by another symbol on the screen.
