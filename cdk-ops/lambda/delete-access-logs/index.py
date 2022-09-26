@@ -16,6 +16,7 @@ import json
 import logging
 import os
 import boto3
+from botocore.exceptions import ClientError
 
 
 SOURCE_BUCKET_NAME = os.environ['SOURCE_BUCKET_NAME']
@@ -103,7 +104,14 @@ def process_s3_object(s3_object):
             DESTINATION_KEY_PREFIX,
         )
         return
-    key = key[len(DESTINATION_KEY_PREFIX):]
-    src = source_bucket.Object(key)
-    res = src.delete()
-    LOGGER.debug('deleted object "%s": %s', key, str(res))
+    # key should be like,
+    #   {DESTINATION_KEY_PREFIX}{year}/{month}/{date}/{original_key}
+    # so the last segment separated by a slash ('/') is the key for the
+    # original access logs file.
+    src_key = key.split('/')[-1]
+    src = source_bucket.Object(src_key)
+    try:
+        res = src.delete()
+        LOGGER.debug('deleted object "%s": %s', src_key, str(res))
+    except ClientError as exc:
+        LOGGER.error('failed to delete object "%s": %s', src_key, str(exc))
