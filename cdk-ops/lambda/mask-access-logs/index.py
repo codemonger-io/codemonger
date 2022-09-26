@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 
-"""Masks information in CloudFront access logs.
+"""Masks information in CloudFront access logs files.
 
 You have to specify the following environment variables,
-* SOURCE_BUCKET_NAME: name of the S3 bucket containing access logs files to be
-  masked.
+* SOURCE_BUCKET_NAME: name of the S3 bucket containing CloudFront access logs
+  files to be masked.
+* DESTINATION_BUCKET_NAME: name of the S3 bucket where masked CloudFront access
+  logs files are to be written.
+* DESTINATION_KEY_PREFIX: prefix to be prepended to the keys of objects in the
+  destination bucket.
 """
 
 import array
@@ -21,8 +25,9 @@ from typing import Dict, Iterable, Iterator, TextIO
 import boto3
 
 
-SOURCE_BUCKET_NAME = os.environ.get('SOURCE_BUCKET_NAME')
-DESTINATION_BUCKET_NAME = os.environ.get('DESTINATION_BUCKET_NAME')
+SOURCE_BUCKET_NAME = os.environ['SOURCE_BUCKET_NAME']
+DESTINATION_BUCKET_NAME = os.environ['DESTINATION_BUCKET_NAME']
+DESTINATION_KEY_PREFIX = os.environ['DESTINATION_KEY_PREFIX']
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
@@ -123,10 +128,17 @@ def process_logs(logs_in: Iterator[str], logs_out: TextIO):
 
 
 def lambda_handler(event, _):
-    """Masks information in a given CloudFront access logs file on S3.
+    """Masks information in given CloudFront access logs files on S3.
 
     ``event`` is supposed to be an SQS message event described at
     https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html
+
+    Each SQS message event is supposed to be an object-creation notification
+    from the S3 bucket specified by ``SOURCE_BUCKET_NAME``.
+
+    This handler masks information in the given S3 objects and stores masked
+    results into the S3 bucket specified by ``DESTINATION_BUCKET_NAME`` with
+    the same object key but with ``DESTINATION_KEY_PREFIX`` prefixed.
     """
     for record in event['Records']:
         try:
@@ -189,7 +201,7 @@ def process_s3_object(s3_object):
         return
     with open_body(results) as body:
         with gzip.open(body, mode='rt') as tsv_in:
-            dest = destination_bucket.Object(key)
+            dest = destination_bucket.Object(f'{DESTINATION_KEY_PREFIX}{key}')
             with S3OutputStream(dest) as masked_out:
                 with gzip.open(masked_out, mode='wt') as tsv_out:
                     process_logs(tsv_in, tsv_out)

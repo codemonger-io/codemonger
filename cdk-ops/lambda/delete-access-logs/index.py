@@ -4,10 +4,12 @@
 masked access logs file.
 
 You have to specify the following environment variables,
-* ``SOURCE_BUCKET_NAME``: bucket name of the original CloudFront access logs
-  files
-* ``DESTINATION_BUCKET_NAME``: bucket name of the masked CloudFront access logs
-  files
+* ``SOURCE_BUCKET_NAME``: name of the S3 bucket containing original CloudFront
+  access logs files
+* ``DESTINATION_BUCKET_NAME``: name of the S3 bucket containing transformed
+  CloudFront access logs files
+* ``DESTINATION_KEY_PREFIX``: prefix of S3 object keys, which corresponds to
+  masked access logs
 """
 
 import json
@@ -18,6 +20,7 @@ import boto3
 
 SOURCE_BUCKET_NAME = os.environ['SOURCE_BUCKET_NAME']
 DESTINATION_BUCKET_NAME = os.environ['DESTINATION_BUCKET_NAME']
+DESTINATION_KEY_PREFIX = os.environ['DESTINATION_KEY_PREFIX']
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
@@ -31,6 +34,9 @@ def lambda_handler(event, _):
 
     ``event`` is supposed to be SQS events described at
     https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html
+
+    Each SQS event is supposed to be an object-creation notification from the
+    S3 bucket containing masked access logs.
     """
     for record in event['Records']:
         body = record.get('body')
@@ -89,6 +95,15 @@ def process_s3_object(s3_object):
     if key is None:
         LOGGER.error('no object key in S3 object event: %s', str(s3_object))
         return
+    if not key.startswith(DESTINATION_KEY_PREFIX):
+        LOGGER.warning(
+            '"%s" does not have the preifx "%s".'
+            ' please check the event source configuration',
+            key,
+            DESTINATION_KEY_PREFIX,
+        )
+        return
+    key = key[len(DESTINATION_KEY_PREFIX):]
     src = source_bucket.Object(key)
     res = src.delete()
     LOGGER.debug('deleted object "%s": %s', key, str(res))

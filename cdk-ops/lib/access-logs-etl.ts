@@ -58,6 +58,7 @@ export class AccessLogsETL extends Construct {
 
     // masks newly created CloudFront access logs
     // - Lambda function
+    const maskedAccessLogsKeyPrefix = 'masked/';
     const maskAccessLogsLambdaTimeout = Duration.seconds(30);
     const maskAccessLogsLambda = new PythonFunction(
       this,
@@ -71,6 +72,7 @@ export class AccessLogsETL extends Construct {
         environment: {
           SOURCE_BUCKET_NAME: accessLogsBucket.bucketName,
           DESTINATION_BUCKET_NAME: this.maskedAccessLogsBucket.bucketName,
+          DESTINATION_KEY_PREFIX: maskedAccessLogsKeyPrefix,
         },
         timeout: maskAccessLogsLambdaTimeout,
       },
@@ -127,6 +129,7 @@ export class AccessLogsETL extends Construct {
           SOURCE_BUCKET_NAME: accessLogsBucket.bucketName,
           // bucket name for masked logs is necessary to verify input events.
           DESTINATION_BUCKET_NAME: this.maskedAccessLogsBucket.bucketName,
+          DESTINATION_KEY_PREFIX: maskedAccessLogsKeyPrefix,
         },
         timeout: deleteAccessLogsLambdaTimeout,
       },
@@ -143,6 +146,7 @@ export class AccessLogsETL extends Construct {
     this.maskedAccessLogsBucket.addEventNotification(
       s3.EventType.OBJECT_CREATED,
       new s3n.SqsDestination(maskedLogsQueue),
+      { prefix: maskedAccessLogsKeyPrefix },
     );
     deleteAccessLogsLambda.addEventSource(
       new lambda_event.SqsEventSource(maskedLogsQueue, {
