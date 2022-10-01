@@ -7,6 +7,7 @@ import {
   CodemongerResourceNames,
 } from './codemonger-resources';
 import { ContentsPipeline } from './contents-pipeline';
+import { DataWarehouse } from './data-warehouse';
 import { LatestBoto3Layer } from './latest-boto3-layer';
 
 type Props = StackProps & Readonly<{
@@ -26,6 +27,10 @@ export class CdkOpsStack extends Stack {
     const latestBoto3 = new LatestBoto3Layer(this, 'LatestBoto3');
     const pipeline = new ContentsPipeline(this, 'ContentsPipeline', {
       codemongerResources,
+    });
+    const dataWarehouse = new DataWarehouse(this, 'DevelopmentDataWarehouse', {
+      latestBoto3,
+      deploymentStage: 'development',
     });
     const developmentContentsAccessLogsETL = new AccessLogsETL(
       this,
