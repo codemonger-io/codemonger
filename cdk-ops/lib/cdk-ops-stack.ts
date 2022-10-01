@@ -7,6 +7,7 @@ import {
   CodemongerResourceNames,
 } from './codemonger-resources';
 import { ContentsPipeline } from './contents-pipeline';
+import { LatestBoto3Layer } from './latest-boto3-layer';
 
 type Props = StackProps & Readonly<{
   // names of the main codemonger resources.
@@ -22,6 +23,7 @@ export class CdkOpsStack extends Stack {
       'CodemongerResources',
       props.codemongerResourceNames,
     );
+    const latestBoto3 = new LatestBoto3Layer(this, 'LatestBoto3');
     const pipeline = new ContentsPipeline(this, 'ContentsPipeline', {
       codemongerResources,
     });
