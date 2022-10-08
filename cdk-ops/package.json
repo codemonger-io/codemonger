@@ -25,6 +25,7 @@
     "@aws-sdk/client-cloudformation": "^3.112.0",
     "aws-cdk-lib": "^2.42.0",
     "cdk-common": "file:../cdk-common",
+    "cdk2-python-library-layer": "github:kikuomax/cdk-python-library-layer#v0.1.0-v2",
     "constructs": "^10.1.106",
     "source-map-support": "^0.5.21"
   }
