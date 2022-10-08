@@ -84,7 +84,7 @@ def execute_load_script(date: datetime.datetime):
     if status != 'FINISHED':
         if status is not None:
             if status == 'FAILED':
-                LOGGER.error('failed to load access logs: %s', res.get('Error'))
+                LOGGER.error('failed to load access logs: %s', str(res))
             raise DataWarehouseException(
                 f'failed to load access logs: {status}',
             )
@@ -101,6 +101,7 @@ def get_create_raw_access_log_table_statement() -> str:
     """
     return ''.join([
         'CREATE TABLE #raw_access_log (',
+        '  seq_num INT,',
         '  date DATE,',
         '  time TIME,',
         '  edge_location VARCHAR,',
@@ -135,7 +136,7 @@ def get_create_raw_access_log_table_statement() -> str:
         '  sc_range_start BIGINT,',
         '  sc_range_end BIGINT',
         ')',
-        'SORTKEY (date, time)',
+        'SORTKEY (date, time, seq_num)',
     ])
 
 
@@ -161,6 +162,7 @@ def get_create_access_log_stage_table_statement() -> str:
     return ''.join([
         'CREATE TABLE #access_log_stage (',
         '  datetime,',
+        '  seq_num,',
         '  edge_location,',
         '  sc_bytes,',
         '  cs_method,',
@@ -174,9 +176,10 @@ def get_create_access_log_stage_table_statement() -> str:
         '  edge_response_result_type,',
         '  time_to_first_byte',
         ')',
-        '  SORTKEY (datetime)',
+        '  SORTKEY ("datetime", seq_num)',
         '  AS SELECT',
         '    ("date" || \' \' || "time")::TIMESTAMP,',
+        '    seq_num,',
         '    edge_location,',
         '    sc_bytes,',
         '    cs_method,',
@@ -407,6 +410,7 @@ def get_encode_foreign_keys_statement() -> str:
     return ''.join([
         'CREATE TABLE #access_log_stage_2 (',
         '  datetime,',
+        '  seq_num,',
         '  edge_location,',
         '  sc_bytes,',
         '  cs_method,',
@@ -421,9 +425,10 @@ def get_encode_foreign_keys_statement() -> str:
         '  time_to_first_byte',
         ')',
         '  DISTKEY (referer)',
-        '  SORTKEY (datetime)',
+        '  SORTKEY ("datetime", seq_num)',
         '  AS SELECT',
         '    #access_log_stage.datetime,',
+        '    #access_log_stage.seq_num,',
         f'   {tables.EDGE_LOCATION_TABLE_NAME}.id,',
         '    #access_log_stage.sc_bytes,',
         '    #access_log_stage.cs_method,',

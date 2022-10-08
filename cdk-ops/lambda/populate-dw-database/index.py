@@ -118,7 +118,8 @@ def get_create_access_log_table_statement() -> str:
     """
     return ''.join([
         f'CREATE TABLE IF NOT EXISTS {tables.ACCESS_LOG_TABLE_NAME} (',
-        '  datetime TIMESTAMP SORTKEY NOT NULL,',
+        '  datetime TIMESTAMP NOT NULL,',
+        '  seq_num INT NOT NULL,',
         '  edge_location INT NOT NULL,',
         '  sc_bytes BIGINT NOT NULL,',
         '  cs_method VARCHAR NOT NULL,',
@@ -136,7 +137,7 @@ def get_create_access_log_table_statement() -> str:
         f' FOREIGN KEY (referer) REFERENCES {tables.REFERER_TABLE_NAME},'
         f' FOREIGN KEY (user_agent) REFERENCES {tables.USER_AGENT_TABLE_NAME},'
         f' FOREIGN KEY (edge_response_result_type) REFERENCES {tables.RESULT_TYPE_TABLE_NAME}'
-        ')',
+        ') SORTKEY (datetime, seq_num)',
     ])
 
 

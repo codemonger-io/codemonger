@@ -67,8 +67,11 @@ def mask_row(row: Dict[str, str]) -> Dict[str, str]:
     """Masks a given row in CloudFront access logs.
     """
     addr = row['c-ip']
-    if addr is not None:
+    if addr != '-':
         row['c-ip'] = mask_ip_address(addr)
+    addr = row['x-forwarded-for']
+    if addr != '-':
+        row['x-forwarded-for'] = mask_ip_address(addr)
     return row
 
 
@@ -325,6 +328,7 @@ class GzippedTsvOnS3:
     underlying: S3OutputStream
     gzipped: TextIO
     tsv_writer: csv.DictWriter
+    _next_row_number: int
 
 
     def __init__(
@@ -336,6 +340,17 @@ class GzippedTsvOnS3:
         self.underlying = underlying
         self.gzipped = gzipped
         self.tsv_writer = tsv_writer
+        self._next_row_number = 1
+
+
+    def next_row_number(self) -> int:
+        """Returns the next row number.
+
+        Every call of this method increments the row number.
+        """
+        row_number = self._next_row_number
+        self._next_row_number += 1
+        return row_number
 
 
     def close(self):
@@ -382,14 +397,18 @@ class LogDispatcher:
 
     LOG_DATE_FORMAT = '%Y-%m-%d'
 
+    ROW_NUMBER_COLUMN = 'row_num'
+
     dest_map: Dict[time.struct_time, GzippedTsvOnS3]
 
 
     def __init__(self, src_key: str, column_names: Sequence[str]):
         """Initializes with the column names.
+
+        Prepends a column for row numbers to ``column_names``.
         """
         self.src_key = src_key
-        self.column_names = column_names
+        self.column_names = [LogDispatcher.ROW_NUMBER_COLUMN] + column_names
         self.dest_map = {}
 
 
@@ -397,6 +416,8 @@ class LogDispatcher:
         """Writes a given row into a matching S3 object.
 
         Ignores an invalid row.
+
+        Prepends a row number column to ``row``.
         """
         try:
             date = time.strptime(row['date'], LogDispatcher.LOG_DATE_FORMAT)
@@ -406,16 +427,20 @@ class LogDispatcher:
             LOGGER.warning('invalid date format: %s', row['date'])
         else:
             dest = self.get_destination(date)
-            dest.writerow(row)
+            ext_row = row.copy()
+            ext_row.update({
+                LogDispatcher.ROW_NUMBER_COLUMN: f'{dest.next_row_number():d}',
+            })
+            dest.tsv_writer.writerow(ext_row)
 
 
-    def get_destination(self, date: time.struct_time) -> csv.DictWriter:
+    def get_destination(self, date: time.struct_time) -> GzippedTsvOnS3:
         """Obtains the output stream corresponding to a given date.
 
         Opens a new ``S3OutputStream`` if none has been opened yet.
         """
         if date in self.dest_map:
-            return self.dest_map[date].tsv_writer
+            return self.dest_map[date]
         year = f'{date.tm_year:04d}'
         month = f'{date.tm_mon:02d}'
         mday = f'{date.tm_mday:02d}'
@@ -427,9 +452,10 @@ class LogDispatcher:
             fieldnames=self.column_names,
             delimiter='\t',
         )
-        self.dest_map[date] = GzippedTsvOnS3(dest_stream, dest_gzip, dest_tsv)
+        dest = GzippedTsvOnS3(dest_stream, dest_gzip, dest_tsv)
+        self.dest_map[date] = dest
         dest_tsv.writeheader()
-        return dest_tsv
+        return dest
 
 
     def close(self):
