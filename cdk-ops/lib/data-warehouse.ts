@@ -1,7 +1,9 @@
 import * as path from 'path';
 
 import {
+  Arn,
   Duration,
+  Stack,
   aws_ec2 as ec2,
   aws_iam as iam,
   aws_lambda as lambda,
@@ -35,10 +37,15 @@ export interface Props {
 export class DataWarehouse extends Construct {
   /** VPC for Redshift Serverless clusters. */
   readonly vpc: ec2.IVpc;
+  // TODO: unnecessary exposure of `adminSecret`
   /** Secret for the admin user. */
   readonly adminSecret: secrets.ISecret;
-  /** IAM role of Redshift Serverless namespace. */
+  /** Default IAM role associated with the Redshift Serverless namespace. */
   readonly namespaceRole: iam.IRole;
+  /** Name of the Redshift Serverless workgroup. */
+  readonly workgroupName: string;
+  /** Redshift Serverless workgroup. */
+  readonly workgroup: redshift.CfnWorkgroup;
 
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id);
@@ -109,8 +116,9 @@ export class DataWarehouse extends Construct {
       this.adminSecret.node.defaultChild as secrets.CfnSecret,
     );
     // - workgroup
-    const workgroup = new redshift.CfnWorkgroup(this, 'DwWorkgroup', {
-      workgroupName: `datawarehouse-${deploymentStage}`,
+    this.workgroupName = `datawarehouse-${deploymentStage}`;
+    this.workgroup = new redshift.CfnWorkgroup(this, 'DwWorkgroup', {
+      workgroupName: this.workgroupName,
       namespaceName: dwNamespace.namespaceName,
       baseCapacity: 32,
       subnetIds: this.getSubnetIdsForCluster(),
@@ -125,7 +133,7 @@ export class DataWarehouse extends Construct {
         },
       ],
     });
-    workgroup.addDependsOn(dwNamespace);
+    this.workgroup.addDependsOn(dwNamespace);
 
     // Lambda function that populates the database and tables.
     const populateDwDatabaseLambda = new PythonFunction(
@@ -140,7 +148,7 @@ export class DataWarehouse extends Construct {
         handler: 'lambda_handler',
         layers: [latestBoto3.layer, libdatawarehouse.layer],
         environment: {
-          WORKGROUP_NAME: workgroup.workgroupName,
+          WORKGROUP_NAME: this.workgroupName,
           ADMIN_SECRET_ARN: this.adminSecret.secretArn,
           ADMIN_DATABASE_NAME: 'dev',
         },
@@ -148,7 +156,7 @@ export class DataWarehouse extends Construct {
         // a Lambda function does not have to join the VPC
         // as long as it uses Redshift Data API.
         //
-        // if want to directly connect to the Redshift cluster from a Lambda,
+        // if we want to directly connect to the Redshift cluster from a Lambda,
         // we have to put the Lambda in the VPC and allocate a VPC endpoint.
         // but I cannot afford VPC endpoints for now.
         //
@@ -167,5 +175,35 @@ export class DataWarehouse extends Construct {
     return this.vpc.selectSubnets({
       subnetGroupName: CLUSTER_SUBNET_GROUP_NAME,
     }).subnetIds;
+  }
+
+  /**
+   * Grants permissions to query this data warehouse via the Redshift Data API.
+   *
+   * Allows `grantee` to call `redshift-serverless:GetCredentials`.
+   */
+  grantQuery(grantee: iam.IGrantable): iam.Grant {
+    iam.Grant
+      .addToPrincipal({
+        grantee,
+        actions: ['redshift-serverless:GetCredentials'],
+        resourceArns: [
+          // TODO: how can we get the ARN of the workgroup?
+          Arn.format(
+            {
+              service: 'redshift-serverless',
+              resource: 'workgroup',
+              resourceName: '*',
+            },
+            Stack.of(this.workgroup),
+          ),
+        ],
+      })
+      .assertSuccess();
+    return iam.Grant.addToPrincipal({
+      grantee,
+      actions: ['redshift-data:*'],
+      resourceArns: ['*'],
+    });
   }
 }

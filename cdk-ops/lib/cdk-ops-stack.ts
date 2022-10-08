@@ -42,6 +42,9 @@ export class CdkOpsStack extends Stack {
       {
         accessLogsBucket:
           codemongerResources.developmentContentsAccessLogsBucket,
+        dataWarehouse,
+        latestBoto3,
+        libdatawarehouse,
         deploymentStage: 'development',
       },
     );

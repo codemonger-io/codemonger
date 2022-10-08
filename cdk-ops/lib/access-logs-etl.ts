@@ -4,6 +4,7 @@ import { PythonFunction } from '@aws-cdk/aws-lambda-python-alpha';
 import {
   Duration,
   RemovalPolicy,
+  aws_iam as iam,
   aws_lambda as lambda,
   aws_lambda_event_sources as lambda_event,
   aws_s3 as s3,
@@ -14,9 +15,19 @@ import { Construct } from 'constructs';
 
 import type { DeploymentStage } from 'cdk-common';
 
+import { DataWarehouse } from './data-warehouse';
+import { LatestBoto3Layer } from './latest-boto3-layer';
+import { LibdatawarehouseLayer } from './libdatawarehouse-layer';
+
 export interface Props {
   /** S3 bucket that stores CloudFront access logs. */
   accessLogsBucket: s3.IBucket;
+  /** Data warehouse. */
+  dataWarehouse: DataWarehouse;
+  /** Lambda layer containing the latest boto3. */
+  latestBoto3: LatestBoto3Layer;
+  /** Lambda layer of the data warehouse library. */
+  libdatawarehouse: LibdatawarehouseLayer;
   /** Deployment stage. */
   deploymentStage: DeploymentStage;
 }
@@ -30,15 +41,20 @@ export interface Props {
  */
 export class AccessLogsETL extends Construct {
   /** S3 bucket for masked access logs. */
-  readonly maskedAccessLogsBucket: s3.IBucket;
+  readonly outputAccessLogsBucket: s3.IBucket;
 
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id);
 
-    const { accessLogsBucket } = props;
+    const {
+      accessLogsBucket,
+      dataWarehouse,
+      latestBoto3,
+      libdatawarehouse,
+    } = props;
 
-    // S3 bucket for masked access logs.
-    this.maskedAccessLogsBucket = new s3.Bucket(
+    // S3 bucket for processed access logs.
+    this.outputAccessLogsBucket = new s3.Bucket(
       this,
       'MaskedAccessLogsBucket',
       {
@@ -55,6 +71,9 @@ export class AccessLogsETL extends Construct {
         removalPolicy: RemovalPolicy.RETAIN,
       },
     );
+    // allows the data warehouse to read the bucket
+    // so that it can COPY objects from the bucket.
+    this.outputAccessLogsBucket.grantRead(dataWarehouse.namespaceRole);
 
     // masks newly created CloudFront access logs
     // - Lambda function
@@ -71,14 +90,14 @@ export class AccessLogsETL extends Construct {
         handler: 'lambda_handler',
         environment: {
           SOURCE_BUCKET_NAME: accessLogsBucket.bucketName,
-          DESTINATION_BUCKET_NAME: this.maskedAccessLogsBucket.bucketName,
+          DESTINATION_BUCKET_NAME: this.outputAccessLogsBucket.bucketName,
           DESTINATION_KEY_PREFIX: maskedAccessLogsKeyPrefix,
         },
         timeout: maskAccessLogsLambdaTimeout,
       },
     );
     accessLogsBucket.grantRead(maskAccessLogsLambda);
-    this.maskedAccessLogsBucket.grantPut(maskAccessLogsLambda);
+    this.outputAccessLogsBucket.grantPut(maskAccessLogsLambda);
     // - SQS queue to capture creation of access logs files, which triggers
     //   the above Lambda function
     const maxBatchingWindow = Duration.minutes(5); // least frequency
@@ -128,7 +147,7 @@ export class AccessLogsETL extends Construct {
         environment: {
           SOURCE_BUCKET_NAME: accessLogsBucket.bucketName,
           // bucket name for masked logs is necessary to verify input events.
-          DESTINATION_BUCKET_NAME: this.maskedAccessLogsBucket.bucketName,
+          DESTINATION_BUCKET_NAME: this.outputAccessLogsBucket.bucketName,
           DESTINATION_KEY_PREFIX: maskedAccessLogsKeyPrefix,
         },
         timeout: deleteAccessLogsLambdaTimeout,
@@ -143,7 +162,7 @@ export class AccessLogsETL extends Construct {
         Duration.seconds(6 * deleteAccessLogsLambdaTimeout.toSeconds()),
       ),
     });
-    this.maskedAccessLogsBucket.addEventNotification(
+    this.outputAccessLogsBucket.addEventNotification(
       s3.EventType.OBJECT_CREATED,
       new s3n.SqsDestination(maskedLogsQueue),
       { prefix: maskedAccessLogsKeyPrefix },
@@ -155,5 +174,32 @@ export class AccessLogsETL extends Construct {
         maxBatchingWindow,
       }),
     );
+
+    // loads processed logs onto the data warehouse once a day.
+    const loadAccessLogsLambda = new PythonFunction(
+      this,
+      'LoadAccessLogsLambda',
+      {
+        description:
+          'Loads processed CloudFront access logs onto the data warehouse',
+        runtime: lambda.Runtime.PYTHON_3_8,
+        architecture: lambda.Architecture.ARM_64,
+        entry: path.join('lambda', 'load-access-logs'),
+        index: 'index.py',
+        handler: 'lambda_handler',
+        layers: [latestBoto3.layer, libdatawarehouse.layer],
+        environment: {
+          SOURCE_BUCKET_NAME: this.outputAccessLogsBucket.bucketName,
+          SOURCE_KEY_PREFIX: maskedAccessLogsKeyPrefix,
+          REDSHIFT_WORKGROUP_NAME: dataWarehouse.workgroupName,
+          COPY_ROLE_ARN: dataWarehouse.namespaceRole.roleArn,
+        },
+        timeout: Duration.minutes(15),
+      },
+    );
+    dataWarehouse.grantQuery(loadAccessLogsLambda);
+    // loadAccessLogsLambda does not need permissions to read
+    // outputAccessLogsBucket
+    // TODO: schedule running loadAccessLogsLambda
   }
 }
