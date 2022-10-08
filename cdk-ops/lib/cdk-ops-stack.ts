@@ -9,6 +9,7 @@ import {
 import { ContentsPipeline } from './contents-pipeline';
 import { DataWarehouse } from './data-warehouse';
 import { LatestBoto3Layer } from './latest-boto3-layer';
+import { LibdatawarehouseLayer } from './libdatawarehouse-layer';
 
 type Props = StackProps & Readonly<{
   // names of the main codemonger resources.
@@ -25,11 +26,14 @@ export class CdkOpsStack extends Stack {
       props.codemongerResourceNames,
     );
     const latestBoto3 = new LatestBoto3Layer(this, 'LatestBoto3');
+    const libdatawarehouse =
+      new LibdatawarehouseLayer(this, 'Libdatawarehouse');
     const pipeline = new ContentsPipeline(this, 'ContentsPipeline', {
       codemongerResources,
     });
     const dataWarehouse = new DataWarehouse(this, 'DevelopmentDataWarehouse', {
       latestBoto3,
+      libdatawarehouse,
       deploymentStage: 'development',
     });
     const developmentContentsAccessLogsETL = new AccessLogsETL(

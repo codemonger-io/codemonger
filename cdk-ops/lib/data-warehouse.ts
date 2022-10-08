@@ -14,6 +14,7 @@ import { PythonFunction } from '@aws-cdk/aws-lambda-python-alpha';
 import type { DeploymentStage } from 'cdk-common';
 
 import { LatestBoto3Layer } from './latest-boto3-layer';
+import { LibdatawarehouseLayer } from './libdatawarehouse-layer';
 
 /** Name of the admin user. */
 export const ADMIN_USER_NAME = 'dwadmin';
@@ -24,6 +25,8 @@ export const CLUSTER_SUBNET_GROUP_NAME = 'dw-cluster';
 export interface Props {
   /** Lambda layer containing the latest boto3. */
   latestBoto3: LatestBoto3Layer;
+  /** Lambda layer containing libdatawarehouse. */
+  libdatawarehouse: LibdatawarehouseLayer;
   /** Deployment stage. */
   deploymentStage: DeploymentStage;
 }
@@ -40,7 +43,7 @@ export class DataWarehouse extends Construct {
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id);
 
-    const { deploymentStage, latestBoto3 } = props;
+    const { deploymentStage, latestBoto3, libdatawarehouse } = props;
 
     this.vpc = new ec2.Vpc(this, `DwVpc`, {
       cidr: '192.168.0.0/16',
@@ -135,18 +138,11 @@ export class DataWarehouse extends Construct {
         entry: path.join('lambda', 'populate-dw-database'),
         index: 'index.py',
         handler: 'lambda_handler',
-        layers: [latestBoto3.layer],
+        layers: [latestBoto3.layer, libdatawarehouse.layer],
         environment: {
           WORKGROUP_NAME: workgroup.workgroupName,
           ADMIN_SECRET_ARN: this.adminSecret.secretArn,
           ADMIN_DATABASE_NAME: 'dev',
-          ACCESS_LOGS_DATABASE_NAME: 'access_logs',
-          PAGE_TABLE_NAME: 'page',
-          REFERER_TABLE_NAME: 'referer',
-          EDGE_LOCATION_TABLE_NAME: 'edge_location',
-          USER_AGENT_TABLE_NAME: 'user_agent',
-          RESULT_TYPE_TABLE_NAME: 'result_type',
-          ACCESS_LOG_TABLE_NAME: 'access_log',
         },
         timeout: Duration.minutes(15),
         // a Lambda function does not have to join the VPC
