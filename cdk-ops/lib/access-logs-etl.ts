@@ -195,11 +195,11 @@ export class AccessLogsETL extends Construct {
           COPY_ROLE_ARN: dataWarehouse.namespaceRole.roleArn,
         },
         timeout: Duration.minutes(15),
+        memorySize: 256,
       },
     );
+    this.outputAccessLogsBucket.grantRead(loadAccessLogsLambda);
     dataWarehouse.grantQuery(loadAccessLogsLambda);
-    // loadAccessLogsLambda does not need permissions to read
-    // outputAccessLogsBucket
     // TODO: schedule running loadAccessLogsLambda
   }
 }
