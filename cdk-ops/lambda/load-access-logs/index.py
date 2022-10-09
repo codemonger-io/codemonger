@@ -549,6 +549,11 @@ def lambda_handler(event, _):
         )
         LOGGER.debug('accessing database as %s', res['dbUser'])
         execute_load_script(target_date)
+        # we need VACUUM to sort updated tables.
+        # run VACUUM in a different session (e.g., Step Functions) because,
+        # - VACUUM needs an owner or superuser privilege
+        # - VACUUM is time consuming
+        # - only one VACUUM can run at the same time
     else:
         LOGGER.debug('no access logs on %s', str(target_date))
     return {}
