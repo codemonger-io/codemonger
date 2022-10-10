@@ -4,6 +4,8 @@ import { PythonFunction } from '@aws-cdk/aws-lambda-python-alpha';
 import {
   Duration,
   RemovalPolicy,
+  aws_events as events,
+  aws_events_targets as events_targets,
   aws_iam as iam,
   aws_lambda as lambda,
   aws_lambda_event_sources as lambda_event,
@@ -49,6 +51,7 @@ export class AccessLogsETL extends Construct {
     const {
       accessLogsBucket,
       dataWarehouse,
+      deploymentStage,
       latestBoto3,
       libdatawarehouse,
     } = props;
@@ -83,7 +86,7 @@ export class AccessLogsETL extends Construct {
       this,
       'MaskAccessLogsLambda',
       {
-        description: 'Masks information in a given CloudFront access logs file',
+        description: `Masks information in a given CloudFront access logs file (${deploymentStage})`,
         runtime: lambda.Runtime.PYTHON_3_8,
         entry: path.join('lambda', 'mask-access-logs'),
         index: 'index.py',
@@ -139,7 +142,7 @@ export class AccessLogsETL extends Construct {
       this,
       'DeleteAccessLogsLambda',
       {
-        description: 'Deletes the original CloudFront access logs file',
+        description: `Deletes the original CloudFront access logs file (${deploymentStage})`,
         runtime: lambda.Runtime.PYTHON_3_8,
         entry: path.join('lambda', 'delete-access-logs'),
         index: 'index.py',
@@ -176,12 +179,12 @@ export class AccessLogsETL extends Construct {
     );
 
     // loads processed logs onto the data warehouse once a day.
+    // - Lambda function
     const loadAccessLogsLambda = new PythonFunction(
       this,
       'LoadAccessLogsLambda',
       {
-        description:
-          'Loads processed CloudFront access logs onto the data warehouse',
+        description: `Loads processed CloudFront access logs onto the data warehouse (${deploymentStage})`,
         runtime: lambda.Runtime.PYTHON_3_8,
         architecture: lambda.Architecture.ARM_64,
         entry: path.join('lambda', 'load-access-logs'),
@@ -200,6 +203,28 @@ export class AccessLogsETL extends Construct {
     );
     this.outputAccessLogsBucket.grantRead(loadAccessLogsLambda);
     dataWarehouse.grantQuery(loadAccessLogsLambda);
-    // TODO: schedule running loadAccessLogsLambda
+    // - schedules running loadAccessLogsLambda
+    const loadSchedule = new events.Rule(this, 'LoadAccessLogsSchedule', {
+      description: `Periodically loads access logs (${deploymentStage})`,
+      // do not forget to enable the rule
+      enabled: false,
+      schedule: events.Schedule.cron(
+        deploymentStage === 'development' ? {
+          // every hour for development
+          // DO NOT FORGET to disable the rule after testing it
+          minute: '0',
+        } : {
+          // at 2:00 AM every day for production
+          hour: '2',
+          minute: '0',
+        },
+      ),
+      targets: [
+        new events_targets.LambdaFunction(loadAccessLogsLambda, {
+          maxEventAge: Duration.hours(1),
+          retryAttempts: 2,
+        }),
+      ],
+    });
   }
 }
