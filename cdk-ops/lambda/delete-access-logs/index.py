@@ -109,9 +109,12 @@ def process_s3_object(s3_object):
     # so the last segment separated by a slash ('/') is the key for the
     # original access logs file.
     src_key = key.split('/')[-1]
-    src = source_bucket.Object(src_key)
-    try:
-        res = src.delete()
-        LOGGER.debug('deleted object "%s": %s', src_key, str(res))
-    except ClientError as exc:
-        LOGGER.error('failed to delete object "%s": %s', src_key, str(exc))
+    if len(src_key) > 0:
+        src = source_bucket.Object(src_key)
+        try:
+            res = src.delete()
+            LOGGER.debug('deleted object "%s": %s', src_key, str(res))
+        except ClientError as exc:
+            LOGGER.error('failed to delete object "%s": %s', src_key, str(exc))
+    else:
+        LOGGER.warning('ignoring invalid key: %s', key)
