@@ -9,6 +9,8 @@ import {
   aws_lambda as lambda,
   aws_redshiftserverless as redshift,
   aws_secretsmanager as secrets,
+  aws_stepfunctions as sfn,
+  aws_stepfunctions_tasks as sfn_tasks,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { PythonFunction } from '@aws-cdk/aws-lambda-python-alpha';
@@ -46,6 +48,8 @@ export class DataWarehouse extends Construct {
   readonly workgroupName: string;
   /** Redshift Serverless workgroup. */
   readonly workgroup: redshift.CfnWorkgroup;
+  /** Step Functions to run VACUUM over tables. */
+  readonly vacuumWorkflow: sfn.IStateMachine;
 
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id);
@@ -168,6 +172,63 @@ export class DataWarehouse extends Construct {
     this.adminSecret.grantRead(populateDwDatabaseLambda);
     // TODO: too permissive?
     populateDwDatabaseLambda.role?.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonRedshiftDataFullAccess'));
+
+    // Step Functions that perform VACUUM over tables.
+    // - Lambda function that runs VACUUM over a given table
+    const vacuumTableLambda = new PythonFunction(this, 'VacuumTableLambda', {
+      description: `Runs VACUUM over a table (${deploymentStage})`,
+      runtime: lambda.Runtime.PYTHON_3_8,
+      architecture: lambda.Architecture.ARM_64,
+      entry: path.join('lambda', 'vacuum-table'),
+      index: 'index.py',
+      handler: 'lambda_handler',
+      layers: [latestBoto3.layer, libdatawarehouse.layer],
+      environment: {
+        WORKGROUP_NAME: this.workgroupName,
+        ADMIN_SECRET_ARN: this.adminSecret.secretArn,
+      },
+      timeout: Duration.minutes(15),
+    });
+    this.adminSecret.grantRead(vacuumTableLambda);
+    this.grantQuery(vacuumTableLambda);
+    // - state machine
+    //   - lists table names
+    const listTableNamesState = new sfn.Pass(this, 'ListTables', {
+      comment: 'Lists table names',
+      result: sfn.Result.fromArray([
+        'access_log',
+        'referer',
+        'page',
+        'edge_location',
+        'user_agent',
+        'result_type',
+      ]),
+      resultPath: '$.tables',
+      // produces something like
+      // {
+      //   mode: 'SORT ONLY',
+      //   tableNames: ['access_log', ...]
+      // }
+    });
+    this.vacuumWorkflow = new sfn.StateMachine(this, 'VacuumWorkflow', {
+      definition:
+        listTableNamesState.next(
+          new sfn.Map(this, 'MapTables', {
+            comment: 'Iterates over tables',
+            maxConcurrency: 1, // sequential
+            itemsPath: '$.tables',
+            parameters: {
+              'tableName.$': '$$.Map.Item.Value',
+              'mode.$': '$.mode',
+            },
+          }).iterator(
+            new sfn_tasks.LambdaInvoke(this, 'VacuumTable', {
+              lambdaFunction: vacuumTableLambda,
+            }),
+          ),
+        ),
+      timeout: Duration.hours(1),
+    });
   }
 
   /** Returns subnet IDs for the cluster of Redshift Serverless. */
