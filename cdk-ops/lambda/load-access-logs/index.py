@@ -11,6 +11,7 @@ You have to specify the following environment variables,
 """
 
 import datetime
+import json
 import logging
 import os
 import boto3
@@ -22,6 +23,7 @@ SOURCE_BUCKET_NAME = os.environ['SOURCE_BUCKET_NAME']
 SOURCE_KEY_PREFIX = os.environ['SOURCE_KEY_PREFIX']
 REDSHIFT_WORKGROUP_NAME = os.environ['REDSHIFT_WORKGROUP_NAME']
 COPY_ROLE_ARN = os.environ['COPY_ROLE_ARN']
+VACUUM_WORKFLOW_ARN = os.environ['VACUUM_WORKFLOW_ARN']
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
@@ -30,6 +32,7 @@ s3 = boto3.client('s3')
 
 redshift = boto3.client('redshift-serverless')
 redshift_data = boto3.client('redshift-data')
+stepfunctions = boto3.client('stepfunctions')
 
 
 def has_access_logs(date: datetime.datetime) -> bool:
@@ -523,6 +526,19 @@ def format_date_part(date: datetime.datetime) -> str:
     return f'{date.year:04d}/{date.month:02d}/{date.day:02d}/'
 
 
+def start_vacuum():
+    """Starts VACUUM over the updated tables.
+    """
+    res = stepfunctions.start_execution(
+        stateMachineArn=VACUUM_WORKFLOW_ARN,
+        input=json.dumps({
+            # "SORT ONLY" is sufficient because no deletes have been performed
+            'mode': 'SORT ONLY',
+        }),
+    )
+    LOGGER.debug('started VACUUM: %s', str(res))
+
+
 def lambda_handler(event, _):
     """Loads CloudFront access logs onto the data warehouse.
 
@@ -549,11 +565,12 @@ def lambda_handler(event, _):
         )
         LOGGER.debug('accessing database as %s', res['dbUser'])
         execute_load_script(target_date)
-        # we need VACUUM to sort updated tables.
-        # run VACUUM in a different session (e.g., Step Functions) because,
+        # we need VACUUM to sort the updated tables.
+        # runs VACUUM in a different session (e.g., Step Functions) because,
         # - VACUUM needs an owner or superuser privilege
         # - VACUUM is time consuming
         # - only one VACUUM can run at the same time
+        start_vacuum()
     else:
         LOGGER.debug('no access logs on %s', str(target_date))
     return {}

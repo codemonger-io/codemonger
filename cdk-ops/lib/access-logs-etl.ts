@@ -196,6 +196,7 @@ export class AccessLogsETL extends Construct {
           SOURCE_KEY_PREFIX: maskedAccessLogsKeyPrefix,
           REDSHIFT_WORKGROUP_NAME: dataWarehouse.workgroupName,
           COPY_ROLE_ARN: dataWarehouse.namespaceRole.roleArn,
+          VACUUM_WORKFLOW_ARN: dataWarehouse.vacuumWorkflow.stateMachineArn,
         },
         timeout: Duration.minutes(15),
         memorySize: 256,
@@ -203,6 +204,7 @@ export class AccessLogsETL extends Construct {
     );
     this.outputAccessLogsBucket.grantRead(loadAccessLogsLambda);
     dataWarehouse.grantQuery(loadAccessLogsLambda);
+    dataWarehouse.vacuumWorkflow.grantStartExecution(loadAccessLogsLambda);
     // - schedules running loadAccessLogsLambda
     const loadSchedule = new events.Rule(this, 'LoadAccessLogsSchedule', {
       description: `Periodically loads access logs (${deploymentStage})`,
