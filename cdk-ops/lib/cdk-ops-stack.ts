@@ -52,10 +52,35 @@ export class CdkOpsStack extends Stack {
         deploymentStage: 'development',
       },
     );
+    const productionDataWarehouse = new DataWarehouse(
+      this,
+      'ProductionDataWarehouse',
+      {
+        latestBoto3,
+        libdatawarehouse,
+        deploymentStage: 'production',
+      },
+    );
+    const productionContentsAccessLogsETL = new AccessLogsETL(
+      this,
+      'ProductionContentsAccessLogsETL',
+      {
+        accessLogsBucket:
+          codemongerResources.productionContentsAccessLogsBucket,
+        dataWarehouse: productionDataWarehouse,
+        latestBoto3,
+        libdatawarehouse,
+        deploymentStage: 'production',
+      },
+    );
     // Outputs
     new CfnOutput(this, 'PopulateDevelopmentDwDatabaseLambdaArn', {
       description: 'ARN of the Lambda function that populates the data warehouse database and tables (development)',
       value: developmentDataWarehouse.populateDwDatabaseLambda.functionArn,
+    });
+    new CfnOutput(this, 'PopulateProductionDwDatabaseLambdaArn', {
+      description: 'ARN of the Lambda function that populates the data warehouse database and tables (production)',
+      value: productionDataWarehouse.populateDwDatabaseLambda.functionArn,
     });
   }
 }
