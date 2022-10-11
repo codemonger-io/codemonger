@@ -48,6 +48,8 @@ export class DataWarehouse extends Construct {
   readonly workgroupName: string;
   /** Redshift Serverless workgroup. */
   readonly workgroup: redshift.CfnWorkgroup;
+  /** Lambda function to populate the database and tables. */
+  readonly populateDwDatabaseLambda: lambda.IFunction;
   /** Step Functions to run VACUUM over tables. */
   readonly vacuumWorkflow: sfn.IStateMachine;
 
@@ -140,7 +142,7 @@ export class DataWarehouse extends Construct {
     this.workgroup.addDependsOn(dwNamespace);
 
     // Lambda function that populates the database and tables.
-    const populateDwDatabaseLambda = new PythonFunction(
+    this.populateDwDatabaseLambda = new PythonFunction(
       this,
       'PopulateDwDatabaseLambda',
       {
@@ -169,9 +171,9 @@ export class DataWarehouse extends Construct {
     );
     // Redshift Data API uses the execution role of the Lambda function to
     // retrieve the secret.
-    this.adminSecret.grantRead(populateDwDatabaseLambda);
+    this.adminSecret.grantRead(this.populateDwDatabaseLambda);
     // TODO: too permissive?
-    populateDwDatabaseLambda.role?.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonRedshiftDataFullAccess'));
+    this.populateDwDatabaseLambda.role?.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonRedshiftDataFullAccess'));
 
     // Step Functions that perform VACUUM over tables.
     // - Lambda function that runs VACUUM over a given table

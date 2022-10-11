@@ -1,4 +1,4 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { CfnOutput, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 import { AccessLogsETL } from './access-logs-etl';
@@ -31,22 +31,31 @@ export class CdkOpsStack extends Stack {
     const pipeline = new ContentsPipeline(this, 'ContentsPipeline', {
       codemongerResources,
     });
-    const dataWarehouse = new DataWarehouse(this, 'DevelopmentDataWarehouse', {
-      latestBoto3,
-      libdatawarehouse,
-      deploymentStage: 'development',
-    });
+    const developmentDataWarehouse = new DataWarehouse(
+      this,
+      'DevelopmentDataWarehouse',
+      {
+        latestBoto3,
+        libdatawarehouse,
+        deploymentStage: 'development',
+      },
+    );
     const developmentContentsAccessLogsETL = new AccessLogsETL(
       this,
       'DevelopmentContentsAccessLogsETL',
       {
         accessLogsBucket:
           codemongerResources.developmentContentsAccessLogsBucket,
-        dataWarehouse,
+        dataWarehouse: developmentDataWarehouse,
         latestBoto3,
         libdatawarehouse,
         deploymentStage: 'development',
       },
     );
+    // Outputs
+    new CfnOutput(this, 'PopulateDevelopmentDwDatabaseLambdaArn', {
+      description: 'ARN of the Lambda function that populates the data warehouse database and tables (development)',
+      value: developmentDataWarehouse.populateDwDatabaseLambda.functionArn,
+    });
   }
 }
