@@ -8,7 +8,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "populate-dw": "node bin/populate-data-warehouse.js"
   },
   "devDependencies": {
     "@types/jest": "^27.5.0",
