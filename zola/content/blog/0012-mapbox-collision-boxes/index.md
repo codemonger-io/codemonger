@@ -1,7 +1,7 @@
 +++
 title = "Handling binary responses with a custom AWS Lambda runtime in Rust"
-date = 2022-10-12
-draft = true
+date = 2022-10-14
+draft = false
 hashtags = ["AWS", "Lambda", "Rust"]
 +++
 
@@ -12,7 +12,7 @@ This blog post shares how I handle binary responses with a custom AWS Lambda run
 ## Background
 
 We can make any dynamic responses from an [Amazon API Gateway REST API (REST API)](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-rest-api.html) with a [Lambda integration](https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-integrations.html).
-I wanted to implement an [AWS Lambda (Lambda)](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) function that produces dynamic binary data for my REST API.
+I decided to implement an [AWS Lambda (Lambda)](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) function that produces dynamic binary data for my REST API.
 As I have been learning [Rust](https://www.rust-lang.org), I have decided to implement a Lambda function with Rust\*.
 Please note this blog post deals with a Lambda function for [Lambda non-proxy integration](https://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started-lambda-non-proxy-integration.html).
 
@@ -56,8 +56,8 @@ async fn func(event: LambdaEvent<Value>) -> Result<Value, Error> {
 
 The [`run`](https://docs.rs/lambda_runtime/0.6.1/lambda_runtime/fn.run.html) function of the core module [`lambda_runtime`](https://docs.rs/lambda_runtime/0.6.1/lambda_runtime/index.html) accepts any service that returns a value implementing [`serde::Serialize`](https://docs.rs/serde/1.0.145/serde/trait.Serialize.html).
 To output binary, I first thought my service function could simply return a `Vec<u8>` and tried to do so.
-It turned out that `lambda_runtime` produced a JSON representation of an array instead of a BLOB.
-For instance, when I provided `lambda_runtime` with a `Vec<u8>` of `[0x61, 0x62, 0x63]`, I literally got
+It turned out that `lambda_runtime` produced a JSON representation of an array instead of a [BLOB](https://en.wikipedia.org/wiki/Binary_large_object).
+For instance, when I provided `lambda_runtime` with a `Vec<u8>` of `[0x61, 0x62, 0x63]`, I got
 ```json
 [
   97,
@@ -67,9 +67,9 @@ For instance, when I provided `lambda_runtime` with a `Vec<u8>` of `[0x61, 0x62,
 ```
 instead of `abc`\*.
 
-\* `0x61`, `0x62`, and `0x63` represent `'a'`, `'b'`, `'c'` on [ASCII](https://en.wikipedia.org/wiki/ASCII) respectively.
+\* `0x61`, `0x62`, and `0x63` represent `'a'`, `'b'`, and `'c'` on [ASCII](https://en.wikipedia.org/wiki/ASCII) respectively.
 
-#### How does lambda-runtime handle results?
+#### How does lambda_runtime handle results?
 
 [`lambda_runtime::run`](https://github.com/awslabs/aws-lambda-rust-runtime/tree/main/lambda-runtime) converts any service function outputs into JSON, and this behavior is hard-coded in [lambda-runtime/src/requests.rs#L77-L85](https://github.com/awslabs/aws-lambda-rust-runtime/blob/bd8896a21d8bef6f1f085ec48660a5b727669dc5/lambda-runtime/src/requests.rs#L77-L85) where you can find `serde_json::to_vec(&self.body)`:
 ```rust
@@ -86,7 +86,7 @@ instead of `abc`\*.
 
 #### Any solution?
 
-There was a [discussion about binary responses](https://github.com/awslabs/aws-lambda-rust-runtime/issues/69), which suggested using the [`lambda_http`](https://docs.rs/lambda_http/0.6.1/lambda_http/) module.
+There was a [discussion about binary responses](https://github.com/awslabs/aws-lambda-rust-runtime/issues/69) on GitHub, which suggested using the [`lambda_http`](https://docs.rs/lambda_http/0.6.1/lambda_http/) module.
 As far as I looked into it, `lambda_http` was designed for [Lambda proxy integration](https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html).
 So it could not simply produce a plain BLOB.
 
@@ -95,7 +95,7 @@ Then I came up with the following two workarounds,
 2. Tweak `lambda_runtime` so that it can handle a raw binary output.
 
 The easier pathway should have been the first one.
-However, I took the second one as it was an **opportunity to practice Rust**\*.
+However, I took the second one\* as it was an **opportunity to practice Rust**.
 
 \* Later, I found my efforts were unnecessary.
 You can jump to the [Section "Simpler solution"](#Simpler_solution) for a much simpler and easier way.
@@ -126,7 +126,7 @@ pub(crate) struct EventCompletionRequest<'a, T> {
 }
 ```
 
-`lambda-runtime` wraps your function output with `EventCompletionRequest<T>` and processes it as `IntoRequest` ([lambda-runtime/src/lib.rs#L164-L168](https://github.com/awslabs/aws-lambda-rust-runtime/blob/bd8896a21d8bef6f1f085ec48660a5b727669dc5/lambda-runtime/src/lib.rs#L164-L168)):
+`lambda_runtime` wraps your function output with `EventCompletionRequest<T>` and processes it as `IntoRequest` ([lambda-runtime/src/lib.rs#L164-L168](https://github.com/awslabs/aws-lambda-rust-runtime/blob/bd8896a21d8bef6f1f085ec48660a5b727669dc5/lambda-runtime/src/lib.rs#L164-L168)):
 ```rust
                                 EventCompletionRequest {
                                     request_id,
@@ -135,7 +135,7 @@ pub(crate) struct EventCompletionRequest<'a, T> {
                                 .into_req()
 ```
 
-`IntoRequest` is implemented for `EventCompletionRequest<T>` as long as `T` is `serde::Serialize` ([lambda-runtime/src/requests.rs#L73-L75](https://github.com/awslabs/aws-lambda-rust-runtime/blob/bd8896a21d8bef6f1f085ec48660a5b727669dc5/lambda-runtime/src/requests.rs#L73-L75)):
+`IntoRequest` is implemented for `EventCompletionRequest<T>` such that `T` is `serde::Serialize` ([lambda-runtime/src/requests.rs#L73-L75](https://github.com/awslabs/aws-lambda-rust-runtime/blob/bd8896a21d8bef6f1f085ec48660a5b727669dc5/lambda-runtime/src/requests.rs#L73-L75)):
 ```rust
 impl<'a, T> IntoRequest for EventCompletionRequest<'a, T>
 where
@@ -150,7 +150,7 @@ That is why a `Serialize` that your service function outputs becomes a JSON obje
 
 #### Introduction of IntoBytes and RawBytes
 
-We have to somehow generalize the `serde_json::to_vec` call in `IntoRequest::into_req`.
+We have to somehow generalize the [`serde_json::to_vec` call in `IntoRequest::into_req`](#How_does_lambda_runtime_handle_results?).
 We can consider it a conversion from a service output to a byte sequence (`Vec<u8>`).
 So how about to specialize `IntoRequest` for `EventCompletionRequest<'a, Vec<u8>>`?
 Unfortunately, this does not work because we cannot make `lambda_runtime::run` accept both `Serialize` and `Vec<u8>` as a service output.
@@ -226,7 +226,7 @@ where
     F::Future: Future<Output = Result<B, F::Error>>,
     F::Error: fmt::Debug + fmt::Display,
     A: for<'de> Deserialize<'de>,
-    IntoBytesBridge<B>: IntoBytes, // makes sure that IntoBytes is implemented for IntoBytesBridge<B>
+    IntoBytesBridge<B>: IntoBytes, // requires that IntoBytes is implemented for IntoBytesBridge<B>
 ```
 
 It works with `Serialize` because `IntoByte` is implemented for `IntoBytesBridge<Serialize>` (see above).
@@ -242,8 +242,8 @@ impl IntoBytes for IntoBytesBridge<RawBytes> {
 }
 ```
 
-Then we can output a raw byte sequence by wrapping the output from our service function.
-The following example outputs a string `abc` rather than a JSON array `[97, 98, 99]`:
+Then we can output a raw byte sequence by wrapping the output from our service function with `RawBytes`.
+The following example outputs a raw string `abc` rather than a JSON array `[97, 98, 99]`:
 ```rust
 use lambda_runtime::{service_fn, LambdaEvent, Error, RawBytes};
 use serde_json::Value;
@@ -290,7 +290,7 @@ This question leads to a much simpler solution described in the [next section](#
 In the [last section](#Limitation_of_the_Lambda_integration?), we learned Lambda non-proxy integration does not allow a service to output an arbitrary byte sequence.
 Thus, we have to Base64-encode our service outputs anyway.
 It means that the benefits of tweaking `lambda_runtime` are half-lost.
-In the Section ["Any solutions?"](#Any_solution?), I have suggested the following solution that requires no tweaks on `lambda_runtime`.
+In the [Section "Any solutions?"](#Any_solution?), I have suggested another solution that requires no tweaks on `lambda_runtime`.
 
 > 1. Embed a [Base64](https://en.wikipedia.org/wiki/Base64)-encoded binary as a field value in a JSON object, extract it with a [mapping template for integration responses](https://docs.aws.amazon.com/apigateway/latest/developerguide/models-mappings.html#models-mappings-mappings), and apply [`CONVERT_TO_BINARY`](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-payload-encodings-workflow.html).
 
@@ -315,10 +315,10 @@ async fn func(event: LambdaEvent<Value>) -> Result<String, Error> {
 
 I initially thought it did not work because the output would be enclosed by extra double quotations (`"`) and become an invalid Base64 text.
 
-**It turned out to work**!
+But, **it turned out to work**!
 
-If I got an output via `aws lambda invoke`, it actually included enclosing double quotations.
-But Lambda integration somehow knew how to deal with it and correctly decoded an intended Base64 text.
+When I got an output via `aws lambda invoke`, it actually included enclosing double quotations.
+But Lambda integration somehow recognized how to deal with it and correctly decoded an intended Base64 text.
 
 ## Wrap up
 
