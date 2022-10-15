@@ -203,7 +203,7 @@ def get_create_access_log_stage_table_statement() -> str:
         '    cs_uri_stem,',
         '    status,',
         "    CASE WHEN referer IS NULL THEN '-' ELSE referer END,",
-        '    user_agent,',
+        "    CASE WHEN user_agent IS NULL THEN '-' ELSE user_agent END,",
         '    cs_protocol,',
         '    cs_bytes,',
         '    time_taken,',
