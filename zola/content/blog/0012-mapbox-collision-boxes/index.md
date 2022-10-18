@@ -1,8 +1,10 @@
 +++
 title = "Handling binary responses with a custom AWS Lambda runtime in Rust"
-date = 2022-10-14
+date = 2022-10-18
 draft = false
+[extra]
 hashtags = ["AWS", "Lambda", "Rust"]
+thumbnail_name = "thumbnail.jpg"
 +++
 
 This blog post shares how I handle binary responses with a custom AWS Lambda runtime written in Rust.
@@ -12,7 +14,7 @@ This blog post shares how I handle binary responses with a custom AWS Lambda run
 ## Background
 
 We can make any dynamic responses from an [Amazon API Gateway REST API (REST API)](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-rest-api.html) with a [Lambda integration](https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-integrations.html).
-I decided to implement an [AWS Lambda (Lambda)](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) function that produces dynamic binary data for my REST API.
+I have decided to implement an [AWS Lambda (Lambda)](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) function that produces dynamic binary data for my REST API.
 As I have been learning [Rust](https://www.rust-lang.org), I have decided to implement a Lambda function with Rust\*.
 Please note this blog post deals with a Lambda function for [Lambda non-proxy integration](https://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started-lambda-non-proxy-integration.html).
 
@@ -92,6 +94,7 @@ So it could not simply produce a plain BLOB.
 
 Then I came up with the following two workarounds,
 1. Embed a [Base64](https://en.wikipedia.org/wiki/Base64)-encoded binary as a field value in a JSON object, extract it with a [mapping template for integration responses](https://docs.aws.amazon.com/apigateway/latest/developerguide/models-mappings.html#models-mappings-mappings), and apply [`CONVERT_TO_BINARY`](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-payload-encodings-workflow.html).
+   (This method neither produces a simple BLOB.)
 2. Tweak `lambda_runtime` so that it can handle a raw binary output.
 
 The easier pathway should have been the first one.
@@ -229,7 +232,7 @@ where
     IntoBytesBridge<B>: IntoBytes, // requires that IntoBytes is implemented for IntoBytesBridge<B>
 ```
 
-It works with `Serialize` because `IntoByte` is implemented for `IntoBytesBridge<Serialize>` (see above).
+It works with `Serialize` because `IntoBytes` is implemented for `IntoBytesBridge<Serialize>` (see above).
 
 Now we introduce a new data type `RawBytes` to tell our intention to output a raw byte sequence and specialize `IntoBytes` for `IntoBytesBridge<RawBytes>`.
 ```rust
@@ -322,11 +325,11 @@ But Lambda integration somehow recognized how to deal with it and correctly deco
 
 ## Wrap up
 
-In this blog post, we have seen [`aws-lambda-rust-runtime`](https://github.com/awslabs/aws-lambda-rust-runtime) helps us to implement a custom Lambda runtime in Rust.
-Then I have shown you my tweaks on `aws-lambda-rust-runtime` to handle binary data.
-However, we have found that simply returning a Base64-encoded `String` is the easiest way to deal with binary outputs with Lambda integration for Amazon API Gateway.
+In this blog post, we saw [`aws-lambda-rust-runtime`](https://github.com/awslabs/aws-lambda-rust-runtime) helped us to implement a custom Lambda runtime in Rust.
+Then I showed you my tweaks on `aws-lambda-rust-runtime` to handle binary data.
+However, we found that simply returning a Base64-encoded `String` was the easiest way to deal with binary outputs with Lambda integration for Amazon API Gateway.
 
-While it turned out not very useful, you can find my tweaks on `aws-lambda-rust-runtime` on [my GitHub fork](https://github.com/codemonger-io/aws-lambda-rust-runtime/tree/binary-support).
+While it has turned out not very useful, you can find my tweaks on `aws-lambda-rust-runtime` on [my GitHub fork](https://github.com/codemonger-io/aws-lambda-rust-runtime/tree/binary-support).
 
 ## Appendix
 

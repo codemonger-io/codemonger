@@ -1,8 +1,10 @@
 +++
 title = "RustのカスタムLambdaランタイムでバイナリレスポンスを扱う"
-date = 2022-10-14
+date = 2022-10-18
 draft = false
+[extra]
 hashtags = ["AWS", "Lambda", "Rust"]
+thumbnail_name = "thumbnail.jpg"
 +++
 
 このブログ投稿ではRustで書かれたAWS Lambdaカスタムランタイムでバイナリレスポンスを扱う方法を紹介します。
@@ -92,6 +94,7 @@ async fn func(event: LambdaEvent<Value>) -> Result<Value, Error> {
 
 そこで以下の2つの回避策を思いつきました。
 1. [Base64](https://en.wikipedia.org/wiki/Base64)エンコードされたバイナリをJSONオブジェクトのフィールド値として埋め込み、[インテグレーションレスポンスのマッピングテンプレート](https://docs.aws.amazon.com/apigateway/latest/developerguide/models-mappings.html#models-mappings-mappings)でそれを取り出し、[`CONVERT_TO_BINARY`](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-payload-encodings-workflow.html)を適用
+   (この方法も単純なBLOBを生成しません。)
 2. `lambda_runtime`をバイナリ出力を扱えるように改造
 
 簡単な方法は最初のものだったはずですが、
@@ -229,7 +232,7 @@ where
     IntoBytesBridge<B>: IntoBytes, // IntoBytesをIntoBytesBridge<B>に対して実装していることを要求する
 ```
 
-これは`Serialize`に対しても機能します。`IntoByte`が`IntoBytesBridge<Serialize>`に対して実装されているからです(上述のコード参照)。
+これは`Serialize`に対しても機能します。`IntoBytes`が`IntoBytesBridge<Serialize>`に対して実装されているからです(上述のコード参照)。
 
 今度は、生のバイト列を出力するという意図を伝えるために新しいデータ型`RawBytes`を導入し、`IntoBytes`を`IntoBytesBridge<RawBytes>`に対して特殊化します。
 ```rust
@@ -242,7 +245,7 @@ impl IntoBytes for IntoBytesBridge<RawBytes> {
 }
 ```
 
-こうしてサービス関数の出力を`RawBytes`でラップすれば生のバイト列を出力することができます。
+これでサービス関数の出力を`RawBytes`でラップすれば生のバイト列を出力することができます。
 以下の例はJSONの配列`[97, 98, 99]`ではなく生の文字列`abc`を出力します。
 ```rust
 use lambda_runtime::{service_fn, LambdaEvent, Error, RawBytes};
@@ -263,7 +266,7 @@ async fn func(event: LambdaEvent<Value>) -> Result<RawBytes, Error> {
 ### Lambdaインテグレーションの制限?
 
 [前節で開発した新機能](#IntoBytesとRawBytesの導入)を自分のREST APIを実装するのに試してみましたが、おかしなことが起こりました。
-APIがサービスレスポンスとして返したバイト列とは少し違うバイト列を出力してしまうのです。
+サービスレスポンスとして返したバイト列とは少し違うバイト列をAPIが出力してしまうのです。
 APIがときどき特定の3バイト`(0xE, 0xBF, 0xBD)`を生成していることに気づきました。
 問題をしっかり観察すると、その3バイトは最上位ビットが1の(言い換えると、`0x80`とのビットANDが`0`でない)バイトを置き換えていることが分かりました。
 `(0xEF, 0xBF, 0xBD)`という3バイトは実際のところ[置換文字(`U+FFFD`)](https://www.compart.com/en/unicode/U+FFFD)のUTF-8表現であり、それはつまり、**有効なUTF-8列を期待している誰かが私のAPI出力の不明なバイトを置き換えた**ということです。
