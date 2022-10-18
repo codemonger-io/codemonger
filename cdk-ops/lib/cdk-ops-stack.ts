@@ -8,7 +8,6 @@ import {
 } from './codemonger-resources';
 import { ContentsPipeline } from './contents-pipeline';
 import { DataWarehouse } from './data-warehouse';
-import { DataWarehouseV2 } from './data-warehouse-v2';
 import { LatestBoto3Layer } from './latest-boto3-layer';
 import { LibdatawarehouseLayer } from './libdatawarehouse-layer';
 
@@ -32,7 +31,7 @@ export class CdkOpsStack extends Stack {
     const pipeline = new ContentsPipeline(this, 'ContentsPipeline', {
       codemongerResources,
     });
-    const developmentDataWarehouse = new DataWarehouseV2(
+    const developmentDataWarehouse = new DataWarehouse(
       this,
       'DevelopmentDataWarehouse',
       {

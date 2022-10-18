@@ -60,8 +60,8 @@ export class DataWarehouse extends Construct {
 
     this.vpc = new ec2.Vpc(this, `DwVpc`, {
       cidr: '192.168.0.0/16',
-      enableDnsSupport: false,
-      enableDnsHostnames: false,
+      enableDnsSupport: true,
+      enableDnsHostnames: true,
       subnetConfiguration: [
         {
           name: CLUSTER_SUBNET_GROUP_NAME,
@@ -71,6 +71,11 @@ export class DataWarehouse extends Construct {
           cidrMask: 22,
         },
       ],
+      gatewayEndpoints: {
+        S3: {
+          service: ec2.GatewayVpcEndpointAwsService.S3,
+        },
+      },
     });
 
     // provisions Redshift Serverless resources
@@ -128,6 +133,7 @@ export class DataWarehouse extends Construct {
       namespaceName: dwNamespace.namespaceName,
       baseCapacity: 32,
       subnetIds: this.getSubnetIdsForCluster(),
+      enhancedVpcRouting: true,
       tags: [
         {
           key: 'project',
