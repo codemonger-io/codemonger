@@ -1,4 +1,4 @@
-English / 日本語
+English / [日本語](./data-warehouse.ja.md)
 
 # Data warehouse for access logs
 
@@ -46,11 +46,12 @@ This bucket sends an event to [`DeleteAccessLogs queue`](#deleteaccesslogs-queue
 
 ### DeleteAccessLogs
 
-`DeleteAccessLogs` is a Lambda function that deletes an access logs file in [`Amazon S3 access log bucket`](#amazon-s3-access-log-bucket), which has been transformed by [`MaskAccessLogs`](#maskaccesslogs) and saved in [`Amazon S3 transformed log bucket`](#amazon-s3-transformed-log-bucket).
+`DeleteAccessLogs` is a Lambda function that deletes an access logs file from [`Amazon S3 access log bucket`](#amazon-s3-access-log-bucket), which [`MaskAccessLogs`](#maskaccesslogs) has transformed and saved in [`Amazon S3 transformed log bucket`](#amazon-s3-transformed-log-bucket).
 
 ### Amazon Redshift Serverless
 
 `Amazon Redshift Serverless` is a bundle of [Amazon Redshift Serverless](https://aws.amazon.com/redshift/) resources, which is the core of the data warehouse.
+
 It has one [fact table](https://en.wikipedia.org/wiki/Fact_table),
 - `access_log`
 
@@ -64,7 +65,7 @@ and five [dimension tables](https://en.wikipedia.org/wiki/Dimension_(data_wareho
 Nodes of `Amazon Redshift Serverless` reside in a private subnet.
 Lambda functions, [`PopulateDwDatabase`](#populatedwdatabase), [`LoadAccessLogs`](#loadaccesslogs), and [`VacuumTable`](#vacuumtable) operate `Amazon Redshift Serverless` via [`Amazon Redshift Data API`](#amazon-redshift-data-api).
 
-The default role of the Amazon Redshift Serverless namespace ([`Redshift namespace role`](#redshift-namespace-role)) can read objects from [`Amazon S3 transformed log bucket`](#amazon-s3-transformed-log-bucket).
+The default role of the [Amazon Redshift Serverless namespace](https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-workgroup-namespace.html) ([`Redshift namespace role`](#redshift-namespace-role)) can read objects from [`Amazon S3 transformed log bucket`](#amazon-s3-transformed-log-bucket).
 `Amazon Redshift Serverless` accesses [`Amazon S3 transformed log bucket`](#amazon-s3-transformed-log-bucket) through [`Gateway endpoint`](#gateway-endpoint).
 
 This CDK stack creates an admin user when it provisions `Amazon Redshift Serverless`.
@@ -82,7 +83,7 @@ Please refer to ["Enhanced VPC routing in Amazon Redshift" - *Amazon Redshift Ma
 ### AWS Secrets Manager
 
 `AWS Secrets Manager` generates and manages the password of the admin user of [`Amazon Redshift Serverless`](#amazon-redshift-serverless).
-Please refer to [*AWS Secrets Manager User Guide*](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html).
+Please also refer to [*AWS Secrets Manager User Guide*](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html).
 
 Unfortunately, the secret managed by `AWS Secrets Manager` does not sync with the admin password of [`Amazon Redshift Serverless`](#amazon-redshift-serverless) except for the first time it is generated.
 So you have to manually reset the admin password of [`Amazon Redshift Serverless`](#amazon-redshift-serverless) in case `AWS Secrets Manager` generates a new secret.
