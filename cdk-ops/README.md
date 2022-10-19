@@ -137,6 +137,8 @@ npm run populate-dw -- production
 
 The `populate-dw` script runs [`bin/populate-data-warehouse.js`](./bin/populate-data-warehouse.js).
 
+This procedure is necessary only once when you deploy this CDK stack for the first time.
+
 ### Enabling the daily access log loading
 
 This CDK stack provisions an [Amazon EventBridge](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html) rule that runs the Lambda function that loads CloudFront access logs onto the data warehouse once a day.
