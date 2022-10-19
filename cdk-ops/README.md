@@ -21,6 +21,11 @@ This CDK stack provisions a [AWS CodePipeline](https://docs.aws.amazon.com/codep
 The workflow is triggered when the `main` branch is updated; e.g., a pull request is merged.
 An author of a pull request has to locally review contents with [`zola serve`](https://www.getzola.org/documentation/getting-started/cli-usage/#serve) before making the pull request.
 
+## Data warehouse for access logs
+
+This CDK stack provisions a data warehouse for access logs.
+Please refer to [`docs/data-warehouse.md`](./docs/data-warehouse.md) for more details.
+
 ## Prerequisites
 
 ### Deploying CDK stack for contents
@@ -105,6 +110,42 @@ npx cdk deploy --toolkit-stack-name $TOOLKIT_STACK_NAME -c "@aws-cdk/core:bootst
 ```
 
 After deploying the CDK stack, you will find the CloudFormation stack `codemonger-operation` created or updated.
+
+#### Admin user of the Amazon Redshift Serverless namespace
+
+This CDK stack creates the admin user of the [Amazon Redshift Serverless (Redshift Serverless)](https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-serverless.html) namespace when it provisions the namespace.
+The password of the admin user is created as a secret managed by [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html).
+Since **CloudFormation cannot change the admin username and password of the Redshift Serverless namespace** once it is provisioned, the **admin password is lost in case the secret is updated (regenerated)**.
+
+If this happens, you have to manually update the admin password as another superuser.
+You can change the admin password on the Redshift Serverless console, or you can assume the CloudFormation execution role\* on [Query Editor v2](https://aws.amazon.com/redshift/query-editor-v2/) to reset the admin password.
+
+\* Redshift Serverless gives the creator of a new namespace an admin privilege of it.
+Because we are using CDK (CloudFormation) to provision a Redshift Serverless namespace, the execution role of CloudFormation deserves the power.
+
+## Post deployment
+
+### Populating the database and tables on the data warehouse
+
+After deploying this CDK stack, you have to populate the database and tables on the data warehouse.
+Please run the following commands.
+
+```sh
+npm run populate-dw -- development
+npm run populate-dw -- production
+```
+
+The `populate-dw` script runs [`bin/populate-data-warehouse.js`](./bin/populate-data-warehouse.js).
+
+### Enabling the daily access log loading
+
+This CDK stack provisions an [Amazon EventBridge](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html) rule that runs the Lambda function that loads CloudFront access logs onto the data warehouse once a day.
+Since the rule is disabled by default, you have to enable the rule to run the daily access log loading.
+There are separate rules for development\* and production.
+
+Please make sure that you have [populated the database and tables on the data warehouse](#populating-the-database-and-tables-on-the-data-warehouse).
+
+\* The rule for development triggers **every hour**.
 
 ## Why am I not using exports?
 
