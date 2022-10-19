@@ -23,7 +23,7 @@ This bucket sends an event to [`MaskAccessLogs queue`](#maskaccesslogs-queue) wh
 ### MaskAccessLogs queue
 
 `MaskAccessLogs queue` is an [Amazon Simple Queue Service (SQS)](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html) queue that invokes [`MaskAccessLogs`](#maskaccesslogs).
-[`Amazon S3 access log bucket`](#amazon-s3-access-log-bucket) sends an event to this queue when an access logs file is PUT into it.
+[`Amazon S3 access log bucket`](#amazon-s3-access-log-bucket) sends an event to this queue when an access logs file is PUT into the bucket.
 
 ### MaskAccessLogs
 
@@ -31,7 +31,7 @@ This bucket sends an event to [`MaskAccessLogs queue`](#maskaccesslogs-queue) wh
 This function masks IP addresses, `c-ip` and `x-forwarded-for`, in the [CloudFront access logs](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/AccessLogs.html#LogFileFormat).
 This function also introduces a new column of row numbers to retain the order of the access log records.
 This function saves transformed results in [`Amazon S3 transformed log bucket`](#amazon-s3-transformed-log-bucket).
-While [`Amazon S3 access log bucket`](#amazon-s3-access-log-bucket) flat-spreads access logs files, this function creates a folder hierarchy corresponding to the year, month, and day of access log records.
+While [`Amazon S3 access log bucket`](#amazon-s3-access-log-bucket) spreads access logs files flat, this function creates a folder hierarchy corresponding to the year, month, and day of access log records.
 This folder structure helps [`LoadAccessLogs`](#loadaccesslogs) to process access logs on a specific date in a batch.
 
 ### Amazon S3 transformed log bucket
@@ -42,7 +42,7 @@ This bucket sends an event to [`DeleteAccessLogs queue`](#deleteaccesslogs-queue
 ### DeleteAccessLogs queue
 
 `DeleteAccessLogs queue` is an SQS queue that invokes [`DeleteAccessLogs`](#deleteaccesslogs).
-[`Amazon S3 transformed log bucket`](#amazon-s3-transformed-log-bucket) sends an event to this queue when a transformed access logs file is PUT into it.
+[`Amazon S3 transformed log bucket`](#amazon-s3-transformed-log-bucket) sends an event to this queue when a transformed access logs file is PUT into the bucket.
 
 ### DeleteAccessLogs
 
@@ -64,7 +64,7 @@ and five [dimension tables](https://en.wikipedia.org/wiki/Dimension_(data_wareho
 Nodes of `Amazon Redshift Serverless` reside in a private subnet.
 Lambda functions, [`PopulateDwDatabase`](#populatedwdatabase), [`LoadAccessLogs`](#loadaccesslogs), and [`VacuumTable`](#vacuumtable) operate `Amazon Redshift Serverless` via [`Amazon Redshift Data API`](#amazon-redshift-data-api).
 
-The default role of the Amazon Redshift Serverless namespace ([`Redshift namespace role`](#redshift-namespace-role)) can read object from [`Amazon S3 transformed log bucket`](#amazon-s3-transformed-log-bucket).
+The default role of the Amazon Redshift Serverless namespace ([`Redshift namespace role`](#redshift-namespace-role)) can read objects from [`Amazon S3 transformed log bucket`](#amazon-s3-transformed-log-bucket).
 `Amazon Redshift Serverless` accesses [`Amazon S3 transformed log bucket`](#amazon-s3-transformed-log-bucket) through [`Gateway endpoint`](#gateway-endpoint).
 
 This CDK stack creates an admin user when it provisions `Amazon Redshift Serverless`.
@@ -72,7 +72,7 @@ This CDK stack creates an admin user when it provisions `Amazon Redshift Serverl
 
 ### Redshift namespace role
 
-`Redshift namespace role` is an [AWS Identity and Access Management (IAM)](https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html) role that is the default role of the namespace of [`Amazon Redshift Serverless`](#amazon-redshift-serverless) and can read objects from [`Access S3 transformed log bucket`](#access-s3-transformed-log-bucket).
+`Redshift namespace role` is an [AWS Identity and Access Management (IAM)](https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html) role that is the default role of the namespace of [`Amazon Redshift Serverless`](#amazon-redshift-serverless) and can read objects from [`Amazon S3 transformed log bucket`](#amazon-s3-transformed-log-bucket).
 
 ### Gateway endpoint
 
@@ -85,7 +85,7 @@ Please refer to ["Enhanced VPC routing in Amazon Redshift" - *Amazon Redshift Ma
 Please refer to [*AWS Secrets Manager User Guide*](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html).
 
 Unfortunately, the secret managed by `AWS Secrets Manager` does not sync with the admin password of [`Amazon Redshift Serverless`](#amazon-redshift-serverless) except for the first time it is generated.
-So you have to manually reset the admin password of [`Amazon Redshift Serverless`](#amazon-redshift-serverless), in case `AWS Secrets Manager` generates a new secret.
+So you have to manually reset the admin password of [`Amazon Redshift Serverless`](#amazon-redshift-serverless) in case `AWS Secrets Manager` generates a new secret.
 
 ### Amazon Redshift Data API
 
@@ -105,8 +105,8 @@ The administrator (`Admin`) has to run this function after deploying this CDK st
 ### LoadAccessLogs
 
 `LoadAccessLogs` is a Lambda function that loads access logs on a specific date onto [`Amazon Redshift Serverless`](#amazon-redshift-serverless).
-This function executes [`AWS Step Functions`](#aws-step-functions) after loading access logs finishes.
-[`Amazon EventBridge`](#amazon-eventbridge) runs this function every day.
+This function executes [`AWS Step Functions`](#aws-step-functions) after the access log loading finishes.
+[`Amazon EventBridge`](#amazon-eventbridge) runs this function once a day.
 
 While this function is intended to be invoked by [`Amazon EventBridge`](#amazon-eventbridge), you can also manually run this function with a proper payload.
 
