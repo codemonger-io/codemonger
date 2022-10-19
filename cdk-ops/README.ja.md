@@ -21,6 +21,11 @@ codemongerウェブサイトのコンテンツを保管し配信するAWSリソ�
 ワークフローは`main`ブランチが更新された際(例えばプルリクエストがマージされた際)に開始されます。
 プルリクエストの作成前に作成者は[`zola serve`](https://www.getzola.org/documentation/getting-started/cli-usage/#serve)でローカルにコンテンツをレビューしなければなりません。
 
+## アクセスログ用のデータウェアハウス
+
+このCDKスタックはアクセスログ用のデータウェアハウスを確保します。
+詳しくは[`docs/data-warehouse.ja.md`](./docs/data-warehouse.ja.md)をご参照ください。
+
 ## 事前準備
 
 ### コンテンツのためのCDKスタックをデプロイする
@@ -105,6 +110,44 @@ npx cdk deploy --toolkit-stack-name $TOOLKIT_STACK_NAME -c "@aws-cdk/core:bootst
 ```
 
 CDKスタックをデプロイすると、CloudFormationスタック`codemonger-operation`が作成または更新されます。
+
+#### Amazon Redshift Serverlessネームスペースの管理ユーザー
+
+このCDKスタックは[Amazon Redshift Serverless (Redshift Serverless)](https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-serverless.html)ネームスペースの確保時に管理ユーザーを作成します。
+管理ユーザーのパスワードは[AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html)の管理するシークレットとして作成されます。
+**CloudFormationはRedshift Serverlessネームスペースの管理ユーザー名とパスワードを一度作成すると変更することができない**ので、**シークレットが更新(再生成)されると管理パスワードが失われます**。
+
+これが起きてしまったら、別のスーパーユーザーで管理パスワードを手作業で更新しなければなりません。
+Redshift Serverlessコンソールで管理パスワードを変更するか、CloudFormationの実行ロール\*で[Query Editor v2](https://aws.amazon.com/redshift/query-editor-v2/)を実行して管理パスワードをリセットすることもできます。
+
+\* Redshift Serverlessはネームスペースの作成者に管理権限を与えます。
+Redshift Serverlessネームスペースの確保にCDK (CloudFormation)を使用しているので、CloudFormationの実行ロールがその力を授かることになります。
+
+## デプロイ後
+
+### データウェアハウスにデータベースとテーブルを作成する
+
+このCDKスタックをデプロイした後、データウェアハウスにデータベースとテーブルを作成しなければなりません。
+以下のコマンドを実行してください。
+
+```sh
+npm run populate-dw -- development
+npm run populate-dw -- production
+```
+
+`populate-dw`スクリプトは[`bin/populate-data-warehouse.js`](./bin/populate-data-warehouse.js)を実行します。
+
+この手続きはCDKスタックを最初に確保した際に一度だけ必要です。
+
+### 日々のアクセスログ読み込みを有効にする
+
+このCDKスタックは、CloudFrontのアクセスログをデータウェアハウスに読み込むLambda関数を1日に1回実行する[Amazon EventBridge](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html)のルールを確保します。
+ルールはデフォルトで無効化されているので、日々のアクセスログ読み込みを実行するには有効化しなければなりません。
+開発用\*と製品用で別々のルールがあります。
+
+確実に[データウェアハウスにデータベースとテーブルを作成](#データウェアハウスにデータベースとテーブルを作成する)しておいてください。
+
+\* 開発用のルールは**毎時**トリガーされます。
 
 ## なぜExportを使わないのか?
 

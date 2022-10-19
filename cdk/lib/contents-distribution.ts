@@ -2,6 +2,8 @@ import * as path from 'path';
 
 import {
   Duration,
+  Fn,
+  Stack,
   aws_certificatemanager as acm,
   aws_cloudfront as cloudfront,
   aws_cloudfront_origins as origins,
@@ -45,6 +47,8 @@ const NO_DOMAIN_NAME_CDK_CONTEXT = 'codemonger:no-domain-name';
 export class ContentsDistribution extends Construct {
   /** CloudFront distribution for contents of the codemonger website. */
   readonly distribution: cloudfront.IDistribution;
+  /** Name of the S3 bucket for access logs. */
+  readonly accessLogsBucketName: string | undefined;
 
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id);
@@ -109,6 +113,45 @@ export class ContentsDistribution extends Construct {
         ...certificateParams,
       },
     );
+
+    // obtains the logging bucket created by the distribution.
+    // we have to access the underlying CloudFormation properties.
+    //
+    // see below for how to access the CloudFormation properties,
+    // https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_cloudfront.CfnDistribution.html
+    const cfnDistribution =
+      this.distribution.node.defaultChild as cloudfront.CfnDistribution;
+    const stack = Stack.of(this);
+    const distributionConfig = stack.resolve(cfnDistribution.distributionConfig) as cloudfront.CfnDistribution.DistributionConfigProperty;
+    if (distributionConfig.logging != null) {
+      const loggingConfig = stack.resolve(distributionConfig.logging) as cloudfront.CfnDistribution.LoggingProperty;
+      // loggingConfig.bucket should be an `Fn::GetAtt` intrinsic function to
+      // obtain the regional domain name from the bucket for access logs.
+      // so we can extract the logical name of the bucket and then obtain the
+      // bucket name by Ref.
+      //
+      // TODO: too much dependence on the CDK implementation
+      // https://github.com/aws/aws-cdk/blob/7d8ef0bad461a05caa41d140678481c5afb9d33e/packages/%40aws-cdk/aws-cloudfront/lib/distribution.ts#L443-L457
+      const bucketRef: any = loggingConfig.bucket;
+      if (typeof bucketRef !== 'object') {
+        throw new Error(
+          'logical name of the bucket for access logs must be available',
+        );
+      }
+      const getAtt: any = bucketRef['Fn::GetAtt'];
+      if (!Array.isArray(getAtt)) {
+        throw new Error(
+          'logical name of the bucket for access logs must be available',
+        );
+      }
+      const bucketLogicalId = getAtt[0];
+      if (typeof bucketLogicalId !== 'string') {
+        throw new Error(
+          'logical name of the bucket for access logs must be available',
+        );
+      }
+      this.accessLogsBucketName = Fn.ref(bucketLogicalId);
+    }
   }
 }
 

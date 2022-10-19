@@ -1,5 +1,6 @@
 *.js
 !jest.config.js
+!/bin/populate-data-warehouse.js
 *.d.ts
 node_modules
 

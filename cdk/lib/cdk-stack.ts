@@ -36,5 +36,11 @@ export class CdkStack extends Stack {
       description: 'Domain name of the CloudFront distribution for contents of the codemonger website',
       value: contentsDistribution.distribution.distributionDomainName,
     });
+    if (contentsDistribution.accessLogsBucketName != null) {
+      new CfnOutput(this, 'ContentsAccessLogsBucketName', {
+        description: 'Name of the S3 bucket for CloudFront access logs',
+        value: contentsDistribution.accessLogsBucketName,
+      });
+    }
   }
 }

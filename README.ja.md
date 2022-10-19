@@ -16,7 +16,10 @@
 
 サブフォルダ[`zola`](zola/README.ja.md)をご覧ください。
 
-## Continuous Delivery
+## DevOps
 
-このレポジトリの`main`ブランチが更新されると、codemongerウェブサイトを更新するためのワークフローが開始します。
+以下の["DevOps"](https://en.wikipedia.org/wiki/DevOps)機能も提供します。
+- Continuous Delivery: このレポジトリの`main`ブランチが更新されると、codemongerウェブサイトを更新するためのワークフローが開始します。
+- データウェアハウス: codemongerウェブサイトのアクセスログはデータウェアハウスに格納されます。
+
 詳しくはサブフォルダ[`cdk-ops`](cdk-ops/README.ja.md)をご覧ください。

@@ -21,6 +21,10 @@ export type CodemongerResourceNames = {
   developmentDistributionDomainName: string;
   /** Name of the S3 bucket for production contents. */
   productionContentsBucketName: string;
+  /** Name of the S3 bucket of CloudFront access logs for development. */
+  developmentContentsAccessLogsBucketName: string;
+  /** Name of the S3 bucket of CloudFront access logs for production. */
+  productionContentsAccessLogsBucketName: string;
 };
 
 /**
@@ -50,10 +54,22 @@ export async function resolveCodemongerResourceNames():
   if (productionContentsBucketName == null) {
     throw new Error('contents bucket for production is not available');
   }
+  const developmentContentsAccessLogsBucketName =
+    developmentOutputs.get('ContentsAccessLogsBucketName');
+  if (developmentContentsAccessLogsBucketName == null) {
+    throw new Error('access logs bucket for development is not available');
+  }
+  const productionContentsAccessLogsBucketName =
+    productionOutputs.get('ContentsAccessLogsBucketName');
+  if (productionContentsAccessLogsBucketName == null) {
+    throw new Error('access logs bucket for production is not available');
+  }
   return {
     developmentContentsBucketName,
     developmentDistributionDomainName,
     productionContentsBucketName,
+    developmentContentsAccessLogsBucketName,
+    productionContentsAccessLogsBucketName,
   };
 }
 
@@ -71,7 +87,7 @@ export async function resolveCodemongerResourceNames():
 async function fetchStackOutput(stage: DeploymentStage):
   Promise<Map<string, string>>
 {
-  const stackName = `${CODEMONGER_STACK_PREFIX}-${stage}`;
+  const stackName = `${CODEMONGER_STACK_PREFIX}${stage}`;
   const client = new CloudFormationClient({});
   const command = new DescribeStacksCommand({
     StackName: stackName,
@@ -104,6 +120,10 @@ export class CodemongerResources extends Construct {
   readonly productionContentsBucket: s3.IBucket;
   /** Domain name for production. */
   readonly productionDomainName = CODEMONGER_DOMAIN_NAME;
+  /** S3 bucket of CloudFront access logs for development. */
+  readonly developmentContentsAccessLogsBucket: s3.IBucket;
+  /** S3 bucket of CloudFront access logs for development. */
+  readonly productionContentsAccessLogsBucket: s3.IBucket;
 
   constructor(
     scope: Construct,
@@ -113,8 +133,10 @@ export class CodemongerResources extends Construct {
     super(scope, id);
 
     const {
+      developmentContentsAccessLogsBucketName,
       developmentContentsBucketName,
       developmentDistributionDomainName,
+      productionContentsAccessLogsBucketName,
       productionContentsBucketName,
     } = resourceNames;
 
@@ -128,6 +150,16 @@ export class CodemongerResources extends Construct {
       this,
       'ProductionContentsBucket',
       productionContentsBucketName,
+    );
+    this.developmentContentsAccessLogsBucket = s3.Bucket.fromBucketName(
+      this,
+      'DevelopmentContentsAccessLogsBucket',
+      developmentContentsAccessLogsBucketName,
+    );
+    this.productionContentsAccessLogsBucket = s3.Bucket.fromBucketName(
+      this,
+      'ProductionContentsAccessLogsBucket',
+      productionContentsAccessLogsBucketName,
     );
   }
 }

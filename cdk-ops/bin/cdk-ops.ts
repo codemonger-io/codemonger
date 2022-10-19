@@ -23,6 +23,15 @@ resolveCodemongerResourceNames()
       // env: { account: '123456789012', region: 'us-east-1' },
 
       /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
+      env: {
+        // without the following properties `account` and `region`,
+        // the stack becomes "environment-agnostic."
+        // only two availability zones (AZs) are visible in an
+        // evironment-agnostic stack.
+        // https://docs.aws.amazon.com/cdk/v2/guide/environments.html
+        account: process.env.CDK_DEFAULT_ACCOUNT,
+        region: process.env.CDK_DEFAULT_REGION,
+      },
       codemongerResourceNames: names,
       tags: {
         project: 'codemonger',
