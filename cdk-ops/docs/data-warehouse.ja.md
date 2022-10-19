@@ -86,7 +86,7 @@ Lambda関数([`PopulateDwDatabase`](#populatedwdatabase), [`LoadAccessLogs`](#lo
 [*AWS Secrets Manager User Guide*](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html)もご参照ください。
 
 残念ながら、`AWS Secrets Manager`が管理するシークレットは[`Amazon Redshift Serverless`](#amazon-redshift-serverless)の管理パスワードと同期していません(初回生成時を除く)。
-なので`AWS Secrets Manager`が新しいシークレットを生成してしまった際には、[`Amazon Redshift Serverless`](#amazon-redshift-serverless)の管理パスワードを手作業でリセットしなければなりません。
+なので`AWS Secrets Manager`が新しいシークレットを生成してしまった際には、[`Amazon Redshift Serverless`](#amazon-redshift-serverless)の管理パスワードを手作業でリセットしなければなりません(対処方法は[READMEの「Amazon Redshift Serverlessネームスペースの管理ユーザー」](../README.ja.md#amazon-redshift-serverlessネームスペースの管理ユーザー)をご参照ください)。
 
 ### Amazon Redshift Data API
 

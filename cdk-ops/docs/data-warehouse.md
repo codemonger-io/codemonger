@@ -86,7 +86,7 @@ Please refer to ["Enhanced VPC routing in Amazon Redshift" - *Amazon Redshift Ma
 Please also refer to [*AWS Secrets Manager User Guide*](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html).
 
 Unfortunately, the secret managed by `AWS Secrets Manager` does not sync with the admin password of [`Amazon Redshift Serverless`](#amazon-redshift-serverless) except for the first time it is generated.
-So you have to manually reset the admin password of [`Amazon Redshift Serverless`](#amazon-redshift-serverless) in case `AWS Secrets Manager` generates a new secret.
+So you have to manually reset the admin password of [`Amazon Redshift Serverless`](#amazon-redshift-serverless) in case `AWS Secrets Manager` generates a new secret; please refer to ["Admin user of the Amazon Redshift Serverless namespace" in *README*](../README.md#admin-user-of-the-amazon-redshift-serverless-namespace) for how to deal with it.
 
 ### Amazon Redshift Data API
 
