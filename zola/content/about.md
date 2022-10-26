@@ -2,7 +2,7 @@
 title = "About codemonger"
 description = "About codemonger, and myself"
 date = 2022-06-13
-updated = 2022-06-19
+updated = 2022-10-26
 template = "about.html"
 +++
 
@@ -11,6 +11,11 @@ template = "about.html"
 `code` + `-monger` (a dealer of a commodity)
 
 Expresses enthusiasm for coding, and humbleness.
+
+## Socials
+
+- Twitter: [@codemonger_io](https://twitter.com/codemonger_io)
+- GitHub: [https://github.com/codemonger-io](https://github.com/codemonger-io)
 
 ## Representative
 
