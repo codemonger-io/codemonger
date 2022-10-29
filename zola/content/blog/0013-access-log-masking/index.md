@@ -31,8 +31,8 @@ And I neither want to introduce creepy Cookies by adopting Google Analytics and 
 
 The answer is likely **no**.
 [Individual columns in CloudFront access logs](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/AccessLogs.html#LogFileFormat) may not identify a single person.
-However, if we combine columns like IP address and user-agent in CloudFront access logs, we likely could identify\* a person and track that person.
-According to [this article](https://cloudonaut.io/anonymize-cloudfront-access-logs/)[\[3\]](#Reference), we should at least drop some bits from IP addresses in CloudFront access logs if we want to store them for long.
+However, if we combine columns like IP address and user-agent in CloudFront access logs, we likely could identify\* a single person and track that person.
+According to [this article](https://cloudonaut.io/anonymize-cloudfront-access-logs/)[\[3\]](#Reference), we should at least drop certain bits from IP addresses in CloudFront access logs if we want to store them for long.
 What I introduce here is essentially the same as what the article[\[3\]](#Reference) describes.
 
 \* To "identify" here does not mean to know one's name, email, contact, etc., but to distinguish one person from others without knowing exactly who it is.
@@ -55,9 +55,9 @@ The workflow is described below,
 4. [`MaskAccessLogs`](#MaskAccessLogs) transforms the new access logs file and saves the results in [`Amazon S3 transformed log bucket`](#Amazon_S3_transformed_log_bucket).
 5. [`Amazon S3 transformed log bucket`](#Amazon_S3_transformed_log_bucket) sends a PUT event to [`DeleteAccessLogs queue`](#DeleteAccessLogs_queue).
 6. [`DeleteAccessLogs queue`](#DeleteAccessLogs_queue) invokes [`DeleteAccessLogs`](#DeleteAccessLogs).
-7. [`DeleteAccessLogs`](#DeleteAccessLogs) deletes the original access logs file in [`Amazon S3 access log bucket`](#Amazon_S3_access_log_bucket).
+7. [`DeleteAccessLogs`](#DeleteAccessLogs) deletes the original access logs file from [`Amazon S3 access log bucket`](#Amazon_S3_access_log_bucket).
 
-You can find a CDK stack that provisions the above architecture\* for this website on [my GitHub repository](https://github.com/codemonger-io/codemonger/tree/e7562e9197a71cd914e1b8e4c964ca0adc74a859/cdk-ops); specifically [cdk-ops/lib/access-logs-etl.ts](https://github.com/codemonger-io/codemonger/blob/e7562e9197a71cd914e1b8e4c964ca0adc74a859/cdk-ops/lib/access-logs-etl.ts).
+You can find a [AWS Cloud Development Kit (CDK)](https://aws.amazon.com/cdk/) stack that provisions the above architecture\* for this website on [my GitHub repository](https://github.com/codemonger-io/codemonger/tree/e7562e9197a71cd914e1b8e4c964ca0adc74a859/cdk-ops); specifically [cdk-ops/lib/access-logs-etl.ts](https://github.com/codemonger-io/codemonger/blob/e7562e9197a71cd914e1b8e4c964ca0adc74a859/cdk-ops/lib/access-logs-etl.ts).
 I have had a CDK-specific issue there, and please refer to the [Section "Identifying the S3 bucket for CloudFront access logs"](#Identifying_the_S3_bucket_for_CloudFront_access_logs) for more details.
 
 The following subsections describe each component on the above diagram.
@@ -122,7 +122,7 @@ You can find the implementation of this function in [cdk-ops/lambda/delete-acces
 In this blog post, we learned [**storing CloudFront access logs for long may violate the GDPR**](#Are_CloudFront_access_logs_GDPR_compliant?).
 Then I showed you [my AWS architecture to **reduce personal data from CloudFront access logs**](#Overview_of_my_architecture).
 
-In an upcoming blog post, I will introduce how to load access longs onto a data warehouse backed by [Amazon Redshift Serverless](https://aws.amazon.com/redshift/redshift-serverless/).
+In an upcoming blog post, I will introduce how to load access logs onto a data warehouse backed by [Amazon Redshift Serverless](https://aws.amazon.com/redshift/redshift-serverless/).
 
 ## Appendix
 
