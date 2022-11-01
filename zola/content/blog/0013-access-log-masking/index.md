@@ -1,10 +1,11 @@
 +++
 title = "Analyzing access logs (1. Masking)"
 description = "Series: About analysis of access logs on my website"
-date = 2022-10-26
-draft = true
+date = 2022-11-02
+draft = false
 [extra]
 hashtags = ["AWS", "CloudFront", "GDPR"]
+thumbnail_name = "thumbnail.jpg"
 +++
 
 This blog post shares how I have reduced personal data in CloudFront access logs on my website.

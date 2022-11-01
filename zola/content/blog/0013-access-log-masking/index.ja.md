@@ -1,14 +1,15 @@
 +++
 title = "アクセスログの分析(1. マスキング編)"
 description = "シリーズ:当ウェブサイトのアクセスログの解析について"
-date = 2022-10-29
-draft = true
+date = 2022-11-02
+draft = false
 [extra]
 hashtags = ["AWS", "CloudFront", "GDPR"]
+thumbnail_name = "thumbnail.jpg"
 +++
 
 このブログ投稿では私のウェブサイトのCloudFrontアクセスログからどのようにして個人データを減らしているかを紹介します。
-アクセスログ分析に関するシリーズの最初の投稿です。
+これはアクセスログ分析に関するシリーズの最初の投稿です。
 
 <!-- more -->
 
@@ -22,7 +23,7 @@ hashtags = ["AWS", "CloudFront", "GDPR"]
 このブログでは、個人データを減らすためにCloudFrontアクセスログを変換するAWS上の私のアーキテクチャを紹介します。
 
 \* [Googleアナリティクス](https://analytics.google.com/analytics/)を提案する方もいらっしゃるかもしれませんが、Googleアナリティクスは私が必要とするよりはるかに詳細な(不要な)情報を集めてしまいます。
-また、Googleアナリティクスやその類を採用することで不気味なCookiesを導入したくもありません。
+また、Googleアナリティクスやその類を採用することで不気味なCookieを導入したくもありません。
 [GoogleアナリティクスはGDPR準拠に関する課題も抱えています](https://piwik.pro/blog/is-google-analytics-gdpr-compliant/)[\[2\]](#参考)。
 
 \*2 このウェブサイトで集める情報を用いて皆さんに何か危害を加えることができるとは思いませんが、何にせよ不要な情報は集めるべきではありません。
@@ -176,7 +177,7 @@ CloudFrontのDistribution([`cloudfront.Distribution (Distribution)`](https://doc
 
 S3バケットに対する変更がLambda関数をトリガーするようにS3バケットとLambda関数をイベント通知で直接接続することもできます。
 やり方については["Using AWS Lambda with Amazon S3," _AWS Lambda Developer Guide_](https://docs.aws.amazon.com/lambda/latest/dg/with-s3.html)[\[4\]](#参考)を参照してください。
-ところが、[私のAWSアーキテクチャ](#私のアーキテクチャの概要)を見てわかるように、S3バケットとLambda関数を直接接続する代わりに追加のSQSキューを間に挟むことにしました([`Amazon S3 access log bucket`](#Amazon_S3_access_log_bucket) &rightarrow; [**`MaskAccessLogs queue`**](#MaskAccessLogs_queue) &rightarrow; [`MaskAccessLogs`](#MaskAccessLogs)および[`Amazon S3 transformed log bucket`](#Amazon_S3_transformed_log_bucket) &rightarrow; [**`DeleteAccessLogs queue`**](#DeleteAccessLogs_queue) &rightarrow; [`DeleteAccessLogs`](#DeleteAccessLogs))。
+ところが、[私のAWSアーキテクチャ](#私のアーキテクチャの概要)ではご覧のとおり、S3バケットとLambda関数を直接接続する代わりに追加のSQSキューを間に挟むことにしました([`Amazon S3 access log bucket`](#Amazon_S3_access_log_bucket) &rightarrow; [**`MaskAccessLogs queue`**](#MaskAccessLogs_queue) &rightarrow; [`MaskAccessLogs`](#MaskAccessLogs)および[`Amazon S3 transformed log bucket`](#Amazon_S3_transformed_log_bucket) &rightarrow; [**`DeleteAccessLogs queue`**](#DeleteAccessLogs_queue) &rightarrow; [`DeleteAccessLogs`](#DeleteAccessLogs))。
 一段複雑になりますが、何か問題が起きた際にLambda関数の呼び出しを簡単にON/OFFできるようになります。
 さもなくば、イベントの流れを切断するためにLambda関数からイベントトリガーを削除しなければなりません。
 
