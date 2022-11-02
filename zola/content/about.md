@@ -2,7 +2,7 @@
 title = "About codemonger"
 description = "About codemonger, and myself"
 date = 2022-06-13
-updated = 2022-10-26
+updated = 2022-11-02
 template = "about.html"
 +++
 
