@@ -2,7 +2,7 @@
 title = "codemongerについて"
 description = "codemongerと私自身について"
 date = 2022-06-13
-updated = 2022-06-19
+updated = 2022-11-02
 template = "about.html"
 +++
 
@@ -11,6 +11,11 @@ template = "about.html"
 `code` + `-monger` (日用品の売人)
 
 コーディングに対する強い熱意と謙虚さを表しています。
+
+## ソーシャルメディア
+
+- Twitter: [@codemonger_io](https://twitter.com/codemonger_io)
+- GitHub: [https://github.com/codemonger-io](https://github.com/codemonger-io)
 
 ## 代表
 
