@@ -1,7 +1,7 @@
 +++
 title = "MumbleBee"
 description = "Mumbleの公式クライアント"
-date = 2023-06-19
+date = 2023-06-20
 draft = false
 weight = 2
 [extra]

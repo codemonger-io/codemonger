@@ -1,7 +1,7 @@
 +++
 title = "Mumble"
 description = "Serverless implementation of Activity Pub"
-date = 2023-06-19
+date = 2023-06-20
 draft = false
 weight = 1
 [extra]
