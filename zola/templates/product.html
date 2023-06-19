@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 class="title">
+      {{ section.title }}
+    </h1>
+    <div class="columns is-multiline">
+      {% for page in paginator.pages %}
+      <div class="column is-one-third-desktop is-half-tablet">
+        <div class="product-card card">
+          <div class="card-image">
+            <figure class="image">
+              <a href="{{ page.permalink | safe }}">
+                <img src="{{ page.path }}/{{ page.extra.thumbnail_name }}" alt="{{ page.title }}">
+              </a>
+            </figure>
+          </div>
+          <div class="card-content">
+            <a href="{{ page.permalink | safe }}" class="product-summary content">{{ page.summary | safe }}</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% if paginator.previous or paginator.next %}
+    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+      <a
+        class="pagination-previous{% if not paginator.previous %} is-disabled{% endif %}"
+        href="{{ paginator.previous }}"
+        {% if not paginator.previous %}disabled{% endif %}>
+        {{ trans(key="previous_products", lang=lang) }}
+      </a>
+      <a
+        class="pagination-next{% if not paginator.next %} is-disabled{% endif %}"
+        href="{{ paginator.next }}"
+        {% if not paginator.next %}disabled{% endif %}>
+        {{ trans(key="next_products", lang=lang) }}
+      </a>
+      <ul class="pagination-list">
+        <li class="current-product-page-number">
+          <span class="product-page-number">{{ trans(key="page", lang=lang) }}: {{ paginator.current_index }}</span> / <span class="product-page-number">{{ paginator.number_pagers }}</span>
+        </li>
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</section>
+{% endblock content %}
