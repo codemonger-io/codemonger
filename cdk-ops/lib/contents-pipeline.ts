@@ -49,11 +49,12 @@ export class ContentsPipeline extends Construct {
     const productionArtifact = new codepipeline.Artifact();
 
     // build project
+    const alpineVersion = '3.18';
     const buildProject = new codebuild.PipelineProject(this, 'BuildProject', {
       environment: {
         buildImage: codebuild.LinuxBuildImage.fromDockerRegistry(
           // Alpine Linux where Zola is available through apk
-          'public.ecr.aws/docker/library/alpine:3.16.0',
+          `public.ecr.aws/docker/library/alpine:${alpineVersion}`,
         ),
       },
       buildSpec: codebuild.BuildSpec.fromObject({
@@ -61,7 +62,7 @@ export class ContentsPipeline extends Construct {
         phases: {
           install: {
             commands: [
-              'apk add zola --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/',
+              `apk add zola --repository http://dl-cdn.alpinelinux.org/alpine/v${alpineVersion}/community/`,
             ],
           },
           build: {
