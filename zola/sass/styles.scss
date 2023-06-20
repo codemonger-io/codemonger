@@ -111,19 +111,26 @@ p {
       &.image {
         display: flex;
         place-items: center;
+        @media (max-height: 400px) {
+          /* for mobile landscape layout */
+          align-items: start;
+          img {
+            max-width: 70vw;
+          }
+        }
         justify-content: center;
         min-height: calc(100vh - #{$navbar-height} - 3rem);
       }
     }
 
     .content {
-      top: 100vh;
       /* makes the product summary bold and overlap the product logo. */
       p:first-of-type {
         position: absolute;
-        bottom: 5.0rem;
+        bottom: 3.0em;
         font-weight: 700;
         font-size: 2.0em;
+        line-height: 1.0;
         opacity: 0.8;
         background-color: $codemonger;
       }
