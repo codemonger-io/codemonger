@@ -138,7 +138,7 @@ npx cdk deploy --toolkit-stack-name $TOOLKIT_STACK_NAME -c "@aws-cdk/core:bootst
 以下のコマンドはコンテンツ用のS3バケット名を出力します。
 
 ```sh
-aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --query "Stacks[0].Outputs[?OutputKey=='ContentsBucketName']|[0].OutputValue" | sed -E 's/(^")|("$)//g'
+aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --query "Stacks[0].Outputs[?OutputKey=='ContentsBucketName']|[0].OutputValue" --output text
 ```
 
 `$DEPLOYMENT_STAGE`を取得したいS3バケットが存在するデプロイステージで置き換えてください。
@@ -155,7 +155,7 @@ aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --q
 以下のコマンドはコンテンツ用のCloudFront Distributionのドメイン名を出力します。
 
 ```sh
-aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --query "Stacks[0].Outputs[?OutputKey=='ContentsDistributionDomainName']|[0].OutputValue" | sed -E 's/(^")|("$)//g'
+aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --query "Stacks[0].Outputs[?OutputKey=='ContentsDistributionDomainName']|[0].OutputValue" --output text
 ```
 
 `$DEPLOYMENT_STAGE`を取得したいCloudFront Distributionが存在するデプロイステージで置き換えてください。
