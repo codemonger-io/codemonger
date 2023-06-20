@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section product-content">
+  <div class="container is-max-desktop">
+    <header>
+      {% if page.extra.thumbnail_name %}
+      <figure class="product-title image">
+        <img src="{{ page.extra.thumbnail_name }}" alt="{{ page.title }}">
+      </figure>
+      {% else %}
+      <h1 class="product-title">
+        {{ page.title }}
+      </h1>
+      {% endif %}
+    </header>
+    <div class="content">
+      {{ page.content | safe }}
+    </div>
+  </div>
+</section>
+<section class="section product-footer">
+  <div class="is-flex is-justify-content-center">
+    {% set hashtags = page.extra.hashtags | default(value=[]) | join(sep=",") | urlencode %}
+    {% if hashtags | length > 0 %}
+    {%   set hashtags_param = "&hashtags=" ~ hashtags %}
+    {% else %}
+    {%   set hashtags_param = "" %}
+    {% endif %}
+    <a
+      class="button is-twitter is-small"
+      href="https://twitter.com/intent/tweet?text=codemonger%20{{ trans(key="product", lang=lang) | urlencode }}%20-%20{{ page.title | urlencode }}&url={{ current_url | urlencode }}{{ hashtags_param }}" target="_blank"
+    >
+      <span class="icon">
+        <i class="fab fa-twitter"></i>
+      </span>
+      <span>{{ trans(key="tweet_v", lang=lang) }}</span>
+    </a>
+  </div>
+</section>
+{% endblock content %}

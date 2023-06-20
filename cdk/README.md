@@ -138,7 +138,7 @@ This CDK stack provisions an [S3](https://docs.aws.amazon.com/AmazonS3/latest/us
 The following command outputs the name of the S3 bucket for contents.
 
 ```sh
-aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --query "Stacks[0].Outputs[?OutputKey=='ContentsBucketName']|[0].OutputValue" | sed -E 's/(^")|("$)//g'
+aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --query "Stacks[0].Outputs[?OutputKey=='ContentsBucketName']|[0].OutputValue" --output text
 ```
 
 Please replace `$DEPLOYMENT_STAGE` with the deployment stage where the S3 bucket you want resides.
@@ -155,7 +155,7 @@ The production site is served through `codemonger.io` but there is a CloudFront 
 The following command outputs the domain name of the CloudFront distribution for contents.
 
 ```sh
-aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --query "Stacks[0].Outputs[?OutputKey=='ContentsDistributionDomainName']|[0].OutputValue" | sed -E 's/(^")|("$)//g'
+aws cloudformation describe-stacks --stack-name codemonger-$DEPLOYMENT_STAGE --query "Stacks[0].Outputs[?OutputKey=='ContentsDistributionDomainName']|[0].OutputValue" --output text
 ```
 
 Please replace `$DEPLOYMENT_STAGE` with the deployment stage where the CloudFront distribution you want resides.

@@ -2,7 +2,7 @@
 title = "codemongerについて"
 description = "codemongerと私自身について"
 date = 2022-06-13
-updated = 2022-11-02
+updated = 2023-06-20
 template = "about.html"
 +++
 
@@ -23,7 +23,10 @@ template = "about.html"
 
 日本で活動中。
 
-GitHubプロフィール: [https://github.com/kikuomax](https://github.com/kikuomax)
+- GitHubプロフィール: [https://github.com/kikuomax](https://github.com/kikuomax)
+- Mastodon*: `@kemoto@mumble.codemonger.io`をMastodonで検索
+
+\* このアカウントは実際には[Mastodon](https://joinmastodon.org/)ではなく[Mumble](../product/mumble/)でホストしています。[Mumble](../product/mumble/)は[Activity Pub](https://activitypub.rocks)のサーバーレス実装です。
 
 ### Kikuoについて
 

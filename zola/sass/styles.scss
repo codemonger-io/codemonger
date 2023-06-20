@@ -103,6 +103,41 @@ p {
   }
 }
 
+.product-content {
+  .container {
+    position: relative;
+
+    .product-title {
+      &.image {
+        display: flex;
+        place-items: center;
+        @media (max-height: 400px) {
+          /* for mobile landscape layout */
+          align-items: start;
+          img {
+            max-width: 70vw;
+          }
+        }
+        justify-content: center;
+        min-height: calc(100vh - #{$navbar-height} - 3rem);
+      }
+    }
+
+    .content {
+      /* makes the product summary bold and overlap the product logo. */
+      p:first-of-type {
+        position: absolute;
+        bottom: 3.0em;
+        font-weight: 700;
+        font-size: 2.0em;
+        line-height: 1.0;
+        opacity: 0.8;
+        background-color: $codemonger;
+      }
+    }
+  }
+}
+
 .blog-content {
   header {
     padding-bottom: 3rem;
@@ -112,19 +147,11 @@ p {
 $blog-card-height: 11rem;
 $blog-card-fade-margin: 3rem;
 
+$product-card-height: 15rem;
+
 .blog-card {
-  position: relative;
   min-height: $blog-card-height;
   max-height: $blog-card-height;
-  background: $codemonger;
-  transition: background-color 0.3s;
-  overflow-y: hidden;
-  .blog-title {
-    text-decoration: underline;
-  }
-  .subtitle {
-    margin-bottom: 0.5rem;
-  }
   /* https://stackoverflow.com/questions/22808040/fading-out-text-on-overflow-with-css-if-the-text-is-bigger-than-allowed */
   &::before {
     position: absolute;
@@ -140,18 +167,60 @@ $blog-card-fade-margin: 3rem;
      */
     transition: background-color 0.3s;
   }
-  &:hover {
-    background: $codemonger-tint;
-    &::before {
-      background: linear-gradient(rgba($codemonger-tint, 0) calc(#{$blog-card-height} - #{$blog-card-fade-margin}), $codemonger-tint);
+}
+
+.product-card {
+  min-height: $product-card-height;
+  max-height: $product-card-height;
+}
+
+.blog-card,
+.product-card {
+  position: relative;
+  background: $codemonger;
+  transition: background-color 0.3s;
+  overflow-y: hidden;
+  .card-image {
+    .image {
+      display: flex;
+      place-items: center;
+      justify-content: center;
+      padding: 1rem;
+      height: 150px;
+    }
+  }
+  .blog-title {
+    text-decoration: underline;
+  }
+  .subtitle {
+    margin-bottom: 0.5rem;
+  }
+  .card-content {
+    a {
+      &:link {
+        color: $codemonger-invert;
+      }
+      &:visited {
+        color: $codemonger-invert;
+      }
+    }
+  }
+  @media (hover: hover) {
+    &:hover {
+      background: $codemonger-tint;
+      &::before {
+        background: linear-gradient(rgba($codemonger-tint, 0) calc(#{$blog-card-height} - #{$blog-card-fade-margin}), $codemonger-tint);
+      }
     }
   }
 }
 
-.blog-page-number {
+.blog-page-number,
+.product-page-number {
   @include monospace-font;
 }
-.current-blog-page-number {
+.current-blog-page-number,
+.current-product-page-number {
   margin: 0px 0.5rem;
 }
 
