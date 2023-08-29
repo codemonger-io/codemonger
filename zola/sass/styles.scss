@@ -127,12 +127,16 @@ p {
       /* makes the product summary bold and overlap the product logo. */
       p:first-of-type {
         position: absolute;
-        bottom: 3.0em;
+        top: calc(100vh - 6.5em);
         font-weight: 700;
         font-size: 2.0em;
         line-height: 1.0;
         opacity: 0.8;
         background-color: $codemonger;
+
+        @media only screen and (max-height: 450px) {
+          top: calc(100vh - 4.5em);
+        }
       }
     }
   }
