@@ -1,6 +1,6 @@
 +++
 title = "Mumble"
-description = "Serverless implementation of Activity Pub"
+description = "Serverless implementation of ActivityPub"
 date = 2023-06-20
 updated = 2023-08-30
 draft = false

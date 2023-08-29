@@ -1,6 +1,6 @@
 +++
 title = "Mumble"
-description = "Activity Pubのサーバーレス実装"
+description = "ActivityPubのサーバーレス実装"
 date = 2023-06-20
 updated = 2023-08-30
 draft = false
