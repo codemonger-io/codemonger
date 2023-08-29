@@ -2,7 +2,7 @@
 title = "codemongerについて"
 description = "codemongerと私自身について"
 date = 2022-06-13
-updated = 2023-06-20
+updated = 2023-08-30
 template = "about.html"
 +++
 
@@ -24,16 +24,16 @@ template = "about.html"
 日本で活動中。
 
 - GitHubプロフィール: [https://github.com/kikuomax](https://github.com/kikuomax)
-- Mastodon*: `@kemoto@mumble.codemonger.io`をMastodonで検索
+- [Mumble](../product/mumble/)*: [https://mumble.codemonger.io/viewer/users/kemoto/](https://mumble.codemonger.io/viewer/users/kemoto/)
 
-\* このアカウントは実際には[Mastodon](https://joinmastodon.org/)ではなく[Mumble](../product/mumble/)でホストしています。[Mumble](../product/mumble/)は[Activity Pub](https://activitypub.rocks)のサーバーレス実装です。
+\* [Mumble](../product/mumble/)は[ActivityPub](https://activitypub.rocks)のサーバーレス実装で、[Mastodon](https://joinmastodon.org/)など他の対応サーバーとコミュニケーションができます。
 
 ### Kikuoについて
 
 私(Kikuo)はコーディングだけでなくソフトウェア開発ライフサイクル全般に強い熱意を持っています。
 
-もしあなたのアイデアをMinimum Viable Product (MVP)として実現したいとお考えでしたら私にお任せください。
-私は以下の分野の経験を積んでいます。
+Minimum Viable Product (MVP)として実現したいアイデアをお持ちでしたらお任せください。
+以下の分野での経験が役に立つはずです。
 - フロントエンド開発。特に、
     - [Vue](https://vuejs.org) (Webアプリ)
     - [React](https://reactjs.org) (Webアプリ)
