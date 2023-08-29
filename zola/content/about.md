@@ -2,7 +2,7 @@
 title = "About codemonger"
 description = "About codemonger, and myself"
 date = 2022-06-13
-updated = 2023-06-20
+updated = 2023-08-30
 template = "about.html"
 +++
 
@@ -24,9 +24,9 @@ Expresses enthusiasm for coding, and humbleness.
 Based in Japan.
 
 - GitHub profile: [https://github.com/kikuomax](https://github.com/kikuomax)
-- Mastodon*: search `@kemoto@mumble.codemonger.io` on Mastodon
+- [Mumble](../product/mumble/)*: [https://mumble.codemonger.io/viewer/users/kemoto/](https://mumble.codemonger.io/viewer/users/kemoto/)
 
-\* My account is not actually hosted on [Mastodon](https://joinmastodon.org/), but on [Mumble](../product/mumble/) that is a serverless implementation of [Activity Pub](https://activitypub.rocks).
+\* [Mumble](../product/mumble/) is a serverless implementation of [ActivityPub](https://activitypub.rocks) that can communicate with other compliant servers; e.g., [Mastodon](https://joinmastodon.org/).
 
 ### About Kikuo
 
