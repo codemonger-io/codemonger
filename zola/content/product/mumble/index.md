@@ -58,8 +58,8 @@ For that purpose, I used to use [Microsoft Teams](https://www.microsoft.com/en-u
 These _mumblings_ often turned out useful for my colleagues and me later.
 Now, as a freelance, I started to want to have my own place to publicly write down these _mumblings_.
 [Twitter](https://twitter.com) could have been a good place, but I felt somehow it was not the right place for me.
-During the recent turmoil around [Twitter](https://twitter.com), [Mastodon](https://joinmastodon.org), a decentralized social network, caught my attention, and I was attracted to [ActivityPub](https://www.w3.org/TR/activitypub/) behind [Mastodon](https://joinmastodon.org).
-Since hosting [Mastodon](https://joinmastodon.org) required a traditional setup of servers that was not the way I was eager to pursue, I decided to implement a serverless version of [ActivityPub](https://www.w3.org/TR/activitypub/) on [AWS](https://aws.amazon.com).
+During the recent turmoil around [Twitter](https://twitter.com), [Mastodon](https://joinmastodon.org), a decentralized social network, caught my attention, and I was attracted to [ActivityPub](https://activitypub.rocks) behind [Mastodon](https://joinmastodon.org).
+Since hosting [Mastodon](https://joinmastodon.org) required a traditional setup of servers that was not the way I was eager to pursue, I decided to implement a serverless version of [ActivityPub](https://activitypub.rocks) on [AWS](https://aws.amazon.com).
 
 ## GitHub repository
 
