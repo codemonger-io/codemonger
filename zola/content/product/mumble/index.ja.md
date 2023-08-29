@@ -58,8 +58,8 @@ Mumbleで*ゴニョる*には、クライアントアプリが必要です。
 そんな*ゴニョゴニョ*は後で同僚や自分にとって役立つことがよくありました。
 フリーランスになった今、そんな*ゴニョゴニョ*を公に書き出せる自分専用の場所が欲しくなってきました。
 [Twitter](https://twitter.com)を使えばいいのかもしれませんが、どうにも私には馴染まないと感じていました。
-最近の[Twitter](https://twitter.com)周りのゴタゴタの折、分散型ソーシャルネットワークの[Mastodon](https://joinmastodon.org)が気になり、その[Mastodon](https://joinmastodon.org)を裏で支える[ActivityPub](https://www.w3.org/TR/activitypub/)に興味を持ち始めました。
-[Mastodon](https://joinmastodon.org)をホストするには従来型のサーバー諸々が必要ですが、それはあまり私が追求したい道ではなかったので、自分で[AWS](https://aws.amazon.com)上にサーバーレス版の[ActivityPub](https://www.w3.org/TR/activitypub/)サービスを実装することにしました。
+最近の[Twitter](https://twitter.com)周りのゴタゴタの折、分散型ソーシャルネットワークの[Mastodon](https://joinmastodon.org)が気になり、その[Mastodon](https://joinmastodon.org)を裏で支える[ActivityPub](https://activitypub.rocks)に興味を持ち始めました。
+[Mastodon](https://joinmastodon.org)をホストするには従来型のサーバー諸々が必要ですが、それはあまり私が追求したい道ではなかったので、自分で[AWS](https://aws.amazon.com)上にサーバーレス版の[ActivityPub](https://activitypub.rocks)サービスを実装することにしました。
 
 ## GitHubレポジトリ
 
