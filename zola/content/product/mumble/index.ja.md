@@ -2,7 +2,7 @@
 title = "Mumble"
 description = "ActivityPubのサーバーレス実装"
 date = 2023-06-20
-updated = 2023-08-30
+updated = 2023-10-19
 draft = false
 weight = 1
 [extra]
@@ -29,6 +29,7 @@ ActivityPubのサーバーレス実装
     - ほとんど**コストゼロ**で始めることができ、アクセスが増えるにつれて**スケール**することができます!
 - ゲスト用の[ビューワーアプリ](#ビューワーアプリ)
     - プロフィールページのURLをシェアしてMumbleアカウントをプロモーションできます。
+    - ゲストは*ゴニョゴニョ*を自由なテキストで検索できます。
 
 今後の機能追加にもご期待ください!
 
@@ -42,9 +43,10 @@ Mumbleのデプロイ方法については[GitHubレポジトリ](https://github
 
 プロフィールと公開の*ゴニョゴニョ*はビューワーアプリで誰でも見ることができます。
 URLをソーシャルメディアのプロフィールに加えてMumbleアカウントをプロモーションしましょう。
+ゲストはSearchページを使って自由なテキストで*ゴニョゴニョ*を検索できます([FlechasDB](../flechasdb/)と[OpenAIのエンべディング](https://platform.openai.com/docs/models/embeddings)を応用)。
 
 以下は私(Kikuo)のプロフィールページ([https://mumble.codemonger.io/viewer/users/kemoto/](https://mumble.codemonger.io/viewer/users/kemoto/))のスクリーンショットです。
-![viewer app](./viewer-app.png)
+![viewer app](./viewer-app.jpg)
 
 ## クライアント
 
@@ -54,7 +56,7 @@ Mumbleで*ゴニョる*には、クライアントアプリが必要です。
 ## 背景
 
 仕事中によく自分の考えや気づきなどを短いテキスト(_ゴニョゴニョ_)に書き出します。
-これをするのに、[Microsoft Teams](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software)や[Slack](https://slack.com/), [Dicord](https://discord.com)など、何かしら職場で利用できるものを使っていました。
+これをするのに、[Microsoft Teams](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software)や[Slack](https://slack.com/), [Discord](https://discord.com)など、何かしら職場で利用できるものを使っていました。
 そんな*ゴニョゴニョ*は後で同僚や自分にとって役立つことがよくありました。
 フリーランスになった今、そんな*ゴニョゴニョ*を公に書き出せる自分専用の場所が欲しくなってきました。
 [Twitter](https://twitter.com)を使えばいいのかもしれませんが、どうにも私には馴染まないと感じていました。
