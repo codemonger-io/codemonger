@@ -4,7 +4,7 @@ description = "Mumbleの公式クライアント"
 date = 2023-06-20
 updated = 2023-08-30
 draft = false
-weight = 2
+weight = 3
 [extra]
 hashtags = ["Mumble"]
 thumbnail_name = "mumble-bee-brand.png"
