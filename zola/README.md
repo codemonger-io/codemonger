@@ -20,6 +20,11 @@ zola build --base-url https://$CONTENTS_DISTRIBUTION_DOMAIN_NAME
 
 Please replace `$CONTENTS_DISTRIBUTION_DOMAIN_NAME` with the domain name of the CloudFront distribution of the development stage.
 Please refer to the instructions in the [`../cdk`](../cdk) folder for how to provision the CloudFront distribution.
+Here is a command for development:
+
+```sh
+CONTENTS_DISTRIBUTION_DOMAIN_NAME=`AWS_PROFILE=codemonger-jp aws cloudformation describe-stacks --stack-name codemonger-development --query "Stacks[0].Outputs[?OutputKey=='ContentsDistributionDomainName']|[0].OutputValue" --output text`
+```
 
 ## Deploying contents
 
@@ -31,6 +36,11 @@ aws s3 sync --delete --exclude "*.DS_Store" ./public s3://$CONTENTS_BUCKET_NAME/
 
 Please replace `CONTENTS_BUCKET_NAME` with the name of the S3 bucket for contents.
 Please refer to the instructions in the [`../cdk`](../cdk) folder for how to provision the S3 bucket.
+Here is a command for development:
+
+```sh
+CONTENTS_BUCKET_NAME=`AWS_PROFILE=codemonger-jp aws cloudformation describe-stacks --stack-name codemonger-development --query "Stacks[0].Outputs[?OutputKey=='ContentsBucketName']|[0].OutputValue" --output text`
+```
 
 ## Writing blogs
 

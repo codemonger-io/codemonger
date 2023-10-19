@@ -20,6 +20,11 @@ zola build --base-url https://$CONTENTS_DISTRIBUTION_DOMAIN_NAME
 
 `$CONTENTS_DISTRIBUTION_DOMAIN_NAME`を開発ステージのCloudFront Distributionのドメイン名で置き換えてください。
 CloudFront Distributionを確保する方法については[`../cdk`](../cdk/README.ja.md)フォルダの解説をご覧ください。
+以下は開発ステージ用のコマンドです。
+
+```sh
+CONTENTS_DISTRIBUTION_DOMAIN_NAME=`AWS_PROFILE=codemonger-jp aws cloudformation describe-stacks --stack-name codemonger-development --query "Stacks[0].Outputs[?OutputKey=='ContentsDistributionDomainName']|[0].OutputValue" --output text`
+```
 
 ## コンテンツをデプロイする
 
@@ -31,6 +36,11 @@ aws s3 sync --delete --exclude "*.DS_Store" ./public s3://$CONTENTS_BUCKET_NAME/
 
 `CONTENTS_BUCKET_NAME`をコンテンツ用S3バケットの名前に置き換えてください。
 S3バケットを確保する方法については[`../cdk`](../cdk/README.ja.md)フォルダの解説をご覧ください。
+以下は開発ステージ用のコマンドです。
+
+```sh
+CONTENTS_BUCKET_NAME=`AWS_PROFILE=codemonger-jp aws cloudformation describe-stacks --stack-name codemonger-development --query "Stacks[0].Outputs[?OutputKey=='ContentsBucketName']|[0].OutputValue" --output text`
+```
 
 ## ブログを書く
 
