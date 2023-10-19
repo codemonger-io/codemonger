@@ -4,7 +4,7 @@ description = "Serverless implementation of ActivityPub"
 date = 2023-06-20
 updated = 2023-10-19
 draft = false
-weight = 1
+weight = 2
 [extra]
 hashtags = ["Mumble", "ActivityPub", "serverless"]
 thumbnail_name = "mumble-brand.png"
