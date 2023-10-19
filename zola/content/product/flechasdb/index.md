@@ -5,7 +5,7 @@ date = 2023-10-19
 draft = false
 weight = 1
 [extra]
-hashtags = ["FlechasDB", "vector-database", "serverless"]
+hashtags = ["FlechasDB", "vectordatabase", "serverless"]
 thumbnail_name = "flechasdb-brand.png"
 +++
 
