@@ -101,6 +101,19 @@ p {
       }
     }
   }
+  .footnote-definition {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    sup {
+      display: block;
+      margin-right: 0.5em;
+    }
+    > p {
+      font-size: 80%;
+    }
+  }
 }
 
 .product-content {
@@ -125,7 +138,7 @@ p {
 
     .content {
       /* makes the product summary bold and overlap the product logo. */
-      p:first-of-type {
+      > p:first-of-type {
         position: absolute;
         top: calc(100vh - 6.5em);
         font-weight: 700;
@@ -135,7 +148,7 @@ p {
         background-color: $codemonger;
 
         @media only screen and (max-height: 450px) {
-          top: calc(100vh - 4.5em);
+          top: calc(100vh - 5.0em);
         }
       }
     }
