@@ -2,8 +2,10 @@
 title = "codemongerについて"
 description = "codemongerと私自身について"
 date = 2022-06-13
-updated = 2023-08-30
+updated = 2024-01-08
 template = "about.html"
+[extra]
+short_title = "codemongerについて"
 +++
 
 ## 意味
@@ -15,7 +17,7 @@ template = "about.html"
 ## ソーシャルメディア
 
 - Twitter: [@codemonger_io](https://twitter.com/codemonger_io)
-- GitHub: [https://github.com/codemonger-io](https://github.com/codemonger-io)
+- GitHub: <https://github.com/codemonger-io>
 
 ## 代表
 
@@ -23,10 +25,10 @@ template = "about.html"
 
 日本で活動中。
 
-- GitHubプロフィール: [https://github.com/kikuomax](https://github.com/kikuomax)
-- [Mumble](../product/mumble/)*: [https://mumble.codemonger.io/viewer/users/kemoto/](https://mumble.codemonger.io/viewer/users/kemoto/)
+- GitHubプロフィール: <https://github.com/kikuomax>
+- [Mumble](../product/mumble/)[^1]: <https://mumble.codemonger.io/viewer/users/kemoto/>
 
-\* [Mumble](../product/mumble/)は[ActivityPub](https://activitypub.rocks)のサーバーレス実装で、[Mastodon](https://joinmastodon.org/)など他の対応サーバーとコミュニケーションができます。
+[^1]: [Mumble](../product/mumble/)は[ActivityPub](https://activitypub.rocks)のサーバーレス実装で、[Mastodon](https://joinmastodon.org/)など他の対応サーバーとコミュニケーションができます。
 
 ### Kikuoについて
 
@@ -52,4 +54,7 @@ Minimum Viable Product (MVP)として実現したいアイデアをお持ちで�
 - MVPはプロトタイプではなく製品であり、**品質はやはり重要**です。
   IaCは品質と早い出荷を達成するためのキーになります。
 
-私は学習者でもあり、今は[Rust](https://www.rust-lang.org)を学習しています。
+2023年7月からUIフレームワークの[Buefy](https://buefy.org)のメンテナンスを行なっており、[モダナイズ](https://github.com/ntohq/buefy-next)のために尽力しています。
+
+何かを学ぶことは私の本質を為しています。
+現在は[Rust](https://www.rust-lang.org)を学習しており、実践的なコードを書けるレベルに到達しました。

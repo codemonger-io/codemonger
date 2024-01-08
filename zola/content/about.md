@@ -2,8 +2,10 @@
 title = "About codemonger"
 description = "About codemonger, and myself"
 date = 2022-06-13
-updated = 2023-08-30
+updated = 2024-01-08
 template = "about.html"
+[extra]
+short_title = "About"
 +++
 
 ## Meaning
@@ -15,7 +17,7 @@ Expresses enthusiasm for coding, and humbleness.
 ## Socials
 
 - Twitter: [@codemonger_io](https://twitter.com/codemonger_io)
-- GitHub: [https://github.com/codemonger-io](https://github.com/codemonger-io)
+- GitHub: <https://github.com/codemonger-io>
 
 ## Representative
 
@@ -23,14 +25,14 @@ Expresses enthusiasm for coding, and humbleness.
 
 Based in Japan.
 
-- GitHub profile: [https://github.com/kikuomax](https://github.com/kikuomax)
-- [Mumble](../product/mumble/)*: [https://mumble.codemonger.io/viewer/users/kemoto/](https://mumble.codemonger.io/viewer/users/kemoto/)
+- GitHub profile: <https://github.com/kikuomax>
+- [Mumble](../product/mumble/)[^1]: <https://mumble.codemonger.io/viewer/users/kemoto/>
 
-\* [Mumble](../product/mumble/) is a serverless implementation of [ActivityPub](https://activitypub.rocks) that can communicate with other compliant servers; e.g., [Mastodon](https://joinmastodon.org/).
+[^1]: [Mumble](../product/mumble/) is a serverless implementation of [ActivityPub](https://activitypub.rocks) that can communicate with other compliant servers; e.g., [Mastodon](https://joinmastodon.org/).
 
 ### About Kikuo
 
-I, Kikuo, am enthusiastic about the entire software development life cycle not only coding.
+I, Kikuo, am not enthusiastic only about coding but the entire software development life cycle.
 
 You can count on me if you would like to realize your idea as a minimum viable product (MVP).
 I have experience in the following fields,
@@ -52,4 +54,7 @@ Why are the above experiences vital for MVP development?
 - MVP is not a prototype but a product, and **quality still matters**.
   IaC is a key to achieving both quality and quick delivery.
 
-I am also a learner, currently learning [Rust](https://www.rust-lang.org).
+I have been maintaining a UI framework [Buefy](https://buefy.org), and working hard to [modernize it](https://github.com/ntohq/buefy-next) since July 2023.
+
+Learning is my essential quality.
+I am currently learning [Rust](https://www.rust-lang.org), and have reached the stage that I can write practical code in Rust.
