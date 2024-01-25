@@ -2,7 +2,7 @@
 title = "About codemonger"
 description = "About codemonger, and myself"
 date = 2022-06-13
-updated = 2024-01-08
+updated = 2024-01-26
 template = "about.html"
 [extra]
 short_title = "About"
@@ -27,6 +27,8 @@ Based in Japan.
 
 - GitHub profile: <https://github.com/kikuomax>
 - [Mumble](../product/mumble/)[^1]: <https://mumble.codemonger.io/viewer/users/kemoto/>
+
+<div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="bfbc00fe-7dc4-4030-8a7a-b42487d1f98a" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
 
 [^1]: [Mumble](../product/mumble/) is a serverless implementation of [ActivityPub](https://activitypub.rocks) that can communicate with other compliant servers; e.g., [Mastodon](https://joinmastodon.org/).
 
