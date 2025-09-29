@@ -1,8 +1,8 @@
 +++
 title = "aws-smithy-mocksでAWSサービスをモックする"
-description = "aws-smithy-mocksとそれを使って学んだことの紹介"
-date = 2025-09-28
-draft = true
+description = "aws-smithy-mocksと実践的なテストの書き方の紹介"
+date = 2025-09-30
+draft = false
 [extra]
 hashtags = ["aws", "rust", "mock"]
 thumbnail_name = "thumbnail.png"

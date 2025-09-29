@@ -1,8 +1,8 @@
 +++
 title = "Mocking AWS services with aws-smithy-mocks"
-description = "Introduction of aws-smithy-mocks, and what I have learned from using it."
-date = 2025-09-28
-draft = true
+description = "Introduction of aws-smithy-mocks, and how to write practical tests with it."
+date = 2025-09-30
+draft = false
 [extra]
 hashtags = ["aws", "rust", "mock"]
 thumbnail_name = "thumbnail.png"
